@@ -57,9 +57,19 @@ accent: terracotta
 
 团队借鉴已发表的户型识别研究，训练语义分割模型。在真实房产网站图片测试集上，模型达到约 **85% IoU**。
 
+<figure class="evidence-figure">
+  <img src="/case-studies/floor-plan/source-to-segmentation.webp" alt="房产网站风格的户型图与对应语义分割结果。" />
+  <figcaption>项目归档示例：房产网站风格的栅格输入，以及用于几何重建的语义区域。</figcaption>
+</figure>
+
 ### 3. 用结构化方法完成重建
 
 语义分割只是中间信号，而不是最终产品。系统继续提取多边形、构建空间图，并通过计算几何与约束优化恢复墙体、宽度、门窗、房间语义与空间拓扑。
+
+<figure class="evidence-figure">
+  <img src="/case-studies/floor-plan/annotated-plan.jpg" alt="标注了墙体、门窗、房间名称和尺寸的户型图。" />
+  <figcaption>标注与几何质检视图：在一张代表性户型图上检查墙体、开口、房间名称与尺寸。</figcaption>
+</figure>
 
 ### 4. 接入产品
 

@@ -71,12 +71,22 @@ We adapted ideas from published floor-plan recognition work and trained a
 semantic-segmentation model. On a test set of real property-listing images, the
 model achieved approximately **85% IoU**.
 
+<figure class="evidence-figure">
+  <img src="/case-studies/floor-plan/source-to-segmentation.webp" alt="A property-listing floor plan beside its semantic segmentation result." />
+  <figcaption>Archived pipeline example: listing-style raster input and the semantic regions used for geometric reconstruction.</figcaption>
+</figure>
+
 ### 3. Use structure for reconstruction
 
 Segmentation was an intermediate signal, not the product output. The system
 extracted polygons, constructed a spatial graph, and applied computational
 geometry and constrained optimization to recover coherent walls, widths,
 windows, room labels, and topology.
+
+<figure class="evidence-figure">
+  <img src="/case-studies/floor-plan/annotated-plan.jpg" alt="A floor plan annotated with recognized wall, door, and window geometry." />
+  <figcaption>Annotation and geometry QA view showing walls, openings, room labels, and dimensions on one representative plan.</figcaption>
+</figure>
 
 ### 4. Integrate with the product
 

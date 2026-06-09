@@ -596,6 +596,29 @@ html[lang="zh-CN"] .case-hero h1 {
   font-size: 1.35rem;
 }
 
+.evidence-figure {
+  margin: 2.5rem 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--white);
+}
+
+.evidence-figure img {
+  width: 100%;
+  max-height: 560px;
+  object-fit: contain;
+  background: #fff;
+}
+
+.evidence-figure figcaption {
+  padding: 0.9rem 1rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
 .case-aside {
   position: sticky;
   top: 2rem;

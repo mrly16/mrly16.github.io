@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
+  <title id="title">CAD recognition pipeline</title>
+  <desc id="desc">A CAD drawing is normalized, decomposed into geometry, classified into walls, doors, and windows, checked for topology, and exported as structured architectural data.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0 10 5 0 10Z" fill="#657069"/>
+    </marker>
+    <style>
+      .box{fill:#fffdf8;stroke:#c9c5b9;stroke-width:2}
+      .label{font:600 20px Manrope,Arial,sans-serif;fill:#1c2521}
+      .small{font:14px "DM Mono",monospace;fill:#657069}
+      .line{fill:none;stroke:#657069;stroke-width:2;marker-end:url(#arrow)}
+      .wall{stroke:#1c2521;stroke-width:13;stroke-linecap:square}
+      .opening{stroke:#bf6246;stroke-width:7;stroke-linecap:round}
+      .window{stroke:#486f7a;stroke-width:7;stroke-linecap:round}
+      .node{fill:#fffdf8;stroke:#6d8170;stroke-width:3}
+    </style>
+  </defs>
+  <rect width="1200" height="520" rx="28" fill="#f4f0e8"/>
+  <text x="54" y="62" class="small">GEOMETRY-FIRST ARCHITECTURAL RECOGNITION</text>
+
+  <g transform="translate(50 110)">
+    <rect class="box" width="190" height="300" rx="18"/>
+    <text x="24" y="42" class="small">01 / INPUT</text>
+    <text x="24" y="76" class="label">DWG / CAD</text>
+    <path class="wall" d="M42 126H145V228H72V174H42Z"/>
+    <path class="opening" d="M72 228v-34"/>
+    <path class="window" d="M145 154v42"/>
+    <text x="24" y="270" class="small">layers · blocks · lines</text>
+  </g>
+
+  <path class="line" d="M252 260H302"/>
+
+  <g transform="translate(310 110)">
+    <rect class="box" width="190" height="300" rx="18"/>
+    <text x="24" y="42" class="small">02 / NORMALIZE</text>
+    <text x="24" y="76" class="label">Geometry</text>
+    <path d="M45 124h98M45 158h98M45 198h56M45 232h98" stroke="#486f7a" stroke-width="4"/>
+    <circle cx="45" cy="124" r="6" class="node"/>
+    <circle cx="143" cy="124" r="6" class="node"/>
+    <circle cx="45" cy="158" r="6" class="node"/>
+    <circle cx="143" cy="158" r="6" class="node"/>
+    <circle cx="45" cy="198" r="6" class="node"/>
+    <circle cx="101" cy="198" r="6" class="node"/>
+    <circle cx="45" cy="232" r="6" class="node"/>
+    <circle cx="143" cy="232" r="6" class="node"/>
+    <text x="24" y="270" class="small">scale · merge · align</text>
+  </g>
+
+  <path class="line" d="M512 260H562"/>
+
+  <g transform="translate(570 110)">
+    <rect class="box" width="250" height="300" rx="18"/>
+    <text x="24" y="42" class="small">03 / RECOGNIZE</text>
+    <text x="24" y="76" class="label">Building elements</text>
+    <rect x="24" y="108" width="202" height="44" rx="10" fill="#1c2521"/>
+    <text x="42" y="136" font-family="Manrope,Arial,sans-serif" font-size="16" fill="#fffdf8">wall pairs + centerlines</text>
+    <rect x="24" y="166" width="202" height="44" rx="10" fill="#bf6246"/>
+    <text x="42" y="194" font-family="Manrope,Arial,sans-serif" font-size="16" fill="#fffdf8">door gaps + swing cues</text>
+    <rect x="24" y="224" width="202" height="44" rx="10" fill="#486f7a"/>
+    <text x="42" y="252" font-family="Manrope,Arial,sans-serif" font-size="16" fill="#fffdf8">window line patterns</text>
+  </g>
+
+  <path class="line" d="M832 260H882"/>
+
+  <g transform="translate(890 110)">
+    <rect class="box" width="260" height="300" rx="18"/>
+    <text x="24" y="42" class="small">04 / VALIDATE + EXPORT</text>
+    <text x="24" y="76" class="label">Structured plan</text>
+    <path d="M54 126H202V238H94V194H54Z" fill="none" stroke="#6d8170" stroke-width="5"/>
+    <circle cx="54" cy="126" r="7" class="node"/>
+    <circle cx="202" cy="126" r="7" class="node"/>
+    <circle cx="202" cy="238" r="7" class="node"/>
+    <circle cx="94" cy="238" r="7" class="node"/>
+    <circle cx="94" cy="194" r="7" class="node"/>
+    <circle cx="54" cy="194" r="7" class="node"/>
+    <text x="24" y="270" class="small">walls · openings · topology</text>
+  </g>
+</svg>
