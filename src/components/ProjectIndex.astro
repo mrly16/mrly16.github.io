@@ -1,0 +1,55 @@
+---
+import type { CollectionEntry } from "astro:content";
+import ProjectCard from "./ProjectCard.astro";
+import type { Locale } from "../lib/i18n";
+
+interface Props {
+  projects: CollectionEntry<"projects">[];
+  locale: Locale;
+  searchable?: boolean;
+}
+
+const { projects, locale, searchable = false } = Astro.props;
+---
+
+{searchable && (
+  <div class="filter-row">
+    <input
+      class="search-input"
+      type="search"
+      placeholder={locale === "zh" ? "搜索项目、技术或领域" : "Search projects, technologies, or domains"}
+      aria-label={locale === "zh" ? "搜索项目" : "Search projects"}
+      data-project-search
+    />
+    <span data-result-count>{projects.length} {locale === "zh" ? "个项目" : "projects"}</span>
+  </div>
+)}
+
+<div class="project-list" data-project-list>
+  {projects.map((project, index) => (
+    <div
+      data-project
+      data-search={`${project.data.title} ${project.data.summary} ${project.data.technologies.join(" ")}`.toLowerCase()}
+    >
+      <ProjectCard project={project} locale={locale} index={index} />
+    </div>
+  ))}
+</div>
+
+{searchable && (
+  <script>
+    const input = document.querySelector("[data-project-search]");
+    const projects = [...document.querySelectorAll("[data-project]")];
+    const count = document.querySelector("[data-result-count]");
+    input?.addEventListener("input", (event) => {
+      const query = event.target instanceof HTMLInputElement ? event.target.value.toLowerCase().trim() : "";
+      let visible = 0;
+      projects.forEach((project) => {
+        const matches = !query || project.getAttribute("data-search")?.includes(query);
+        project.toggleAttribute("hidden", !matches);
+        if (matches) visible += 1;
+      });
+      if (count) count.textContent = String(visible);
+    });
+  </script>
+)}

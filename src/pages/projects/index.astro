@@ -1,0 +1,27 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ProjectIndex from "../../components/ProjectIndex.astro";
+
+const projects = (await getCollection("projects", ({ data }) => data.locale === "en"))
+  .sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout
+  title="Selected Work | Liangyi Murong"
+  description="Case studies in production AI, computer vision, multimodal systems, generative AI, and spatial computing."
+  locale="en"
+>
+  <header class="page-intro">
+    <div>
+      <p class="eyebrow">Selected work</p>
+      <h1>Systems that survived contact with reality.</h1>
+    </div>
+    <p class="page-intro-copy">
+      These case studies describe employer-owned projects through sanitized
+      architecture, verified outcomes, and my specific contribution. No
+      proprietary source code or customer data is published.
+    </p>
+  </header>
+  <ProjectIndex projects={projects} locale="en" searchable />
+</BaseLayout>

@@ -1,0 +1,20 @@
+---
+import { siteCopy, type Locale } from "../lib/i18n";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const copy = siteCopy[locale];
+---
+
+<footer class="site-footer">
+  <p>{copy.footer}</p>
+  <div class="footer-links">
+    <a href="mailto:markmoyung131@gmail.com">Email</a>
+    <a href="https://github.com/mrly16" rel="me">GitHub</a>
+    <a href="https://www.linkedin.com/in/liangyimurong" rel="me">LinkedIn</a>
+  </div>
+  <p class="copyright">© {new Date().getFullYear()} Liangyi Murong</p>
+</footer>

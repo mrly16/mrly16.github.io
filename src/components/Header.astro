@@ -1,0 +1,47 @@
+---
+import { siteCopy, type Locale } from "../lib/i18n";
+
+interface Props {
+  locale: Locale;
+  currentPath: string;
+}
+
+const { locale, currentPath } = Astro.props;
+const copy = siteCopy[locale];
+const localeTarget =
+  locale === "en"
+    ? currentPath === "/"
+      ? "/zh/"
+      : `/zh${currentPath}`
+    : currentPath.replace(/^\/zh/, "") || "/";
+---
+
+<header class="site-header">
+  <a class="wordmark" href={copy.home} aria-label={locale === "zh" ? "慕容良一首页" : "Liangyi Murong home"}>
+    <span>LM</span>
+    <span class="wordmark-name">{locale === "zh" ? "慕容良一" : "Liangyi Murong"}</span>
+  </a>
+  <nav aria-label={locale === "zh" ? "主导航" : "Primary navigation"}>
+    <a href={copy.projects}>{copy.nav.work}</a>
+    <a href={copy.about}>{copy.nav.about}</a>
+    <a href={copy.contact}>{copy.nav.contact}</a>
+    <a
+      class="language-switch"
+      href={localeTarget}
+      data-locale-switch
+      data-locale={locale === "en" ? "zh" : "en"}
+      lang={locale === "en" ? "zh-CN" : "en"}
+    >
+      {copy.language}
+    </a>
+  </nav>
+</header>
+
+<script>
+  document.querySelectorAll("[data-locale-switch]").forEach((link) => {
+    link.addEventListener("click", () => {
+      const locale = link.getAttribute("data-locale");
+      if (locale) localStorage.setItem("preferred-locale", locale);
+    });
+  });
+</script>

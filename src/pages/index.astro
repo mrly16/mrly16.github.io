@@ -1,0 +1,99 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import LocaleRedirect from "../components/LocaleRedirect.astro";
+import MetricGrid from "../components/MetricGrid.astro";
+import ProjectIndex from "../components/ProjectIndex.astro";
+
+const projects = (await getCollection("projects", ({ data }) => data.locale === "en" && data.featured))
+  .sort((a, b) => a.data.order - b.data.order);
+
+const metrics = [
+  { value: "70K", label: "floor plans reconstructed from raster images" },
+  { value: "400K+", label: "registered users reached by LookX" },
+  { value: "8 × 30 FPS", label: "video streams served on one RTX 4090" },
+  { value: "1M", label: "images searchable through multimodal retrieval" }
+];
+---
+
+<BaseLayout
+  title="Liangyi Murong | Applied AI Engineer"
+  description="Applied AI engineer and technical leader building production systems across computer vision, multimodal video, generative AI, and spatial computing."
+  locale="en"
+>
+  <LocaleRedirect />
+  <section class="hero">
+    <div>
+      <p class="eyebrow">Applied AI Engineer · Shenzhen</p>
+      <h1>Turning ambiguous problems into <em>working systems.</em></h1>
+    </div>
+    <div class="hero-side">
+      <p>
+        I build production AI products where models, infrastructure, user
+        workflows, and customer reality have to work together.
+      </p>
+      <div class="actions">
+        <a class="button button-primary" href="#selected-work">View selected work</a>
+        <a class="button" href="mailto:markmoyung131@gmail.com">Email me</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="metric-band" aria-label="Selected results">
+    <MetricGrid metrics={metrics} />
+  </section>
+
+  <section id="selected-work">
+    <div class="section-heading">
+      <h2>Selected work</h2>
+      <p>
+        Four systems spanning geometric reconstruction, real-time video,
+        generative design, and multimodal cloud search. Each case study focuses
+        on the problem, architecture, decisions, and measurable outcome.
+      </p>
+    </div>
+    <ProjectIndex projects={projects} locale="en" />
+  </section>
+
+  <section>
+    <div class="section-heading">
+      <h2>How I work</h2>
+      <p>
+        My strongest work happens between disciplines: understanding the real
+        constraint, choosing the right technical boundary, and carrying the
+        solution through deployment and adoption.
+      </p>
+    </div>
+    <div class="capability-grid">
+      <article class="capability">
+        <span class="index">01 / SYSTEMS</span>
+        <h3>Architecture under constraints</h3>
+        <p>Real-time inference, data pipelines, cloud services, and product interfaces designed as one system.</p>
+      </article>
+      <article class="capability">
+        <span class="index">02 / AI</span>
+        <h3>Hybrid technical depth</h3>
+        <p>Computer vision, generative models, spatial graphs, geometry, optimization, and multimodal retrieval.</p>
+      </article>
+      <article class="capability">
+        <span class="index">03 / DELIVERY</span>
+        <h3>From field signal to product</h3>
+        <p>Customer discovery, rapid POCs, reusable tooling, team leadership, and measurable operational improvement.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="availability">
+    <h2>Building the useful layer of AI.</h2>
+    <div>
+      <p>
+        Based in Shenzhen. Open to senior applied-AI, forward-deployed,
+        computer-vision, and hands-on technical-lead opportunities.
+      </p>
+      <div class="actions">
+        <a class="button" href="/about/">More about me</a>
+        <a class="button" href="/contact/">Get in touch</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

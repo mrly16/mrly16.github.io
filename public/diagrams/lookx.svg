@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 430" role="img">
+  <defs><style>.t{font:600 17px Arial,sans-serif;fill:#1c2521}.s{font:13px Arial,sans-serif;fill:#657069}.box{fill:#f4f0e8;stroke:#c9c5b9;stroke-width:1.5}.line{stroke:#657069;stroke-width:2;fill:none}</style><marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#657069"/></marker></defs>
+  <rect width="1120" height="430" rx="20" fill="#fffdf8"/>
+  <text x="50" y="52" class="s">TASK-SHAPED GENERATIVE WORKFLOWS</text>
+  <g transform="translate(50 95)"><rect class="box" width="210" height="72" rx="10"/><text x="20" y="31" class="t">Sketch mode</text><text x="20" y="53" class="s">Fast visual exploration</text></g>
+  <g transform="translate(50 180)"><rect class="box" width="210" height="72" rx="10"/><text x="20" y="31" class="t">Concept mode</text><text x="20" y="53" class="s">Volume + idea studies</text></g>
+  <g transform="translate(50 265)"><rect class="box" width="210" height="72" rx="10"/><text x="20" y="31" class="t">Render mode</text><text x="20" y="53" class="s">Geometry-preserving output</text></g>
+  <path d="M270 131H390M270 216H390M270 301H390" class="line" marker-end="url(#a)"/>
+  <g transform="translate(400 95)"><rect class="box" width="290" height="242" rx="10"/><text x="24" y="36" class="t">Task-specific pipeline</text><text x="24" y="76" class="s">Input preprocessing</text><text x="24" y="108" class="s">Conditioning + ControlNet</text><text x="24" y="140" class="s">Stable Diffusion 1.5</text><text x="24" y="172" class="s">Curated defaults</text><rect x="24" y="198" width="242" height="18" rx="9" fill="#ae853a" opacity=".22"/><rect x="24" y="198" width="190" height="18" rx="9" fill="#ae853a"/></g>
+  <path d="M700 216H760" class="line" marker-end="url(#a)"/>
+  <g transform="translate(770 95)"><rect class="box" width="300" height="242" rx="10"/><text x="24" y="36" class="t">Professional output</text><rect x="24" y="63" width="252" height="140" rx="5" fill="#ebe4d8"/><path d="M42 185L88 112L132 147L174 89L259 185Z" fill="#ae853a" opacity=".42"/><text x="24" y="228" class="s">Simple interaction · ~20 sec</text></g>
+  <text x="560" y="390" text-anchor="middle" class="s">Model complexity hidden behind recognizable architectural tasks</text>
+</svg>

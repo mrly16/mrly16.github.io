@@ -1,0 +1,25 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import ProjectIndex from "../../../components/ProjectIndex.astro";
+
+const projects = (await getCollection("projects", ({ data }) => data.locale === "zh"))
+  .sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout
+  title="代表项目｜慕容良一"
+  description="生产级 AI、计算机视觉、多模态系统、生成式 AI 与空间计算案例。"
+  locale="zh"
+>
+  <header class="page-intro">
+    <div>
+      <p class="eyebrow">代表项目</p>
+      <h1>经得起真实场景检验的系统。</h1>
+    </div>
+    <p class="page-intro-copy">
+      以下案例通过脱敏后的架构、可验证结果和我的具体贡献，介绍雇主所有的项目。不会公开公司源代码、客户数据或专有格式。
+    </p>
+  </header>
+  <ProjectIndex projects={projects} locale="zh" searchable />
+</BaseLayout>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 430" role="img">
+  <defs><style>.t{font:600 17px Arial,sans-serif;fill:#1c2521}.s{font:13px Arial,sans-serif;fill:#657069}.box{fill:#f4f0e8;stroke:#c9c5b9;stroke-width:1.5}.line{stroke:#657069;stroke-width:2;fill:none}</style><marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#657069"/></marker></defs>
+  <rect width="1120" height="430" rx="20" fill="#fffdf8"/>
+  <text x="50" y="52" class="s">MULTIMODAL ASSET SEARCH ON GOOGLE CLOUD</text>
+  <g transform="translate(50 100)"><rect class="box" width="180" height="220" rx="10"/><text x="22" y="36" class="t">Assets</text><text x="22" y="75" class="s">Images</text><text x="22" y="105" class="s">Tags</text><text x="22" y="135" class="s">Captions</text><rect x="22" y="165" width="40" height="32" fill="#486f7a" opacity=".3"/><rect x="69" y="165" width="40" height="32" fill="#486f7a" opacity=".55"/><rect x="116" y="165" width="40" height="32" fill="#486f7a" opacity=".8"/></g>
+  <path d="M240 210H290" class="line" marker-end="url(#a)"/>
+  <g transform="translate(300 100)"><rect class="box" width="205" height="220" rx="10"/><text x="22" y="36" class="t">GPU processing</text><text x="22" y="75" class="s">GKE batch jobs</text><text x="22" y="105" class="s">Resize + crop</text><text x="22" y="135" class="s">CLIP embeddings</text><text x="22" y="175" class="t" fill="#486f7a">100+ FPS</text></g>
+  <path d="M515 210H565" class="line" marker-end="url(#a)"/>
+  <g transform="translate(575 82)"><rect class="box" width="220" height="96" rx="10"/><text x="22" y="36" class="t">Cloud Storage</text><text x="22" y="65" class="s">Processed assets</text></g>
+  <g transform="translate(575 190)"><rect class="box" width="220" height="96" rx="10"/><text x="22" y="36" class="t">BigQuery</text><text x="22" y="65" class="s">Metadata + embeddings</text></g>
+  <g transform="translate(575 298)"><rect class="box" width="220" height="96" rx="10"/><text x="22" y="36" class="t">Vertex AI</text><text x="22" y="65" class="s">Vector Search index</text></g>
+  <path d="M805 238H855" class="line" marker-end="url(#a)"/>
+  <g transform="translate(865 100)"><rect class="box" width="205" height="220" rx="10"/><text x="22" y="36" class="t">Cloud Run</text><text x="22" y="75" class="s">Text → image</text><text x="22" y="105" class="s">Image → image</text><text x="22" y="135" class="s">Tag + caption</text><text x="22" y="175" class="t" fill="#486f7a">~1 sec search</text></g>
+</svg>

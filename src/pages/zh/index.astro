@@ -1,0 +1,91 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import MetricGrid from "../../components/MetricGrid.astro";
+import ProjectIndex from "../../components/ProjectIndex.astro";
+
+const projects = (await getCollection("projects", ({ data }) => data.locale === "zh" && data.featured))
+  .sort((a, b) => a.data.order - b.data.order);
+
+const metrics = [
+  { value: "7万", label: "张栅格户型图完成矢量化重建" },
+  { value: "40万+", label: "LookX 产品注册用户" },
+  { value: "8 × 30 FPS", label: "单张 RTX 4090 支持的视频流" },
+  { value: "100万", label: "张图片实现多模态检索" }
+];
+---
+
+<BaseLayout
+  title="慕容良一｜应用 AI 工程师"
+  description="应用 AI 工程师与技术负责人，专注计算机视觉、多模态视频、生成式 AI、空间计算及生产系统落地。"
+  locale="zh"
+>
+  <section class="hero">
+    <div>
+      <p class="eyebrow">应用 AI 工程师 · 深圳</p>
+      <h1>把模糊的问题，变成<span style="color: var(--terracotta)">真正可用的系统。</span></h1>
+    </div>
+    <div class="hero-side">
+      <p>
+        我构建的 AI 产品，需要让模型、基础设施、用户工作流和真实客户场景共同运转。
+      </p>
+      <div class="actions">
+        <a class="button button-primary" href="#selected-work">查看代表项目</a>
+        <a class="button" href="mailto:markmoyung131@gmail.com">邮件联系</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="metric-band" aria-label="代表性成果">
+    <MetricGrid metrics={metrics} />
+  </section>
+
+  <section id="selected-work">
+    <div class="section-heading">
+      <h2>代表项目</h2>
+      <p>
+        四个系统覆盖几何重建、实时视频、生成式设计和多模态云检索。每个案例都围绕问题、架构、关键决策与可验证结果展开。
+      </p>
+    </div>
+    <ProjectIndex projects={projects} locale="zh" />
+  </section>
+
+  <section>
+    <div class="section-heading">
+      <h2>我的工作方式</h2>
+      <p>
+        我最擅长跨越算法、工程、产品和客户现场：先找到真正约束，再确定技术边界，最终推动方案落地并被使用。
+      </p>
+    </div>
+    <div class="capability-grid">
+      <article class="capability">
+        <span class="index">01 / 系统</span>
+        <h3>约束下的架构设计</h3>
+        <p>把实时推理、数据管线、云服务和产品界面作为一个完整系统进行设计。</p>
+      </article>
+      <article class="capability">
+        <span class="index">02 / AI</span>
+        <h3>混合型技术深度</h3>
+        <p>计算机视觉、生成模型、空间图、计算几何、约束优化与多模态检索。</p>
+      </article>
+      <article class="capability">
+        <span class="index">03 / 交付</span>
+        <h3>从现场信号到产品</h3>
+        <p>客户需求发现、快速 POC、通用工具沉淀、团队管理与可衡量的流程改进。</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="availability">
+    <h2>构建 AI 真正有用的那一层。</h2>
+    <div>
+      <p>
+        常驻深圳，关注应用 AI、前沿部署工程、计算机视觉，以及保持一线动手能力的技术负责人机会。
+      </p>
+      <div class="actions">
+        <a class="button" href="/zh/about/">了解更多</a>
+        <a class="button" href="/zh/contact/">与我联系</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

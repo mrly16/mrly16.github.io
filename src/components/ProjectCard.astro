@@ -1,0 +1,30 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { localizedProjectPath, type Locale } from "../lib/i18n";
+
+interface Props {
+  project: CollectionEntry<"projects">;
+  locale: Locale;
+  index: number;
+}
+
+const { project, locale, index } = Astro.props;
+const href = localizedProjectPath(locale, project.data.slug);
+---
+
+<article class={`project-card accent-${project.data.accent}`}>
+  <a href={href} class="project-card-link" aria-label={`${project.data.title}`}>
+    <div class="project-card-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</div>
+    <div class="project-card-copy">
+      <p class="eyebrow">{project.data.eyebrow}</p>
+      <h3>{project.data.title}</h3>
+      <p>{project.data.summary}</p>
+      <ul class="compact-metrics" aria-label={locale === "zh" ? "项目指标" : "Project metrics"}>
+        {project.data.metrics.slice(0, 2).map((metric) => (
+          <li><strong>{metric.value}</strong> {metric.label}</li>
+        ))}
+      </ul>
+    </div>
+    <span class="arrow" aria-hidden="true">↗</span>
+  </a>
+</article>

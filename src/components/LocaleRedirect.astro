@@ -1,0 +1,9 @@
+<script is:inline>
+  (() => {
+    const preference = localStorage.getItem("preferred-locale");
+    const language = navigator.language || "";
+    if (preference === "zh" || (!preference && /^zh\b/i.test(language))) {
+      window.location.replace("/zh/");
+    }
+  })();
+</script>

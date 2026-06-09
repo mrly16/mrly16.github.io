@@ -1,0 +1,64 @@
+---
+import type { CollectionEntry } from "astro:content";
+import BaseLayout from "./BaseLayout.astro";
+import MetricGrid from "../components/MetricGrid.astro";
+import { siteCopy, type Locale } from "../lib/i18n";
+
+interface Props {
+  project: CollectionEntry<"projects">;
+  locale: Locale;
+}
+
+const { project, locale } = Astro.props;
+const copy = siteCopy[locale];
+const labels =
+  locale === "zh"
+    ? { role: "角色", period: "时间", stack: "技术栈", back: "返回项目列表" }
+    : { role: "Role", period: "Period", stack: "Technologies", back: "Back to all work" };
+---
+
+<BaseLayout
+  title={`${project.data.title} | Liangyi Murong`}
+  description={project.data.summary}
+  locale={locale}
+>
+  <article>
+    <header class="case-hero">
+      <p class="eyebrow">{project.data.eyebrow}</p>
+      <h1>{project.data.title}</h1>
+      <div class="case-summary">
+        <p>{project.data.summary}</p>
+        <dl class="case-meta">
+          <div><dt>{labels.role}</dt><dd>{project.data.role}</dd></div>
+          <div><dt>{labels.period}</dt><dd>{project.data.period}</dd></div>
+        </dl>
+      </div>
+    </header>
+
+    <MetricGrid metrics={project.data.metrics} />
+
+    <figure class="case-visual">
+      <img src={project.data.diagram} alt={project.data.diagramAlt} />
+    </figure>
+
+    <div class="case-layout">
+      <div class="prose">
+        <slot />
+      </div>
+      <aside class="case-aside">
+        <h2>{labels.stack}</h2>
+        <ul class="tag-list">
+          {project.data.technologies.map((technology) => <li>{technology}</li>)}
+        </ul>
+        <p class="disclosure">
+          <strong>{copy.disclosure}:</strong><br />
+          {project.data.disclosure}
+        </p>
+      </aside>
+    </div>
+
+    <p style="margin-top: 5rem">
+      <a href={copy.projects}>← {labels.back}</a>
+    </p>
+  </article>
+</BaseLayout>

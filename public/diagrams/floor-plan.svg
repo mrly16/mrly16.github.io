@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 430" role="img">
+  <defs>
+    <style>
+      .t{font:600 17px Arial,sans-serif;fill:#1c2521}.s{font:13px Arial,sans-serif;fill:#657069}
+      .box{fill:#f4f0e8;stroke:#c9c5b9;stroke-width:1.5}.accent{fill:#bf6246}.line{stroke:#657069;stroke-width:2;fill:none}
+    </style>
+    <marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#657069"/></marker>
+  </defs>
+  <rect width="1120" height="430" rx="20" fill="#fffdf8"/>
+  <text x="50" y="52" class="s">HYBRID PERCEPTION + STRUCTURED RECONSTRUCTION</text>
+  <g transform="translate(50 105)">
+    <rect class="box" width="165" height="205" rx="10"/>
+    <text x="22" y="35" class="t">Raster input</text><text x="22" y="58" class="s">Listing image</text>
+    <path d="M28 89h105v85H28zM28 128h45M73 89v85M73 144h60M105 89v55" class="line"/>
+  </g>
+  <path d="M225 208H285" class="line" marker-end="url(#a)"/>
+  <g transform="translate(295 105)">
+    <rect class="box" width="165" height="205" rx="10"/>
+    <text x="22" y="35" class="t">Segmentation</text><text x="22" y="58" class="s">Visual semantics</text>
+    <path d="M28 89h105v85H28z" fill="#bf6246" opacity=".18"/><path d="M28 128h45M73 89v85M73 144h60M105 89v55" class="line"/>
+  </g>
+  <path d="M470 208H530" class="line" marker-end="url(#a)"/>
+  <g transform="translate(540 105)">
+    <rect class="box" width="165" height="205" rx="10"/>
+    <text x="22" y="35" class="t">Spatial graph</text><text x="22" y="58" class="s">Polygons + topology</text>
+    <path d="M40 95L120 90L132 160L60 174Z" class="line"/>
+    <circle cx="40" cy="95" r="6" class="accent"/><circle cx="120" cy="90" r="6" class="accent"/><circle cx="132" cy="160" r="6" class="accent"/><circle cx="60" cy="174" r="6" class="accent"/>
+  </g>
+  <path d="M715 208H775" class="line" marker-end="url(#a)"/>
+  <g transform="translate(785 105)">
+    <rect class="box" width="285" height="205" rx="10"/>
+    <text x="22" y="35" class="t">Editable vector result</text><text x="22" y="58" class="s">Geometry + semantics + topology</text>
+    <path d="M28 86h212v92H28zM28 128h86M114 86v92M114 145h126M174 86v59" class="line" stroke-width="4"/>
+    <text x="44" y="117" class="s">living</text><text x="145" y="117" class="s">bedroom</text><text x="145" y="169" class="s">kitchen</text>
+  </g>
+  <rect x="275" y="350" width="570" height="42" rx="21" fill="#ebe4d8"/>
+  <text x="560" y="377" text-anchor="middle" class="s">Constrained optimization enforces architectural coherence</text>
+</svg>
