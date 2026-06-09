@@ -4,6 +4,8 @@ Bilingual Astro portfolio for [mrly16.github.io](https://mrly16.github.io).
 
 ## Local development
 
+Use Node.js 22.12 or newer.
+
 ```bash
 npm install
 npm run dev
