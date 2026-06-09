@@ -24,6 +24,24 @@ const alternatePath =
     : pathname.replace(/^\/zh/, "") || "/";
 const alternate = new URL(alternatePath, Astro.site);
 const imageUrl = new URL(image, Astro.site);
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Liangyi Murong",
+  alternateName: "慕容良一",
+  url: "https://mrly16.github.io",
+  email: "mailto:markmoyung131@gmail.com",
+  sameAs: [
+    "https://github.com/mrly16",
+    "https://www.linkedin.com/in/liangyimurong"
+  ],
+  jobTitle: "Applied AI Engineer",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Shenzhen",
+    addressCountry: "CN"
+  }
+};
 ---
 
 <meta charset="utf-8" />
@@ -46,4 +64,5 @@ const imageUrl = new URL(image, Astro.site);
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={imageUrl} />
+<script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
 <title>{title}</title>

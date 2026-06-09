@@ -15,6 +15,19 @@ const labels =
   locale === "zh"
     ? { role: "角色", period: "时间", stack: "技术栈", back: "返回项目列表" }
     : { role: "Role", period: "Period", stack: "Technologies", back: "Back to all work" };
+const projectSchema = {
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  name: project.data.title,
+  description: project.data.summary,
+  author: {
+    "@type": "Person",
+    name: "Liangyi Murong",
+    url: "https://mrly16.github.io"
+  },
+  keywords: project.data.technologies.join(", "),
+  inLanguage: locale === "zh" ? "zh-CN" : "en"
+};
 ---
 
 <BaseLayout
@@ -22,6 +35,7 @@ const labels =
   description={project.data.summary}
   locale={locale}
 >
+  <script type="application/ld+json" set:html={JSON.stringify(projectSchema)} />
   <article>
     <header class="case-hero">
       <p class="eyebrow">{project.data.eyebrow}</p>
