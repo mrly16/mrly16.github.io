@@ -35,7 +35,7 @@ const projectSchema = {
   description={project.data.summary}
   locale={locale}
 >
-  <script type="application/ld+json" set:html={JSON.stringify(projectSchema)} />
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(projectSchema)} />
   <article>
     <header class="case-hero">
       <p class="eyebrow">{project.data.eyebrow}</p>
