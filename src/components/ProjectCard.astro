@@ -13,7 +13,7 @@ const href = localizedProjectPath(locale, project.data.slug);
 ---
 
 <article class={`project-card accent-${project.data.accent}`}>
-  <a href={href} class="project-card-link" aria-label={`${project.data.title}`}>
+  <a href={href} class="project-card-link">
     <div class="project-card-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</div>
     <div class="project-card-copy">
       <p class="eyebrow">{project.data.eyebrow}</p>
