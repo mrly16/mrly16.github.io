@@ -12,7 +12,7 @@ const { project, locale, index } = Astro.props;
 const href = localizedProjectPath(locale, project.data.slug);
 ---
 
-<article class={`project-card accent-${project.data.accent}`}>
+<article class={`project-card accent-${project.data.accent}`} data-reveal>
   <a href={href} class="project-card-link">
     <div class="project-card-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</div>
     <div class="project-card-copy">
@@ -25,6 +25,15 @@ const href = localizedProjectPath(locale, project.data.slug);
         ))}
       </ul>
     </div>
+    <figure class="project-card-visual">
+      <img
+        src={project.data.diagram}
+        alt={project.data.diagramAlt}
+        loading="lazy"
+        decoding="async"
+      />
+      <figcaption>{locale === "zh" ? "查看系统与案例" : "Explore system and case study"}</figcaption>
+    </figure>
     <span class="arrow" aria-hidden="true">↗</span>
   </a>
 </article>

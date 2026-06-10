@@ -51,8 +51,11 @@ const projectSchema = {
 
     <MetricGrid metrics={project.data.metrics} />
 
-    <figure class="case-visual">
+    <figure class="case-visual" data-reveal>
       <img src={project.data.diagram} alt={project.data.diagramAlt} />
+      <figcaption>
+        {locale === "zh" ? "系统概览。点击可查看大图。" : "System overview. Select to inspect the full-size diagram."}
+      </figcaption>
     </figure>
 
     <div class="case-layout">
