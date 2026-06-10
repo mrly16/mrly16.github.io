@@ -1,16 +1,61 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 430" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 430" role="img" aria-labelledby="title desc">
+  <title id="title">Task-centric video intelligence platform</title>
+  <desc id="desc">Video inputs become live, replay, or batch tasks, pass through managed GPU inference and event rules, and produce reviewable evidence.</desc>
   <defs>
-    <style>.t{font:600 17px Arial,sans-serif;fill:#1c2521}.s{font:13px Arial,sans-serif;fill:#657069}.box{fill:#f4f0e8;stroke:#c9c5b9;stroke-width:1.5}.line{stroke:#657069;stroke-width:2;fill:none}</style>
+    <style>.t{font:600 17px Arial,sans-serif;fill:#1c2521}.s{font:13px Arial,sans-serif;fill:#657069}.m{font:600 12px Arial,sans-serif;fill:#6d8170}.box{fill:#f4f0e8;stroke:#c9c5b9;stroke-width:1.5}.sub{fill:#fffdf8;stroke:#c9c5b9;stroke-width:1}.line{stroke:#657069;stroke-width:2;fill:none}</style>
     <marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#657069"/></marker>
   </defs>
   <rect width="1120" height="430" rx="20" fill="#fffdf8"/>
-  <text x="50" y="52" class="s">REAL-TIME VIDEO INTELLIGENCE PLATFORM</text>
-  <g transform="translate(50 100)"><rect class="box" width="170" height="230" rx="10"/><text x="22" y="36" class="t">Inputs</text><text x="22" y="72" class="s">RTMP streams</text><text x="22" y="101" class="s">Video files</text><text x="22" y="130" class="s">RGB + infrared</text><text x="22" y="159" class="s">Robots + drones</text><circle cx="85" cy="198" r="12" fill="#6d8170"/></g>
-  <path d="M230 215H285" class="line" marker-end="url(#a)"/>
-  <g transform="translate(295 100)"><rect class="box" width="205" height="230" rx="10"/><text x="22" y="36" class="t">Streaming</text><text x="22" y="72" class="s">GStreamer</text><text x="22" y="101" class="s">Decode + alignment</text><text x="22" y="130" class="s">Backpressure</text><path d="M25 183c35-35 70 35 105 0s55 0 55 0" class="line"/></g>
-  <path d="M510 215H565" class="line" marker-end="url(#a)"/>
-  <g transform="translate(575 100)"><rect class="box" width="205" height="230" rx="10"/><text x="22" y="36" class="t">GPU + events</text><text x="22" y="72" class="s">Model instance pool</text><text x="22" y="101" class="s">Batched inference</text><text x="22" y="130" class="s">Tracking</text><text x="22" y="159" class="s">Temporal rules</text><rect x="23" y="184" width="160" height="20" rx="10" fill="#6d8170" opacity=".25"/><rect x="23" y="184" width="125" height="20" rx="10" fill="#6d8170"/></g>
-  <path d="M790 215H845" class="line" marker-end="url(#a)"/>
-  <g transform="translate(855 100)"><rect class="box" width="215" height="230" rx="10"/><text x="22" y="36" class="t">Operations</text><text x="22" y="72" class="s">Live results</text><text x="22" y="101" class="s">Event evidence</text><text x="22" y="130" class="s">Task persistence</text><text x="22" y="159" class="s">Review + export</text><rect x="23" y="184" width="58" height="24" rx="4" fill="#6d8170"/><rect x="89" y="184" width="104" height="24" rx="4" fill="#ebe4d8"/></g>
-  <text x="560" y="390" text-anchor="middle" class="s">Dockerized for internal and offline customer-site deployment</text>
+  <text x="50" y="52" class="s">TASK-CENTRIC VIDEO INTELLIGENCE PLATFORM</text>
+  <g transform="translate(50 92)">
+    <rect class="box" width="170" height="245" rx="10"/>
+    <text x="20" y="34" class="t">Sources</text>
+    <text x="20" y="65" class="s">RTMP cameras</text>
+    <text x="20" y="92" class="s">Recorded video</text>
+    <text x="20" y="119" class="s">RGB + infrared</text>
+    <rect x="20" y="150" width="130" height="30" rx="6" class="sub"/>
+    <text x="85" y="170" text-anchor="middle" class="m">REGISTER ONCE</text>
+    <path d="M34 210h102" class="line"/>
+    <circle cx="48" cy="210" r="8" fill="#6d8170"/>
+    <circle cx="85" cy="210" r="8" fill="#ae853a"/>
+    <circle cx="122" cy="210" r="8" fill="#486f7a"/>
+  </g>
+  <path d="M230 215H270" class="line" marker-end="url(#a)"/>
+  <g transform="translate(280 92)">
+    <rect class="box" width="225" height="245" rx="10"/>
+    <text x="20" y="34" class="t">Reusable task modes</text>
+    <rect x="20" y="57" width="185" height="42" rx="7" class="sub"/>
+    <text x="34" y="82" class="m">LIVE</text><text x="88" y="82" class="s">stream → stream</text>
+    <rect x="20" y="109" width="185" height="42" rx="7" class="sub"/>
+    <text x="34" y="134" class="m">REPLAY</text><text x="98" y="134" class="s">file → stream</text>
+    <rect x="20" y="161" width="185" height="42" rx="7" class="sub"/>
+    <text x="34" y="186" class="m">BATCH</text><text x="91" y="186" class="s">file → file</text>
+    <text x="20" y="226" class="s">Persistent lifecycle + media</text>
+  </g>
+  <path d="M515 215H555" class="line" marker-end="url(#a)"/>
+  <g transform="translate(565 92)">
+    <rect class="box" width="225" height="245" rx="10"/>
+    <text x="20" y="34" class="t">GPU + event plane</text>
+    <text x="20" y="67" class="s">Warm model instance pool</text>
+    <text x="20" y="94" class="s">Batch queues + pressure policy</text>
+    <text x="20" y="121" class="s">Tracking + temporal rules</text>
+    <text x="20" y="148" class="s">RGB / IR verification</text>
+    <rect x="20" y="174" width="185" height="18" rx="9" fill="#dce2dc"/>
+    <rect x="20" y="174" width="145" height="18" rx="9" fill="#6d8170"/>
+    <text x="20" y="220" class="s">Queue, inference, draw, push metrics</text>
+  </g>
+  <path d="M800 215H840" class="line" marker-end="url(#a)"/>
+  <g transform="translate(850 92)">
+    <rect class="box" width="220" height="245" rx="10"/>
+    <text x="20" y="34" class="t">Evidence workspace</text>
+    <text x="20" y="67" class="s">Live event feed</text>
+    <text x="20" y="94" class="s">Task + media timeline</text>
+    <text x="20" y="121" class="s">Timestamp-linked replay</text>
+    <text x="20" y="148" class="s">Event and result comparison</text>
+    <rect x="20" y="174" width="52" height="36" rx="5" fill="#6d8170"/>
+    <rect x="80" y="174" width="52" height="36" rx="5" fill="#ae853a" opacity=".72"/>
+    <rect x="140" y="174" width="60" height="36" rx="5" fill="#486f7a" opacity=".72"/>
+    <text x="20" y="230" class="s">One source of operational truth</text>
+  </g>
+  <text x="560" y="390" text-anchor="middle" class="s">Web app · GPU analysis · media proxy/recorder · live-stream gateway — packaged for offline deployment</text>
 </svg>

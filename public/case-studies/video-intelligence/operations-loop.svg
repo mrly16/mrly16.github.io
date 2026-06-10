@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
+  <title id="title">Video intelligence operations loop</title>
+  <desc id="desc">One registered video source can be reused in live demonstration, batch testing, and evidence review workflows.</desc>
+  <defs>
+    <style>
+      .title{font:600 25px Arial,sans-serif;fill:#1c2521}
+      .head{font:600 18px Arial,sans-serif;fill:#1c2521}
+      .body{font:14px Arial,sans-serif;fill:#657069}
+      .label{font:600 12px Arial,sans-serif;fill:#6d8170;letter-spacing:1px}
+      .box{fill:#f4f0e8;stroke:#c9c5b9;stroke-width:1.5}
+      .inner{fill:#fffdf8;stroke:#c9c5b9;stroke-width:1}
+      .line{stroke:#657069;stroke-width:2;fill:none}
+    </style>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0 0L9 4.5L0 9Z" fill="#657069"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="620" rx="24" fill="#fffdf8"/>
+  <text x="55" y="62" class="title">One source, three operational paths</text>
+  <text x="55" y="91" class="body">The platform keeps device input, algorithm execution, and review evidence connected through a persistent task.</text>
+
+  <g transform="translate(55 150)">
+    <rect width="220" height="300" rx="14" class="box"/>
+    <text x="24" y="42" class="label">SOURCE LIBRARY</text>
+    <text x="24" y="78" class="head">Register once</text>
+    <rect x="24" y="108" width="172" height="96" rx="9" class="inner"/>
+    <rect x="40" y="124" width="140" height="62" rx="5" fill="#dce2dc"/>
+    <circle cx="78" cy="155" r="17" fill="#6d8170"/>
+    <path d="M103 144h55M103 155h42M103 166h49" class="line"/>
+    <text x="24" y="236" class="body">RTMP camera</text>
+    <text x="24" y="263" class="body">Uploaded recording</text>
+    <text x="24" y="290" class="body">RGB + infrared pair</text>
+  </g>
+
+  <path d="M285 300H340" class="line" marker-end="url(#arrow)"/>
+
+  <g transform="translate(350 125)">
+    <rect width="300" height="126" rx="14" class="box"/>
+    <text x="22" y="34" class="label">LIVE DEMONSTRATION</text>
+    <text x="22" y="67" class="head">Current stream + events</text>
+    <text x="22" y="95" class="body">Browser playback, event feed,</text>
+    <text x="22" y="116" class="body">confidence and size filtering</text>
+  </g>
+  <g transform="translate(350 272)">
+    <rect width="300" height="126" rx="14" class="box"/>
+    <text x="22" y="34" class="label">BATCH REGRESSION</text>
+    <text x="22" y="67" class="head">Repeatable file analysis</text>
+    <text x="22" y="95" class="body">Run one or more recordings against</text>
+    <text x="22" y="116" class="body">selected detector configurations</text>
+  </g>
+  <g transform="translate(350 419)">
+    <rect width="300" height="126" rx="14" class="box"/>
+    <text x="22" y="34" class="label">EVIDENCE REVIEW</text>
+    <text x="22" y="67" class="head">Replay and compare</text>
+    <text x="22" y="95" class="body">Open timestamped events, scrub video,</text>
+    <text x="22" y="116" class="body">and compare task results side by side</text>
+  </g>
+
+  <path d="M660 188H725" class="line" marker-end="url(#arrow)"/>
+  <path d="M660 335H725" class="line" marker-end="url(#arrow)"/>
+  <path d="M660 482H725" class="line" marker-end="url(#arrow)"/>
+
+  <g transform="translate(735 150)">
+    <rect width="410" height="395" rx="14" class="box"/>
+    <text x="26" y="42" class="label">PERSISTENT TASK EVIDENCE</text>
+    <text x="26" y="80" class="head">A shared record for engineering and customers</text>
+    <g transform="translate(26 112)">
+      <rect width="358" height="54" rx="8" class="inner"/>
+      <circle cx="28" cy="27" r="9" fill="#6d8170"/>
+      <text x="50" y="32" class="body">Task lifecycle and detector configuration</text>
+    </g>
+    <g transform="translate(26 180)">
+      <rect width="358" height="54" rx="8" class="inner"/>
+      <circle cx="28" cy="27" r="9" fill="#ae853a"/>
+      <text x="50" y="32" class="body">Source, result, and event media</text>
+    </g>
+    <g transform="translate(26 248)">
+      <rect width="358" height="54" rx="8" class="inner"/>
+      <circle cx="28" cy="27" r="9" fill="#486f7a"/>
+      <text x="50" y="32" class="body">Timestamped frame-level detections</text>
+    </g>
+    <g transform="translate(26 316)">
+      <rect width="358" height="54" rx="8" class="inner"/>
+      <circle cx="28" cy="27" r="9" fill="#bf6246"/>
+      <text x="50" y="32" class="body">Snapshots, replay, comparison, and sharing</text>
+    </g>
+  </g>
+
+  <path d="M940 555C940 586 510 586 510 555" class="line" marker-end="url(#arrow)"/>
+  <text x="725" y="604" text-anchor="middle" class="body">Review findings feed the next detector configuration and test cycle</text>
+</svg>

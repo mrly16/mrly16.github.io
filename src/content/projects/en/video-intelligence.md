@@ -4,17 +4,19 @@ slug: robotic-video-intelligence
 order: 2
 title: A video-intelligence platform for robots and drones
 eyebrow: Real-time AI · Systems Engineering
-summary: An extensible platform connecting camera-equipped devices to pluggable detection, temporal logic, review, and customer demonstration workflows.
+summary: A task-centric platform that turns camera streams and recorded video into live analysis, repeatable batch tests, event evidence, and customer demonstrations.
 role: System architect and primary platform engineer
 period: Apr. 2025–present
 technologies:
   - Python
   - FastAPI
   - GStreamer
+  - ZLMediaKit
   - PyTorch
   - OpenCV
   - BoxMOT
   - React
+  - SQLite
   - Docker
 metrics:
   - value: 8 × 30 FPS
@@ -28,7 +30,7 @@ metrics:
 disclosure: The architecture and measured process improvements are sanitized. The external highway client remains anonymous. This platform is not presented as an implemented LLM or VLM agent.
 featured: true
 diagram: /diagrams/video-platform.svg
-diagramAlt: Diagram showing cameras and robots feeding a streaming layer, GPU inference pool, tracking and event logic, persistence, and an operations interface.
+diagramAlt: Diagram showing video sources entering live and batch task modes, a GPU inference and event layer, and an evidence workspace for replay and comparison.
 accent: sage
 ---
 
@@ -50,37 +52,84 @@ RGB/infrared support, event framework, persistence, operational tooling, and
 deployment. Individual detection models and scenario-specific business
 algorithms were owned by the algorithm team.
 
-## Architecture
+## Product workflow
 
-The input layer accepts files, RTMP streams, and paired RGB/infrared sources.
-GStreamer handles media ingestion and output. A GPU service manages model
-loading, warm-up, instance pooling, batching, and backpressure.
+The platform organizes analysis around persistent tasks rather than isolated
+model calls. Operators first register an RTMP camera or upload test video, then
+reuse that source in three workflows:
 
-Downstream stages provide multi-object tracking, optical-flow ego-motion
-compensation, RGB/infrared alignment and verification, and
-configuration-driven temporal event rules. Tasks, event snapshots, and result
-media are persisted and surfaced through a live operations interface.
+- **stream to stream** for live device demonstrations,
+- **file to stream** for replaying recorded footage as a live analysis session,
+- **file to file** for repeatable batch regression tests.
 
-The full GPU service is Dockerized for internal and offline customer-site
-deployment.
+The same task can then be inspected through a live event panel, task history,
+media timeline, event gallery, or side-by-side comparison. This made a customer
+demo and an algorithm debugging session different views of the same evidence,
+not separate toolchains.
 
-## Technical decisions
+<figure class="evidence-figure">
+  <img src="/case-studies/video-intelligence/operations-loop.svg" alt="A video source branching into live demonstration, batch testing, and evidence review workflows." />
+  <figcaption>Sanitized product workflow reconstructed from the implemented task, media, replay, and comparison modules.</figcaption>
+</figure>
 
-### Separate model capability from operational workflow
+## System architecture
 
-Algorithm teams could plug in detectors while the platform handled streams,
-task state, event evidence, comparison, and review. This made model improvement
-far easier without repeatedly rebuilding customer infrastructure.
+### Media plane
 
-### Make system behavior observable
+GStreamer handles file, RTMP, paired RGB/infrared, and dual-stream input
+pipelines. Result streams are published through a media service and converted
+to browser-playable HTTP-FLV, while source recordings, result files, and event
+snapshots are retained behind a server-side media proxy.
 
-Persistent tasks, logs, event media, and live results created a shared source of
-truth for engineering, product, and customer conversations.
+### GPU execution plane
 
-### Design for real device constraints
+The inference service preloads and warms models, assigns instances through a
+pool, batches frames, and adjusts model-instance demand as tasks start and
+finish. Queue depth, dropped frames, inference time, draw time, and push time
+are monitored so bottlenecks can be located rather than inferred from a frozen
+demo.
 
-Backpressure, model pooling, batching, and warm-up were required to keep
-multiple live streams stable on limited hardware.
+Bounded queues and backlog downsampling prevent slow inference from allowing
+latency to grow without limit. Queue and drop behavior remains configurable for
+specialized pipelines such as paired RGB/infrared processing.
+
+### Event and evidence plane
+
+Tracked detections feed configuration-driven temporal rules. The implemented
+pipeline includes event deduplication, asynchronous snapshot persistence, and
+motion-aware rules using optical-flow ego-motion compensation.
+
+Every task stores lifecycle metadata and frame-level detections. Events remain
+linked to media timestamps, enabling a reviewer to open an event, seek several
+seconds before it, and replay nearby detections as overlays rather than relying
+only on a final screenshot.
+
+### Deployment plane
+
+The offline package separates the web application, GPU analysis service, media
+proxy/recorder, and live-stream gateway into Docker services. This allowed the
+same system to run inside the company or on a customer-site workstation without
+depending on public cloud connectivity.
+
+## Key decisions
+
+### Separate detector ownership from platform ownership
+
+Algorithm engineers could add or update detectors while the platform retained
+responsibility for sources, task lifecycle, streams, evidence, comparison, and
+review.
+
+### Preserve evidence, not just rendered output
+
+Persisting source media, result media, event snapshots, timestamps, and
+frame-level detections made failures reproducible and comparisons defensible.
+
+### Bound latency instead of hiding backlog
+
+A live or real-time-paced analysis session must remain close to the current
+media timestamp. Bounded queues, controlled frame dropping, and explicit
+metrics made overload visible while preventing an apparently running stream
+from drifting progressively further behind.
 
 ## Results
 
@@ -93,7 +142,11 @@ For an external highway client, the team completed a live POC in a single
 two-day visit using a controller-operated drone, rather than spending weeks on
 hardware installation and environment tuning.
 
-## What comes next
+Internally, the same platform became a reusable environment for model
+integration, regression testing, debugging, product review, and rapid video-AI
+showcases with any camera-equipped device.
+
+## Current boundary
 
 The current implementation is deterministic and event-driven. Agentic
 investigation, document retrieval, and VLM-based evidence synthesis are
