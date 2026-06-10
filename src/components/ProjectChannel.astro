@@ -1,0 +1,300 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { localizedProjectPath, type Locale } from "../lib/i18n";
+
+interface Props {
+  projects: CollectionEntry<"projects">[];
+  locale: Locale;
+}
+
+const { projects, locale } = Astro.props;
+const copy =
+  locale === "zh"
+    ? {
+        series: "项目放映",
+        episode: "项目",
+        open: "查看完整案例",
+        previous: "上一个项目",
+        next: "下一个项目",
+        pause: "暂停自动播放",
+        play: "继续自动播放",
+        guide: "项目列表",
+        close: "关闭列表",
+        details: "角色与时间",
+        controls: "项目播放器控制",
+        hint: "方向键切换 · 空格暂停",
+      }
+    : {
+        series: "Selected Work",
+        episode: "Project",
+        open: "Enter case study",
+        previous: "Previous project",
+        next: "Next project",
+        pause: "Pause autoplay",
+        play: "Resume autoplay",
+        guide: "Project guide",
+        close: "Close guide",
+        details: "Role and period",
+        controls: "Project player controls",
+        hint: "Arrow keys to switch · Space to pause",
+      };
+---
+
+<section class="project-channel" data-project-channel aria-roledescription="carousel">
+  <div class="channel-stage" aria-live="polite">
+    {projects.map((project, index) => (
+      <article
+        class={`channel-episode accent-${project.data.accent}${index === 0 ? " is-active" : ""}`}
+        data-channel-episode
+        data-slug={project.data.slug}
+        aria-hidden={index === 0 ? "false" : "true"}
+      >
+        <div class="channel-visual" aria-hidden="true">
+          <div class="channel-visual-glow"></div>
+          <img src={project.data.diagram} alt="" decoding={index === 0 ? "sync" : "async"} />
+          <div class="channel-scanline"></div>
+        </div>
+
+        <div class="channel-episode-copy">
+          <p class="channel-kicker">
+            <span>{copy.series}</span>
+            <span>{String(index + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span>
+          </p>
+          <p class="channel-eyebrow">{project.data.eyebrow}</p>
+          <h1>{project.data.title}</h1>
+          <p class="channel-summary">{project.data.summary}</p>
+          <dl class="channel-metrics" aria-label={locale === "zh" ? "项目成果" : "Project outcomes"}>
+            {project.data.metrics.slice(0, 3).map((metric) => (
+              <div>
+                <dt>{metric.value}</dt>
+                <dd>{metric.label}</dd>
+              </div>
+            ))}
+          </dl>
+          <a class="channel-enter" href={localizedProjectPath(locale, project.data.slug)}>
+            <span>{copy.open}</span>
+            <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </article>
+    ))}
+  </div>
+
+  <div class="channel-controller" aria-label={copy.controls}>
+    <div class="channel-controller-title">
+      <span class="channel-status-light" aria-hidden="true"></span>
+      <div>
+        <small>{copy.episode}</small>
+        <strong data-channel-title>{projects[0]?.data.title}</strong>
+      </div>
+    </div>
+
+    <div class="channel-progress" aria-hidden="true">
+      <span data-channel-progress></span>
+    </div>
+
+    <div class="channel-controls">
+      <button type="button" data-channel-previous aria-label={copy.previous}>←</button>
+      <button type="button" data-channel-toggle aria-label={copy.pause}>
+        <span data-pause-icon>Ⅱ</span>
+        <span data-play-icon hidden>▶</span>
+      </button>
+      <button type="button" data-channel-next aria-label={copy.next}>→</button>
+      <button type="button" class="channel-guide-button" data-channel-guide aria-label={copy.guide}>
+        <span>{copy.guide}</span>
+        <span aria-hidden="true">⌘</span>
+      </button>
+    </div>
+
+    <div class="channel-selector" role="tablist" aria-label={copy.guide}>
+      {projects.map((project, index) => (
+        <button
+          type="button"
+          role="tab"
+          class={index === 0 ? "is-active" : ""}
+          aria-selected={index === 0 ? "true" : "false"}
+          aria-label={`${copy.episode} ${index + 1}: ${project.data.title}`}
+          data-channel-select={index}
+        >
+          <span>{String(index + 1).padStart(2, "0")}</span>
+        </button>
+      ))}
+    </div>
+
+    <p class="channel-hint">{copy.hint}</p>
+  </div>
+
+  <dialog class="channel-guide" data-channel-dialog>
+    <div class="channel-guide-header">
+      <div>
+        <p>{copy.series}</p>
+        <h2>{copy.guide}</h2>
+      </div>
+      <button type="button" data-channel-dialog-close>{copy.close}</button>
+    </div>
+    <ol>
+      {projects.map((project, index) => (
+        <li>
+          <button type="button" data-channel-dialog-select={index}>
+            <span class="channel-guide-index">{String(index + 1).padStart(2, "0")}</span>
+            <span class="channel-guide-copy">
+              <strong>{project.data.title}</strong>
+              <small>{project.data.eyebrow}</small>
+            </span>
+            <span class="channel-guide-meta">
+              <small>{copy.details}</small>
+              <span>{project.data.role} · {project.data.period}</span>
+            </span>
+          </button>
+        </li>
+      ))}
+    </ol>
+  </dialog>
+</section>
+
+<script>
+  const channel = document.querySelector("[data-project-channel]");
+  if (channel instanceof HTMLElement) {
+    const episodes = [...channel.querySelectorAll("[data-channel-episode]")];
+    const selectors = [...channel.querySelectorAll("[data-channel-select]")];
+    const dialogSelectors = [...channel.querySelectorAll("[data-channel-dialog-select]")];
+    const title = channel.querySelector("[data-channel-title]");
+    const progress = channel.querySelector("[data-channel-progress]");
+    const toggle = channel.querySelector("[data-channel-toggle]");
+    const pauseIcon = channel.querySelector("[data-pause-icon]");
+    const playIcon = channel.querySelector("[data-play-icon]");
+    const dialog = channel.querySelector("[data-channel-dialog]");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const intervalMs = 9000;
+    let activeIndex = 0;
+    let playing = !reducedMotion;
+    let startedAt = performance.now();
+    let remaining = intervalMs;
+    let animationFrame = 0;
+    let touchStartX = 0;
+
+    const localizedLabels =
+      document.documentElement.lang === "zh-CN"
+        ? { pause: "暂停自动播放", play: "继续自动播放" }
+        : { pause: "Pause autoplay", play: "Resume autoplay" };
+
+    const setProgress = (value: number) => {
+      if (progress instanceof HTMLElement) {
+        progress.style.transform = `scaleX(${Math.min(1, Math.max(0, value))})`;
+      }
+    };
+
+    const updateToggle = () => {
+      if (!(toggle instanceof HTMLButtonElement)) return;
+      toggle.setAttribute("aria-label", playing ? localizedLabels.pause : localizedLabels.play);
+      if (pauseIcon instanceof HTMLElement) pauseIcon.hidden = !playing;
+      if (playIcon instanceof HTMLElement) playIcon.hidden = playing;
+    };
+
+    const selectEpisode = (nextIndex: number, userInitiated = false) => {
+      if (!episodes.length) return;
+      activeIndex = (nextIndex + episodes.length) % episodes.length;
+      episodes.forEach((episode, index) => {
+        const active = index === activeIndex;
+        episode.classList.toggle("is-active", active);
+        episode.setAttribute("aria-hidden", active ? "false" : "true");
+      });
+      selectors.forEach((selector, index) => {
+        const active = index === activeIndex;
+        selector.classList.toggle("is-active", active);
+        selector.setAttribute("aria-selected", active ? "true" : "false");
+      });
+      const activeEpisode = episodes[activeIndex];
+      const heading = activeEpisode?.querySelector("h1")?.textContent?.trim() ?? "";
+      if (title) title.textContent = heading;
+      const slug = activeEpisode?.getAttribute("data-slug");
+      if (slug) history.replaceState(null, "", `#${slug}`);
+      remaining = intervalMs;
+      startedAt = performance.now();
+      setProgress(0);
+      if (userInitiated && playing) {
+        playing = false;
+        updateToggle();
+      }
+    };
+
+    const tick = (now: number) => {
+      if (playing) {
+        const elapsed = now - startedAt;
+        setProgress(elapsed / remaining);
+        if (elapsed >= remaining) selectEpisode(activeIndex + 1);
+      }
+      animationFrame = requestAnimationFrame(tick);
+    };
+
+    channel.querySelector("[data-channel-previous]")?.addEventListener("click", () => {
+      selectEpisode(activeIndex - 1, true);
+    });
+    channel.querySelector("[data-channel-next]")?.addEventListener("click", () => {
+      selectEpisode(activeIndex + 1, true);
+    });
+    toggle?.addEventListener("click", () => {
+      playing = !playing;
+      remaining = intervalMs;
+      startedAt = performance.now();
+      setProgress(0);
+      updateToggle();
+    });
+
+    selectors.forEach((selector) => {
+      selector.addEventListener("click", () => {
+        selectEpisode(Number(selector.getAttribute("data-channel-select")), true);
+      });
+    });
+
+    dialogSelectors.forEach((selector) => {
+      selector.addEventListener("click", () => {
+        selectEpisode(Number(selector.getAttribute("data-channel-dialog-select")), true);
+        if (dialog instanceof HTMLDialogElement) dialog.close();
+      });
+    });
+
+    channel.querySelector("[data-channel-guide]")?.addEventListener("click", () => {
+      if (dialog instanceof HTMLDialogElement) dialog.showModal();
+    });
+    channel.querySelector("[data-channel-dialog-close]")?.addEventListener("click", () => {
+      if (dialog instanceof HTMLDialogElement) dialog.close();
+    });
+    dialog?.addEventListener("click", (event) => {
+      if (event.target === dialog && dialog instanceof HTMLDialogElement) dialog.close();
+    });
+
+    window.addEventListener("keydown", (event) => {
+      if (dialog instanceof HTMLDialogElement && dialog.open) return;
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        selectEpisode(activeIndex - 1, true);
+      }
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        selectEpisode(activeIndex + 1, true);
+      }
+      if (event.key === " ") {
+        event.preventDefault();
+        toggle?.dispatchEvent(new MouseEvent("click"));
+      }
+    });
+
+    channel.addEventListener("touchstart", (event) => {
+      touchStartX = event.touches[0]?.clientX ?? 0;
+    }, { passive: true });
+    channel.addEventListener("touchend", (event) => {
+      const endX = event.changedTouches[0]?.clientX ?? touchStartX;
+      const distance = endX - touchStartX;
+      if (Math.abs(distance) < 55) return;
+      selectEpisode(activeIndex + (distance < 0 ? 1 : -1), true);
+    }, { passive: true });
+
+    const hashSlug = decodeURIComponent(window.location.hash.slice(1));
+    const hashIndex = episodes.findIndex((episode) => episode.getAttribute("data-slug") === hashSlug);
+    if (hashIndex >= 0) selectEpisode(hashIndex);
+    updateToggle();
+    animationFrame = requestAnimationFrame(tick);
+    window.addEventListener("pagehide", () => cancelAnimationFrame(animationFrame), { once: true });
+  }
+</script>
