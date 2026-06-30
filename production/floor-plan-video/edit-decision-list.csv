@@ -1,0 +1,7 @@
+start,end,duration,shot,primary_asset,editorial_action
+00:00.000,00:03.000,3.0,Raster input,assets/source/01-raster-plan.png,"Macro crop, slow pullback, reveal the full plan"
+00:03.000,00:06.000,3.0,Geometry extraction,assets/overlays/wall-contours-transparent.png,"Trace exterior then interior boundaries over the raster"
+00:06.000,00:10.000,4.0,Spatial graph,assets/overlays/spatial-graph-transparent.png,"Reveal nodes and edges; offset selected nodes and snap them into alignment"
+00:10.000,00:13.000,3.0,Graph correspondence,assets/source/04-graph-on-plan.jpg,"Restore raster beneath the graph to prove correspondence"
+00:13.000,00:15.000,2.0,Production evidence,assets/source/05-source-to-segmentation.webp,"Cut to a separate production sample and display the 70K metric"
+

@@ -29,6 +29,19 @@ const projects = defineCollection({
     featured: z.boolean().default(true),
     diagram: z.string(),
     diagramAlt: z.string(),
+    framework: z.string(),
+    frameworkSummary: z.string(),
+    sessionTitle: z.string(),
+    sessionHeadline: z.string(),
+    sessionDescription: z.string(),
+    sessionVisual: z.string(),
+    sessionVideo: z.string().optional(),
+    sessionPoster: z.string().optional(),
+    sessionMetric: z.object({
+      value: z.string(),
+      label: z.string()
+    }),
+    implementationStatus: z.string(),
     accent: z.enum(["terracotta", "sage", "blue", "gold"])
   })
 });

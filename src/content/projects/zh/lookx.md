@@ -1,12 +1,13 @@
 ---
 locale: zh
 slug: lookx-generative-ai
-order: 3
+order: 4
 title: 让建筑生成真正可用
 eyebrow: 生成式 AI · 产品工程
-summary: 通过任务化工作流隐藏模型复杂度，帮助建筑专业用户从草图与 3D 模型快速生成渲染结果。
+summary: >-
+  在生成式 AI 刚出现时，大家都在畅想扩散模型将如何颠覆各个垂直领域。然而，垂直行业产品不能脱离用户习惯、工具诉求和既有工作流程。对建筑行业从业者来说，忠于设计细节的精确渲染是重要前提，而低使用门槛和易用性又是保持粘性和增长的关键。
 role: 产品团队唯一算法工程师
-period: 小库科技任职期间
+period: 2023.09–2024.09
 technologies:
   - Stable Diffusion 1.5
   - ControlNet
@@ -27,6 +28,18 @@ disclosure: 案例介绍产品架构与结果，不公开训练数据、公司�
 featured: true
 diagram: /diagrams/lookx.svg
 diagramAlt: 草图、概念体块和精细 3D 模型分别通过任务化条件控制与扩散管线生成建筑渲染图的流程图。
+framework: 可控图像生成
+frameworkSummary: 将模型能力封装为专业而简单的任务工作流，而不是暴露通用 Diffusion 操作界面。
+sessionTitle: 建筑 AI 渲染
+sessionHeadline: 隐藏模型，保留创造
+sessionDescription: 把扩散模型封装进建筑师熟悉的任务流程，在保持设计细节控制的同时降低使用门槛。
+sessionVisual: /case-studies/lookx/lookx-hero-poster.jpg
+sessionVideo: /case-studies/lookx/lookx-hero.mp4
+sessionPoster: /case-studies/lookx/lookx-hero-poster.jpg
+sessionMetric:
+  value: 40万+
+  label: 注册用户
+implementationStatus: 已上线商业产品
 accent: gold
 ---
 

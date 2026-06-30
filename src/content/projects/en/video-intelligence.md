@@ -4,9 +4,10 @@ slug: robotic-video-intelligence
 order: 2
 title: A video-intelligence platform for robots and drones
 eyebrow: Real-time AI · Systems Engineering
-summary: A task-centric platform that turns camera streams and recorded video into live analysis, repeatable batch tests, event evidence, and customer demonstrations.
+summary: >-
+  Vision-based AI projects involve many roles: product managers, algorithm engineers, QA engineers, sales, stakeholders, and customers, each with different needs and user paths. This project used product and system design to give these roles one efficient shared entry point, reduce the gap between development and production model behavior, and support faster R&D iteration and customer-facing demonstrations.
 role: System architect and primary platform engineer
-period: Apr. 2025–present
+period: 2025.07–2025.12
 technologies:
   - Python
   - FastAPI
@@ -31,6 +32,18 @@ disclosure: The architecture and measured process improvements are sanitized. Th
 featured: true
 diagram: /diagrams/video-platform.svg
 diagramAlt: Diagram showing video sources entering live and batch task modes, a GPU inference and event layer, and an evidence workspace for replay and comparison.
+framework: Agent Systems
+frameworkSummary: An agent-ready operating layer that connects live perception, repeatable tasks, evidence, and human decisions.
+sessionTitle: Robotic Video Intelligence
+sessionHeadline: Live perception, operationalized
+sessionDescription: A shared video-intelligence platform that connects live analysis, algorithm testing, event evidence, and customer demonstrations.
+sessionVisual: /case-studies/video-intelligence/operations-loop.svg
+sessionVideo: /case-studies/video-intelligence/wanxiang-hero.mp4
+sessionPoster: /case-studies/video-intelligence/operations-loop.svg
+sessionMetric:
+  value: 8 × 30 FPS
+  label: concurrent streams on one RTX 4090
+implementationStatus: Agent-ready platform; no implemented LLM/VLM agent layer
 accent: sage
 ---
 

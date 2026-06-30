@@ -6,8 +6,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   title="Contact | Liangyi Murong"
   description="Contact Liangyi Murong about applied AI, forward-deployed engineering, computer vision, generative AI, and technical leadership opportunities."
   locale="en"
+  className="identity-page"
 >
-  <header class="page-intro">
+  <header class="page-intro identity-intro contact-intro">
     <div>
       <p class="eyebrow">Contact</p>
       <h1>Let’s discuss a difficult, useful problem.</h1>
@@ -19,8 +20,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     </p>
   </header>
 
-  <section class="contact-panel">
-    <div>
+  <section class="contact-panel identity-panel contact-console">
+    <div class="contact-copy">
       <p class="eyebrow">Best way to reach me</p>
       <h2>Email is the most reliable channel.</h2>
       <p>
@@ -33,5 +34,16 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       <a href="https://github.com/mrly16"><span>GitHub</span><span>↗</span></a>
       <a href="https://www.linkedin.com/in/liangyimurong"><span>LinkedIn</span><span>↗</span></a>
     </div>
+  </section>
+
+  <section class="contact-cards" aria-label="Conversation fit">
+    <article>
+      <span>GOOD FIT</span>
+      <p>Applied AI systems, computer vision, generative workflows, robotics video, spatial intelligence, and product-heavy engineering.</p>
+    </article>
+    <article>
+      <span>LOCATION</span>
+      <p>Shenzhen-based, compliant remote arrangements in China, or relocation opportunities with sponsorship.</p>
+    </article>
   </section>
 </BaseLayout>

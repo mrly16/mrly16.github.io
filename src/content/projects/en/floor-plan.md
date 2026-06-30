@@ -1,12 +1,13 @@
 ---
 locale: en
 slug: floor-plan-reconstruction
-order: 1
+order: 5
 title: From raster images to editable floor plans
 eyebrow: Spatial AI · Computer Vision
-summary: A hybrid perception and geometry system that transformed unstructured listing images into editable architectural data at production scale.
+summary: >-
+  In practice, designers often express intent through engineering drawings made of abstract graphics, symbols, and annotations. But images are difficult to manage, measure, quantify, and reuse as digital assets. This project built an end-to-end algorithmic pipeline combining computer vision and geometric optimization to convert raster floor plans into editable, structured architectural data for product and business-scale use.
 role: End-to-end algorithm lead; led four engineers and one intern
-period: XKool tenure
+period: 2022.03–2023.01
 technologies:
   - Semantic Segmentation
   - Synthetic Data
@@ -27,6 +28,18 @@ disclosure: This case study uses sanitized architecture and independently create
 featured: true
 diagram: /diagrams/floor-plan.svg
 diagramAlt: Diagram showing a raster floor plan passing through segmentation, polygon extraction, spatial graph construction, constrained optimization, and vector output.
+framework: Computer Vision
+frameworkSummary: Perception becomes useful when pixels are reconciled with geometry, topology, and product constraints.
+sessionTitle: Raster-to-Vector Floor Plans
+sessionHeadline: Vision into structure
+sessionDescription: An end-to-end pipeline that turns raster floor-plan images into editable, structured architectural data through vision and geometry.
+sessionVisual: /case-studies/floor-plan/source-to-segmentation.webp
+sessionVideo: /case-studies/floor-plan/floorplan-hero-gradient-textured.mp4
+sessionPoster: /case-studies/floor-plan/floorplan-hero-gradient-textured-poster.jpg
+sessionMetric:
+  value: 70K
+  label: floor plans reconstructed
+implementationStatus: Production system
 accent: terracotta
 ---
 

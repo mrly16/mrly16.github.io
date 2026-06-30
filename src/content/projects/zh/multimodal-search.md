@@ -1,12 +1,13 @@
 ---
 locale: zh
 slug: multimodal-asset-search
-order: 4
+order: 3
 title: 百万级图片多模态检索
 eyebrow: 云架构 · 多模态检索
-summary: 用文本、图片、标签与 caption 检索替代本地文件管理，为内部建模、测试、算法和产品团队提供统一资产平台。
+summary: >-
+  在文件系统里查看图像是熟悉的工作方式，算法工程师也习惯于这么做。但当带标注的机器人任务图像达到百万级甚至千万级时，如何高效管理、搜索和应用这些数据资产成为关键问题。该项目应用 Google Cloud 的云服务和 AI 模块，基于 CLIP 嵌入、BigQuery、Vertex AI 等能力构建企业内部机器人数据资产管理平台。
 role: 独立完成系统架构与全部实现
-period: 当前公司
+period: 2025.04–2025.07
 technologies:
   - CLIP
   - Vertex AI Vector Search
@@ -28,6 +29,18 @@ disclosure: 这是多模态向量检索系统，不是 RAG。案例不包含公�
 featured: true
 diagram: /diagrams/multimodal-search.svg
 diagramAlt: 图片通过 GPU 批任务与 CLIP 服务进入 Cloud Storage、BigQuery、Vertex AI Vector Search 和 Cloud Run 搜索界面的架构图。
+framework: AI 系统 / 云架构
+frameworkSummary: 将 GPU 批处理、向量基础设施、元数据和无服务器交付组合成统一图片发现系统。
+sessionTitle: 多模态图片检索
+sessionHeadline: 让百万图片可被发现
+sessionDescription: 基于 Google Cloud、CLIP、BigQuery 与 Vertex AI，为百万级机器人任务图像建立可搜索的数据资产平台。
+sessionVisual: /diagrams/multimodal-search.svg
+sessionVideo: /case-studies/multimodal-search/mmsearch-hero-gradient.mp4
+sessionPoster: /case-studies/multimodal-search/mmsearch-hero-gradient-poster.jpg
+sessionMetric:
+  value: 100万
+  label: 张图片完成索引
+implementationStatus: 内部生产平台；属于多模态检索，不是 RAG
 accent: blue
 ---
 

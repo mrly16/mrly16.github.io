@@ -4,9 +4,10 @@ slug: robotic-video-intelligence
 order: 2
 title: 面向机器人与无人机的视频智能平台
 eyebrow: 实时 AI · 系统工程
-summary: 以任务为核心，把摄像头视频流与录像转化为实时分析、批量测试、事件证据和客户演示的一体化平台。
+summary: >-
+  在基于视觉的 AI 项目中，产品经理、算法研发、测试工程师、销售、利益相关者和客户都有不同诉求和用户路径。该项目通过设身处地的产品与系统设计，让各个角色能在统一入口中高效协作，降低研发与生产环境的模型效果差异，保证高效研发迭代与面向客户的演示。
 role: 系统架构与平台主要开发者
-period: 2025.04–至今
+period: 2025.07–2025.12
 technologies:
   - Python
   - FastAPI
@@ -31,6 +32,18 @@ disclosure: 架构与流程改进数据均已脱敏，外部高速客户保持�
 featured: true
 diagram: /diagrams/video-platform.svg
 diagramAlt: 视频源进入实时与批量任务模式，经过 GPU 推理和事件层，最终形成可回放与对比的证据工作区。
+framework: Agent 系统
+frameworkSummary: 连接实时感知、可重复任务、证据与人工决策的 Agent-ready 运行层。
+sessionTitle: 机器人视频智能
+sessionHeadline: 让实时感知可被使用
+sessionDescription: 一个面向多角色协作的视频智能平台，统一实时分析、算法测试、事件证据和客户演示路径。
+sessionVisual: /case-studies/video-intelligence/operations-loop.svg
+sessionVideo: /case-studies/video-intelligence/wanxiang-hero.mp4
+sessionPoster: /case-studies/video-intelligence/operations-loop.svg
+sessionMetric:
+  value: 8 × 30 FPS
+  label: 单张 RTX 4090 并发视频流
+implementationStatus: Agent-ready 平台；尚未实现 LLM/VLM Agent 层
 accent: sage
 ---
 

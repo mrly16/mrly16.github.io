@@ -1,0 +1,128 @@
+---
+import type { CollectionEntry } from "astro:content";
+import type { Locale } from "../lib/i18n";
+import ProjectChannel from "./ProjectChannel.astro";
+import ProjectSessions from "./ProjectSessions.astro";
+
+interface Props {
+  projects: CollectionEntry<"projects">[];
+  locale: Locale;
+}
+
+const { projects, locale } = Astro.props;
+---
+
+<main class="portfolio-viewer" data-portfolio-viewer>
+  <script is:inline>
+    document.documentElement.dataset.portfolioView =
+      new URL(window.location.href).searchParams.get("view") === "tv" ? "tv" : "sessions";
+  </script>
+
+  <section class="portfolio-view-panel is-active" data-view-panel="sessions">
+    <ProjectSessions projects={projects} locale={locale} />
+  </section>
+  <section class="portfolio-view-panel" data-view-panel="tv">
+    <ProjectChannel projects={projects} locale={locale} />
+  </section>
+</main>
+
+<script is:inline>
+  const portfolioViewer = document.querySelector("[data-portfolio-viewer]");
+
+  if (portfolioViewer instanceof HTMLElement) {
+    const validViews = new Set(["tv", "sessions"]);
+    const panels = [...portfolioViewer.querySelectorAll("[data-view-panel]")];
+
+    const url = new URL(window.location.href);
+    const requestedView = url.searchParams.get("view");
+    let activeView = validViews.has(requestedView) ? requestedView : "sessions";
+
+    const currentSlug = () => decodeURIComponent(window.location.hash.slice(1));
+
+    const updateUrl = (view, slug, replace = false) => {
+      const nextUrl = new URL(window.location.href);
+      nextUrl.searchParams.set("view", view);
+      if (slug) nextUrl.hash = slug;
+      const method = replace ? "replaceState" : "pushState";
+      window.history[method]({ view }, "", `${nextUrl.pathname}${nextUrl.search}${nextUrl.hash}`);
+    };
+
+    const setView = (view, { updateHistory = true, replace = false, slug = currentSlug() } = {}) => {
+      if (!validViews.has(view)) return;
+      activeView = view;
+      portfolioViewer.dataset.activeView = view;
+      document.documentElement.dataset.portfolioView = view;
+
+      panels.forEach((panel) => {
+        const active = panel.getAttribute("data-view-panel") === view;
+        panel.classList.toggle("is-active", active);
+        panel.hidden = !active;
+        panel.inert = !active;
+      });
+
+      if (updateHistory) updateUrl(view, slug, replace);
+      window.dispatchEvent(new CustomEvent("portfolio:view-change", { detail: { view } }));
+    };
+
+    window.addEventListener("portfolio:open-deck", (event) => {
+      const slug = event.detail?.slug || currentSlug();
+      setView("tv", { slug });
+      if (slug) {
+        window.dispatchEvent(new CustomEvent("portfolio:navigate", { detail: { slug } }));
+      }
+    });
+
+    window.addEventListener("portfolio:back-to-sessions", (event) => {
+      const slug = event.detail?.slug || currentSlug();
+      setView("sessions", { slug });
+      if (slug) {
+        window.dispatchEvent(new CustomEvent("portfolio:navigate", { detail: { slug } }));
+      }
+    });
+
+    window.addEventListener("portfolio:project-change", (event) => {
+      const slug = event.detail?.slug;
+      if (typeof slug === "string" && slug) updateUrl(activeView, slug, true);
+    });
+
+    window.addEventListener("popstate", () => {
+      const nextUrl = new URL(window.location.href);
+      const nextView = validViews.has(nextUrl.searchParams.get("view"))
+        ? nextUrl.searchParams.get("view")
+        : "sessions";
+      setView(nextView, { updateHistory: false });
+      window.dispatchEvent(
+        new CustomEvent("portfolio:navigate", {
+          detail: { slug: currentSlug() },
+        }),
+      );
+    });
+
+    setView(activeView, { updateHistory: !requestedView, replace: true });
+  }
+</script>
+
+<style>
+  .portfolio-viewer {
+    position: relative;
+    min-height: calc(100svh - 5.4rem);
+  }
+
+  .portfolio-view-panel {
+    min-height: inherit;
+  }
+
+  .portfolio-view-panel[data-view-panel="tv"],
+  html[data-portfolio-view="tv"] .portfolio-view-panel[data-view-panel="sessions"] {
+    display: none;
+  }
+
+  html[data-portfolio-view="tv"] .portfolio-view-panel[data-view-panel="tv"],
+  html[data-portfolio-view="sessions"] .portfolio-view-panel[data-view-panel="sessions"] {
+    display: block;
+  }
+
+  .portfolio-view-panel[hidden] {
+    display: none;
+  }
+</style>

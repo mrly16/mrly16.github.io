@@ -6,8 +6,9 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
   title="关于我｜慕容良一"
   description="拥有计算机视觉、生成式 AI、空间计算、云平台和客户交付经验的应用 AI 工程师与技术负责人。"
   locale="zh"
+  className="identity-page"
 >
-  <header class="page-intro">
+  <header class="page-intro identity-intro">
     <div>
       <p class="eyebrow">关于</p>
       <h1>我擅长面对尚未被完整定义的问题。</h1>
@@ -17,13 +18,13 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
     </p>
   </header>
 
-  <section class="about-grid">
+  <section class="about-grid identity-panel">
     <div class="about-story">
       <p>我从建筑设计出发，进入信息科学与机器学习，最终围绕“让感知转化为有用行动”构建自己的职业路径。</p>
       <p>这段经历塑造了我的工程方式：先理解领域，再选择模型；在需要确定性的地方使用结构化方法；最终以真实工作流是否得到改善来衡量系统。</p>
       <p>我管理过团队、训练过模型、设计过数据与云基础设施、构建过完整产品，也曾与机器人、无人机、设计师、产品团队和客户共同在现场解决问题。</p>
     </div>
-    <div>
+    <div class="identity-track">
       <p class="eyebrow">工作经历</p>
       <dl class="timeline">
         <div><dt>Avant Robotics · 道通集团</dt><dd>系统工程师 / 高级 AI 工程师 · 2025–至今</dd></div>
@@ -37,5 +38,23 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
         <div><dt>华南理工大学</dt><dd>建筑设计学士</dd></div>
       </dl>
     </div>
+  </section>
+
+  <section class="identity-signal-grid" aria-label="工作原则">
+    <article>
+      <span>01</span>
+      <h2>先理解领域，再选择模型</h2>
+      <p>先看真实工作流、失败模式和决策闭环，再决定系统应该长什么样。</p>
+    </article>
+    <article>
+      <span>02</span>
+      <h2>该结构化的地方不要赌模型</h2>
+      <p>当纯模型输出不够可靠时，用几何、约束、系统边界和可验证流程补上确定性。</p>
+    </article>
+    <article>
+      <span>03</span>
+      <h2>现场结果比演示更重要</h2>
+      <p>把工程目标对准部署、客户证据和可衡量的工作流改善。</p>
+    </article>
   </section>
 </BaseLayout>

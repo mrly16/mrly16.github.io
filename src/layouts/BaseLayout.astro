@@ -15,6 +15,8 @@ interface Props {
 
 const { title, description, locale, image, className = "" } = Astro.props;
 const pathname = Astro.url.pathname;
+const themeColor = className.split(/\s+/).includes("identity-page") ? "#080a09" : "#f4f0e8";
+const bodyClass = className;
 ---
 
 <!doctype html>
@@ -26,9 +28,10 @@ const pathname = Astro.url.pathname;
       locale={locale}
       pathname={pathname}
       image={image}
+      themeColor={themeColor}
     />
   </head>
-  <body class={className}>
+  <body class={bodyClass}>
     <a class="skip-link" href="#main">
       {locale === "zh" ? "跳到主要内容" : "Skip to content"}
     </a>

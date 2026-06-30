@@ -1,12 +1,13 @@
 ---
 locale: en
 slug: multimodal-asset-search
-order: 4
+order: 3
 title: Multimodal search across one million images
 eyebrow: Cloud Architecture · Multimodal Retrieval
-summary: A cloud-hosted asset platform replacing local-file workflows with text, image, tag, and caption search for internal modeling and product teams.
+summary: >-
+  Browsing images in a file system is familiar, and algorithm engineers are used to working that way. But when labeled robotic task images reach millions or tens of millions, managing, searching, and applying those data assets becomes a serious systems problem. This project used Google Cloud services and AI modules, including CLIP embeddings, BigQuery, and Vertex AI, to build an internal robotic data-asset management platform.
 role: Sole architect and implementer
-period: Current company
+period: 2025.04–2025.07
 technologies:
   - CLIP
   - Vertex AI Vector Search
@@ -28,6 +29,18 @@ disclosure: This is a multimodal vector-search system, not RAG. The case study o
 featured: true
 diagram: /diagrams/multimodal-search.svg
 diagramAlt: Diagram showing images processed by GPU batch jobs and a CLIP service into Cloud Storage, BigQuery, Vertex AI Vector Search, and a Cloud Run search interface.
+framework: AI Systems / Cloud
+frameworkSummary: GPU batch processing, vector infrastructure, metadata, and serverless delivery form one discoverable image system.
+sessionTitle: Multimodal Image Search
+sessionHeadline: One million images, searchable
+sessionDescription: A Google Cloud asset platform using CLIP, BigQuery, and Vertex AI to search million-scale robotic task images.
+sessionVisual: /diagrams/multimodal-search.svg
+sessionVideo: /case-studies/multimodal-search/mmsearch-hero-gradient.mp4
+sessionPoster: /case-studies/multimodal-search/mmsearch-hero-gradient-poster.jpg
+sessionMetric:
+  value: 1M
+  label: images indexed
+implementationStatus: Internal production platform; multimodal retrieval, not RAG
 accent: blue
 ---
 

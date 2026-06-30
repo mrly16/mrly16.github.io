@@ -10,7 +10,7 @@ export const siteCopy = {
     language: "中文",
     localePath: "/zh/",
     home: "/",
-    projects: "/projects/",
+    projects: "/",
     about: "/about/",
     contact: "/contact/",
     footer: "Applied AI systems, built from first principles.",
@@ -25,14 +25,10 @@ export const siteCopy = {
     language: "English",
     localePath: "/",
     home: "/zh/",
-    projects: "/zh/projects/",
+    projects: "/zh/",
     about: "/zh/about/",
     contact: "/zh/contact/",
     footer: "从问题本质出发，构建可落地的 AI 系统。",
     disclosure: "公开说明"
   }
 } as const;
-
-export function localizedProjectPath(locale: Locale, slug: string) {
-  return locale === "zh" ? `/zh/projects/${slug}/` : `/projects/${slug}/`;
-}

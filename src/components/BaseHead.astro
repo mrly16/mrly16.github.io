@@ -5,6 +5,7 @@ interface Props {
   locale: "en" | "zh";
   pathname: string;
   image?: string;
+  themeColor?: string;
 }
 
 const {
@@ -12,7 +13,8 @@ const {
   description,
   locale,
   pathname,
-  image = "/og-default.svg"
+  image = "/og-default.svg",
+  themeColor = "#f4f0e8"
 } = Astro.props;
 
 const canonical = new URL(pathname, Astro.site);
@@ -48,7 +50,7 @@ const personSchema = {
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="generator" content={Astro.generator} />
 <meta name="description" content={description} />
-<meta name="theme-color" content="#f4f0e8" />
+<meta name="theme-color" content={themeColor} />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="canonical" href={canonical} />
 <link rel="alternate" hreflang={locale === "en" ? "zh-CN" : "en"} href={alternate} />

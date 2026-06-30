@@ -14,17 +14,20 @@ const localeTarget =
       ? "/zh/"
       : `/zh${currentPath}`
     : currentPath.replace(/^\/zh/, "") || "/";
+const isCurrent = (href: string) => currentPath === href || `${currentPath}/` === href;
+const nameLabel = locale === "zh" ? "慕容良一" : "Liangyi Murong";
+const homeLabel = locale === "zh" ? `返回首页，${nameLabel}` : `Home, ${nameLabel}`;
+const monogram = locale === "zh" ? "良一" : "LM";
 ---
 
 <header class="site-header">
-  <a class="wordmark" href={copy.home}>
-    <span>LM</span>
-    <span class="wordmark-name">{locale === "zh" ? "慕容良一" : "Liangyi Murong"}</span>
+  <a class="wordmark" href={copy.home} aria-label={homeLabel}>
+    <span class="wordmark-name" aria-hidden="true">{monogram}</span>
   </a>
   <nav aria-label={locale === "zh" ? "主导航" : "Primary navigation"}>
-    <a href={copy.projects}>{copy.nav.work}</a>
-    <a href={copy.about}>{copy.nav.about}</a>
-    <a href={copy.contact}>{copy.nav.contact}</a>
+    <a href={copy.projects} aria-current={isCurrent(copy.projects) ? "page" : undefined}>{copy.nav.work}</a>
+    <a href={copy.about} aria-current={isCurrent(copy.about) ? "page" : undefined}>{copy.nav.about}</a>
+    <a href={copy.contact} aria-current={isCurrent(copy.contact) ? "page" : undefined}>{copy.nav.contact}</a>
     <a
       class="language-switch"
       href={localeTarget}
@@ -42,6 +45,12 @@ const localeTarget =
     link.addEventListener("click", () => {
       const locale = link.getAttribute("data-locale");
       if (locale) localStorage.setItem("preferred-locale", locale);
+      if (link instanceof HTMLAnchorElement && window.location.pathname.match(/^\/(?:zh\/)?$/)) {
+        const target = new URL(link.href);
+        target.search = window.location.search;
+        target.hash = window.location.hash;
+        link.href = target.toString();
+      }
     });
   });
 </script>

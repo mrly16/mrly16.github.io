@@ -1,6 +1,8 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import { localizedProjectPath, type Locale } from "../lib/i18n";
+import type { Locale } from "../lib/i18n";
+import FlowControlPill from "./FlowControlPill.astro";
+import ViewerIcon from "./ViewerIcon.astro";
 
 interface Props {
   projects: CollectionEntry<"projects">[];
@@ -8,293 +10,1088 @@ interface Props {
 }
 
 const { projects, locale } = Astro.props;
+const companyLinks = {
+  avant: {
+    name: "Avant Robotics",
+    href: "https://www.linkedin.com/company/avant-robotics-global/",
+  },
+  xkool: {
+    name: "Xkool Technology",
+    href: "https://www.xkool.ai/",
+  },
+} as const;
+const timelineMeta: Record<string, { date: string; company: keyof typeof companyLinks }> = {
+  "vision-agent": { date: "2026.02 - Now", company: "avant" },
+  "robotic-video-intelligence": { date: "2025.07 - 2025.12", company: "avant" },
+  "multimodal-asset-search": { date: "2025.04 - 2025.07", company: "avant" },
+  "lookx-generative-ai": { date: "2023.09 - 2024.09", company: "xkool" },
+  "floor-plan-reconstruction": { date: "2022.03 - 2023.01", company: "xkool" },
+};
+const pillTitles: Record<string, { en: [string, string]; zh: [string, string] }> = {
+  "vision-agent": { en: ["Eyes with", "intent"], zh: ["有意图的", "眼睛"] },
+  "robotic-video-intelligence": { en: ["Cameras become", "memory"], zh: ["镜头成为", "记忆"] },
+  "multimodal-asset-search": { en: ["Search by", "feeling"], zh: ["以感觉", "搜寻"] },
+  "lookx-generative-ai": { en: ["Images learn", "to dream"], zh: ["图像开始", "做梦"] },
+  "floor-plan-reconstruction": { en: ["Pixels become", "rooms"], zh: ["像素长成", "房间"] },
+};
+const firstTimeline = projects[0] ? timelineMeta[projects[0].data.slug] : undefined;
+const firstCompany = firstTimeline ? companyLinks[firstTimeline.company] : undefined;
+const floorPlanDeck =
+  locale === "zh"
+    ? {
+        context: {
+          title: "让户型图成为空间数据",
+          summary: "把静态图纸转成可编辑、可检索、可计算的空间模型，连接设计自动化、资产管理与数字孪生。",
+        },
+        synthetic: {
+          title: "合成数据训练分割",
+          summary: "真实标注稀缺，先用可控合成户型和语义标签训练模型，再用风格扰动覆盖真实图纸差异。",
+        },
+        graph: {
+          title: "图优化重建墙线拓扑",
+          summary: "房间多边形提供墙体中心线线索；节点融合、正交约束和边线吸附把噪声轮廓收敛成稳定图结构。",
+        },
+        result: {
+          title: "矢量化导出 BIM / IFC",
+          summary: "门窗投影回墙线，房间和墙体变成语义几何，最终可以导出、渲染、测量和交互。",
+        },
+      }
+    : {
+        context: {
+          title: "Floor plans become spatial data",
+          summary: "Turning static plans into editable, searchable, computable space unlocks design automation, asset intelligence, and digital-twin workflows.",
+        },
+        synthetic: {
+          title: "Synthetic data for segmentation",
+          summary: "Scarce labels are bootstrapped with controllable generated plans, semantic masks, and style randomization across drawing conventions.",
+        },
+        graph: {
+          title: "Graph optimization for topology",
+          summary: "Room polygons imply wall centerlines; node fusion, orthogonal constraints, and edge attraction stabilize the structural graph.",
+        },
+        result: {
+          title: "Vectorization to BIM / IFC",
+          summary: "Openings are projected back onto wall lines; rooms and walls become semantic geometry that can be exported, rendered, measured, and interacted with.",
+        },
+      };
+type StoryDeckSlide = {
+  kicker: string;
+  title: string;
+  summary: string;
+  visual: string;
+  media?: {
+    type: "image" | "video";
+    src: string;
+    poster?: string;
+    alt?: string;
+  };
+  chips?: string[];
+  metrics?: { value: string; label: string }[];
+};
+const storyDecks: Record<string, StoryDeckSlide[]> =
+  locale === "zh"
+    ? {
+        "lookx-generative-ai": [
+          {
+            kicker: "WHY IT MATTERS",
+            title: "建筑生成必须可控",
+            summary:
+              "建筑师需要的是可迭代的视觉方案，不是复杂的模型参数。生成式 AI 只有被封装进专业工作流，才可能进入真实产品。",
+            visual: "lookx-context",
+            media: {
+              type: "video",
+              src: "/case-studies/lookx/lookx-hero.mp4",
+              poster: "/case-studies/lookx/lookx-hero-poster.jpg",
+            },
+            chips: ["Sketch", "Concept", "Render"],
+          },
+          {
+            kicker: "WORKFLOW DESIGN",
+            title: "三种任务模式",
+            summary:
+              "Sketch、Concept、Render 对应不同设计阶段，把 ControlNet、默认参数和模型行为藏在少量有意义的操作后面。",
+            visual: "lookx-workflow",
+            chips: ["草图探索", "体块概念", "精细渲染"],
+          },
+          {
+            kicker: "MODEL / DATA",
+            title: "领域模型与数据工具",
+            summary:
+              "基于 Stable Diffusion 1.5 和定制 ControlNet，配合约 1 万张建筑训练图、caption 与清洗工具迭代模型。",
+            visual: "lookx-model",
+            media: {
+              type: "image",
+              src: "/diagrams/lookx.svg",
+              alt: "LookX architecture diagram",
+            },
+            chips: ["SD 1.5", "ControlNet", "10K data", "ComfyUI"],
+          },
+          {
+            kicker: "PRODUCT RESULT",
+            title: "从模型能力到商业产品",
+            summary:
+              "Render Mode 成为主要使用场景；关键不是模型炫技，而是几何控制、速度和交互封装。",
+            visual: "lookx-result",
+            media: {
+              type: "video",
+              src: "/case-studies/lookx/lookx-hero.mp4",
+              poster: "/case-studies/lookx/lookx-hero-poster.jpg",
+            },
+            metrics: [
+              { value: "40万+", label: "注册用户" },
+              { value: "70%+", label: "来自 Render 模式" },
+              { value: "20秒", label: "单次生成" },
+            ],
+          },
+        ],
+        "multimodal-asset-search": [
+          {
+            kicker: "WHY IT MATTERS",
+            title: "百万图片不能靠文件夹管理",
+            summary:
+              "建模、测试、算法和产品团队需要共享发现系统，而不是在本地目录里猜文件名。",
+            visual: "mm-context",
+            media: {
+              type: "video",
+              src: "/case-studies/multimodal-search/mmsearch-hero-gradient.mp4",
+              poster: "/case-studies/multimodal-search/mmsearch-hero-gradient-poster.jpg",
+            },
+            chips: ["Text", "Image", "Tag", "Caption"],
+          },
+          {
+            kicker: "EMBEDDING LAYER",
+            title: "CLIP 让视觉资产可检索",
+            summary:
+              "文本、图片、标签和 caption 被映射到同一语义空间，搜索从文件管理变成视觉发现。",
+            visual: "mm-embedding",
+            chips: ["CLIP", "Vector Search", "Metadata"],
+          },
+          {
+            kicker: "CLOUD SYSTEM",
+            title: "GPU 批处理与云检索分层",
+            summary:
+              "GKE 承接长时间 GPU embedding 批任务，Cloud Run 承接用户搜索，BigQuery 和 Vertex 连接语义与元数据。",
+            visual: "mm-architecture",
+            media: {
+              type: "image",
+              src: "/diagrams/multimodal-search.svg",
+              alt: "Multimodal search cloud architecture",
+            },
+          },
+          {
+            kicker: "RESULT",
+            title: "一秒级多模态发现",
+            summary:
+              "100 万张图片被索引进统一平台，预热后搜索约 1 秒返回，支持多个内部团队复用资产。",
+            visual: "mm-result",
+            media: {
+              type: "video",
+              src: "/case-studies/multimodal-search/mmsearch-hero-gradient.mp4",
+              poster: "/case-studies/multimodal-search/mmsearch-hero-gradient-poster.jpg",
+            },
+            metrics: [
+              { value: "100万", label: "图片索引" },
+              { value: "约1秒", label: "预热后搜索" },
+              { value: "100+ FPS", label: "embedding 吞吐" },
+            ],
+          },
+        ],
+        "robotic-video-intelligence": [
+          {
+            kicker: "WHY IT MATTERS",
+            title: "POC 缺的是共同系统",
+            summary:
+              "设备、算法、操作人员和客户证据需要被连接起来；缺的不是另一个检测模型，而是一条可复现的现场链路。",
+            visual: "video-context",
+            media: {
+              type: "image",
+              src: "/case-studies/video-intelligence/operations-loop.svg",
+              alt: "Video operations loop",
+            },
+          },
+          {
+            kicker: "TASK WORKFLOW",
+            title: "任务比模型调用更重要",
+            summary:
+              "流转流、文件转流、文件转文件把实时演示、历史回放和批量回归统一到同一个任务系统。",
+            visual: "video-workflow",
+            chips: ["Stream → Stream", "File → Stream", "File → File"],
+          },
+          {
+            kicker: "SYSTEM LAYERS",
+            title: "媒体、GPU、事件证据层",
+            summary:
+              "GStreamer 管媒体，GPU 服务管推理，事件层保存快照、时间戳和帧级结果，让失败可以复现。",
+            visual: "video-system",
+            media: {
+              type: "image",
+              src: "/diagrams/video-platform.svg",
+              alt: "Video intelligence platform architecture",
+            },
+          },
+          {
+            kicker: "RESULT",
+            title: "让现场演示可复现",
+            summary:
+              "平台把算法接入、客户测试和现场演示收敛到统一工作区，减少重复部署与分散反馈。",
+            visual: "video-result",
+            media: {
+              type: "video",
+              src: "/case-studies/video-intelligence/wanxiang-hero.mp4",
+              poster: "/case-studies/video-intelligence/operations-loop.svg",
+            },
+            metrics: [
+              { value: "8×30 FPS", label: "RTX 4090 并发流" },
+              { value: "100→5", label: "集成调试人天" },
+              { value: "80→2", label: "客户测试人天" },
+            ],
+          },
+        ],
+        "vision-agent": [
+          {
+            kicker: "PLACEHOLDER",
+            title: "让视觉理解带着目标行动",
+            summary:
+              "这是一个进行中的 Vision Agent 项目位。先用占位 deck 保持整体叙事节奏，后续再替换成真实任务、系统和证据。",
+            visual: "vision-context",
+            media: {
+              type: "image",
+              src: "/diagrams/vision-agent-placeholder.svg",
+              alt: "Vision agent placeholder",
+            },
+            chips: ["Observe", "Reason", "Act"],
+          },
+          {
+            kicker: "TASK LOOP",
+            title: "从看见到决策闭环",
+            summary:
+              "未来内容会围绕感知输入、任务状态、工具调用和反馈闭环展开，而不是只展示一次模型推理。",
+            visual: "vision-loop",
+            chips: ["Perception", "State", "Tool use"],
+          },
+          {
+            kicker: "SYSTEM SHAPE",
+            title: "视觉、记忆与执行层",
+            summary:
+              "占位结构预留给视觉编码、短期记忆、动作规划和执行验证，保证项目加入后不破坏现有 deck 体系。",
+            visual: "vision-system",
+            media: {
+              type: "image",
+              src: "/diagrams/vision-agent-placeholder.svg",
+              alt: "Vision agent system placeholder",
+            },
+          },
+          {
+            kicker: "COMING NEXT",
+            title: "真实项目完成后替换",
+            summary:
+              "当前只承担入口和节奏占位；等项目素材稳定后，再补充真实指标、过程图和演示媒体。",
+            visual: "vision-result",
+            metrics: [
+              { value: "2026", label: "active project" },
+              { value: "TBD", label: "media" },
+              { value: "TBD", label: "evidence" },
+            ],
+          },
+        ],
+      }
+    : {
+        "lookx-generative-ai": [
+          {
+            kicker: "WHY IT MATTERS",
+            title: "Architectural generation must be controllable",
+            summary:
+              "Architects need iterative visual options, not a wall of model parameters. Generative AI becomes useful only when it is wrapped into a professional workflow.",
+            visual: "lookx-context",
+            media: {
+              type: "video",
+              src: "/case-studies/lookx/lookx-hero.mp4",
+              poster: "/case-studies/lookx/lookx-hero-poster.jpg",
+            },
+            chips: ["Sketch", "Concept", "Render"],
+          },
+          {
+            kicker: "WORKFLOW DESIGN",
+            title: "Three task-shaped modes",
+            summary:
+              "Sketch, Concept, and Render map to real design stages, hiding ControlNet setup, defaults, and model behavior behind meaningful actions.",
+            visual: "lookx-workflow",
+            chips: ["Sketch exploration", "Concept massing", "Detailed render"],
+          },
+          {
+            kicker: "MODEL / DATA",
+            title: "Domain model and data tooling",
+            summary:
+              "Stable Diffusion 1.5 and custom ControlNet were iterated with roughly 10K architectural training images, captions, and cleaning tools.",
+            visual: "lookx-model",
+            media: {
+              type: "image",
+              src: "/diagrams/lookx.svg",
+              alt: "LookX architecture diagram",
+            },
+            chips: ["SD 1.5", "ControlNet", "10K data", "ComfyUI"],
+          },
+          {
+            kicker: "PRODUCT RESULT",
+            title: "From model capability to product",
+            summary:
+              "Render Mode became the dominant use case; the point was not model spectacle, but geometry control, latency, and interaction design.",
+            visual: "lookx-result",
+            media: {
+              type: "video",
+              src: "/case-studies/lookx/lookx-hero.mp4",
+              poster: "/case-studies/lookx/lookx-hero-poster.jpg",
+            },
+            metrics: [
+              { value: "400K+", label: "registered users" },
+              { value: "70%+", label: "from Render Mode" },
+              { value: "20s", label: "generation time" },
+            ],
+          },
+        ],
+        "multimodal-asset-search": [
+          {
+            kicker: "WHY IT MATTERS",
+            title: "A million images cannot live in folders",
+            summary:
+              "Modeling, testing, algorithm, and product teams needed shared visual discovery instead of guessing filenames in local directories.",
+            visual: "mm-context",
+            media: {
+              type: "video",
+              src: "/case-studies/multimodal-search/mmsearch-hero-gradient.mp4",
+              poster: "/case-studies/multimodal-search/mmsearch-hero-gradient-poster.jpg",
+            },
+            chips: ["Text", "Image", "Tag", "Caption"],
+          },
+          {
+            kicker: "EMBEDDING LAYER",
+            title: "CLIP makes visual assets searchable",
+            summary:
+              "Text, image, tags, and captions are projected into one semantic space, turning file management into visual discovery.",
+            visual: "mm-embedding",
+            chips: ["CLIP", "Vector Search", "Metadata"],
+          },
+          {
+            kicker: "CLOUD SYSTEM",
+            title: "GPU batch and cloud search split cleanly",
+            summary:
+              "GKE handles long GPU embedding jobs; Cloud Run serves user search; BigQuery and Vertex connect semantics with metadata.",
+            visual: "mm-architecture",
+            media: {
+              type: "image",
+              src: "/diagrams/multimodal-search.svg",
+              alt: "Multimodal search cloud architecture",
+            },
+          },
+          {
+            kicker: "RESULT",
+            title: "One-second multimodal discovery",
+            summary:
+              "One million images were indexed into a shared platform with warm search around one second for multiple internal teams.",
+            visual: "mm-result",
+            media: {
+              type: "video",
+              src: "/case-studies/multimodal-search/mmsearch-hero-gradient.mp4",
+              poster: "/case-studies/multimodal-search/mmsearch-hero-gradient-poster.jpg",
+            },
+            metrics: [
+              { value: "1M", label: "images indexed" },
+              { value: "~1s", label: "warm search" },
+              { value: "100+ FPS", label: "embedding throughput" },
+            ],
+          },
+        ],
+        "robotic-video-intelligence": [
+          {
+            kicker: "WHY IT MATTERS",
+            title: "POCs need a shared operating system",
+            summary:
+              "Devices, algorithms, operators, and customer evidence had to be connected. The missing piece was not another detector, but a repeatable field loop.",
+            visual: "video-context",
+            media: {
+              type: "image",
+              src: "/case-studies/video-intelligence/operations-loop.svg",
+              alt: "Video operations loop",
+            },
+          },
+          {
+            kicker: "TASK WORKFLOW",
+            title: "The task matters more than the model call",
+            summary:
+              "Stream-to-stream, file-to-stream, and file-to-file modes unify live demos, historical replay, and regression testing.",
+            visual: "video-workflow",
+            chips: ["Stream → Stream", "File → Stream", "File → File"],
+          },
+          {
+            kicker: "SYSTEM LAYERS",
+            title: "Media, GPU, and evidence layers",
+            summary:
+              "GStreamer owns media, GPU services own inference, and the event layer persists snapshots, timestamps, and frame-level results.",
+            visual: "video-system",
+            media: {
+              type: "image",
+              src: "/diagrams/video-platform.svg",
+              alt: "Video intelligence platform architecture",
+            },
+          },
+          {
+            kicker: "RESULT",
+            title: "Field demos become repeatable",
+            summary:
+              "The platform folded algorithm integration, customer testing, and field demos into one workspace with less repeated setup and scattered feedback.",
+            visual: "video-result",
+            media: {
+              type: "video",
+              src: "/case-studies/video-intelligence/wanxiang-hero.mp4",
+              poster: "/case-studies/video-intelligence/operations-loop.svg",
+            },
+            metrics: [
+              { value: "8×30 FPS", label: "RTX 4090 streams" },
+              { value: "100→5", label: "integration days" },
+              { value: "80→2", label: "customer test days" },
+            ],
+          },
+        ],
+        "vision-agent": [
+          {
+            kicker: "PLACEHOLDER",
+            title: "Vision that acts with intent",
+            summary:
+              "This is a placeholder for an active Vision Agent project. It keeps the TV narrative rhythm until the real task, system, and evidence are ready.",
+            visual: "vision-context",
+            media: {
+              type: "image",
+              src: "/diagrams/vision-agent-placeholder.svg",
+              alt: "Vision agent placeholder",
+            },
+            chips: ["Observe", "Reason", "Act"],
+          },
+          {
+            kicker: "TASK LOOP",
+            title: "From perception to decision loop",
+            summary:
+              "The eventual story should connect visual input, task state, tool use, and feedback rather than showing a single model inference.",
+            visual: "vision-loop",
+            chips: ["Perception", "State", "Tool use"],
+          },
+          {
+            kicker: "SYSTEM SHAPE",
+            title: "Vision, memory, and execution layers",
+            summary:
+              "The placeholder reserves space for visual encoding, short-term memory, action planning, and execution validation.",
+            visual: "vision-system",
+            media: {
+              type: "image",
+              src: "/diagrams/vision-agent-placeholder.svg",
+              alt: "Vision agent system placeholder",
+            },
+          },
+          {
+            kicker: "COMING NEXT",
+            title: "Replace with the real project later",
+            summary:
+              "For now it only holds the slot and rhythm. Once project material stabilizes, it can be replaced with real metrics, process visuals, and media.",
+            visual: "vision-result",
+            metrics: [
+              { value: "2026", label: "active project" },
+              { value: "TBD", label: "media" },
+              { value: "TBD", label: "evidence" },
+            ],
+          },
+        ],
+      };
 const copy =
   locale === "zh"
     ? {
-        series: "项目放映",
-        episode: "项目",
-        open: "查看完整案例",
-        previous: "上一个项目",
-        next: "下一个项目",
-        pause: "暂停自动播放",
-        play: "继续自动播放",
-        guide: "项目列表",
-        close: "关闭列表",
-        details: "角色与时间",
-        controls: "项目播放器控制",
-        hint: "方向键切换 · 空格暂停",
+        collection: "项目频道",
+        scene: "章节",
+        previousScene: "上一章节",
+        nextScene: "下一章节",
+        previousProject: "上一个项目",
+        nextProject: "下一个项目",
+        backToProjects: "返回项目展映",
+        close: "关闭",
+        role: "我的角色",
+        controls: "项目放映控制台",
+        stageAlt: "项目视觉叙事",
+        channel: "频道",
+        channelUp: "下一个项目",
+        channelDown: "上一个项目",
+        info: "项目信息",
+        overview: "项目概览",
+        system: "系统结构",
+        evidence: "结果证据",
+        ownership: "角色与技术",
+        systemSummary: "从输入、关键处理模块到最终输出的系统路径。",
+        evidenceSummary: "经过验证的规模、性能与业务结果。",
+        ownershipSummary: "个人职责边界、项目周期与主要技术。",
       }
     : {
-        series: "Selected Work",
-        episode: "Project",
-        open: "Enter case study",
-        previous: "Previous project",
-        next: "Next project",
-        pause: "Pause autoplay",
-        play: "Resume autoplay",
-        guide: "Project guide",
-        close: "Close guide",
-        details: "Role and period",
-        controls: "Project player controls",
-        hint: "Arrow keys to switch · Space to pause",
+        collection: "Project channel",
+        scene: "Episode",
+        previousScene: "Previous episode",
+        nextScene: "Next episode",
+        previousProject: "Previous project",
+        nextProject: "Next project",
+        backToProjects: "Back to projects",
+        close: "Close",
+        role: "My role",
+        controls: "Project viewing console",
+        stageAlt: "Project visual narrative",
+        channel: "Channel",
+        channelUp: "Next project",
+        channelDown: "Previous project",
+        info: "Project info",
+        overview: "Project overview",
+        system: "System architecture",
+        evidence: "Evidence and results",
+        ownership: "Ownership and technology",
+        systemSummary: "The system path from input through key processing stages to output.",
+        evidenceSummary: "Verified scale, performance, and business outcomes.",
+        ownershipSummary: "Personal ownership, project period, and principal technologies.",
       };
 ---
 
-<section class="project-channel" data-project-channel aria-roledescription="carousel">
-  <div class="channel-stage" aria-live="polite">
-    {projects.map((project, index) => (
-      <article
-        class={`channel-episode accent-${project.data.accent}${index === 0 ? " is-active" : ""}`}
-        data-channel-episode
-        data-slug={project.data.slug}
-        aria-hidden={index === 0 ? "false" : "true"}
-      >
-        <div class="channel-visual" aria-hidden="true">
-          <div class="channel-visual-glow"></div>
-          <img src={project.data.diagram} alt="" decoding={index === 0 ? "sync" : "async"} />
-          <div class="channel-scanline"></div>
-        </div>
+<section class="work-viewer" data-work-viewer>
+  <button type="button" class="viewer-back" data-viewer-back>
+    <span aria-hidden="true">←</span>
+    <span>{copy.backToProjects}</span>
+  </button>
 
-        <div class="channel-episode-copy">
-          <p class="channel-kicker">
-            <span>{copy.series}</span>
-            <span>{String(index + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span>
-          </p>
-          <p class="channel-eyebrow">{project.data.eyebrow}</p>
-          <h1>{project.data.title}</h1>
-          <p class="channel-summary">{project.data.summary}</p>
-          <dl class="channel-metrics" aria-label={locale === "zh" ? "项目成果" : "Project outcomes"}>
-            {project.data.metrics.slice(0, 3).map((metric) => (
-              <div>
-                <dt>{metric.value}</dt>
-                <dd>{metric.label}</dd>
-              </div>
-            ))}
-          </dl>
-          <a class="channel-enter" href={localizedProjectPath(locale, project.data.slug)}>
-            <span>{copy.open}</span>
-            <span aria-hidden="true">↗</span>
-          </a>
-        </div>
-      </article>
-    ))}
-  </div>
+  <p class="viewer-edition" data-viewer-edition>
+    <span data-viewer-edition-date>{firstTimeline?.date}</span>
+    <span aria-hidden="true">@</span>
+    <a
+      href={firstCompany?.href}
+      target="_blank"
+      rel="noreferrer"
+      data-viewer-edition-company
+    >
+      {firstCompany?.name}
+    </a>
+  </p>
 
-  <div class="channel-controller" aria-label={copy.controls}>
-    <div class="channel-controller-title">
-      <span class="channel-status-light" aria-hidden="true"></span>
-      <div>
-        <small>{copy.episode}</small>
-        <strong data-channel-title>{projects[0]?.data.title}</strong>
-      </div>
-    </div>
-
-    <div class="channel-progress" aria-hidden="true">
-      <span data-channel-progress></span>
-    </div>
-
-    <div class="channel-controls">
-      <button type="button" data-channel-previous aria-label={copy.previous}>←</button>
-      <button type="button" data-channel-toggle aria-label={copy.pause}>
-        <span data-pause-icon>Ⅱ</span>
-        <span data-play-icon hidden>▶</span>
-      </button>
-      <button type="button" data-channel-next aria-label={copy.next}>→</button>
-      <button type="button" class="channel-guide-button" data-channel-guide aria-label={copy.guide}>
-        <span>{copy.guide}</span>
-        <span aria-hidden="true">⌘</span>
-      </button>
-    </div>
-
-    <div class="channel-selector" role="tablist" aria-label={copy.guide}>
-      {projects.map((project, index) => (
-        <button
-          type="button"
-          role="tab"
-          class={index === 0 ? "is-active" : ""}
-          aria-selected={index === 0 ? "true" : "false"}
-          aria-label={`${copy.episode} ${index + 1}: ${project.data.title}`}
-          data-channel-select={index}
+  <div class="viewer-stage" aria-live="polite">
+    {projects.map((project, index) => {
+      const floorPlan = project.data.slug === "floor-plan-reconstruction";
+      const storyDeck = storyDecks[project.data.slug];
+      return (
+        <article
+          class={`viewer-project accent-${project.data.accent}${index === 0 ? " is-active" : ""}`}
+          data-viewer-project
+          data-slug={project.data.slug}
+          data-index={index}
+          aria-hidden={index === 0 ? "false" : "true"}
+          inert={index === 0 ? undefined : true}
         >
-          <span>{String(index + 1).padStart(2, "0")}</span>
-        </button>
-      ))}
-    </div>
+          <div class="viewer-screen">
+            <div class="screen-topline">
+              <span>{project.data.eyebrow}</span>
+              <span>
+                CH {String(index + 1).padStart(2, "0")} ·
+                <span data-screen-episode-count> EP 01 / 04</span>
+              </span>
+            </div>
 
-    <p class="channel-hint">{copy.hint}</p>
+            <div class="viewer-episodes">
+              {floorPlan ? (
+                <>
+                  <section
+                    class="viewer-episode is-active"
+                    data-viewer-episode
+                    data-episode-title={copy.overview}
+                    data-episode-summary={floorPlanDeck.context.summary}
+                    aria-hidden="false"
+                  >
+                    <div class="floor-deck floor-deck-context story-deck story-deck-floor-plan-reconstruction">
+                      <div class="floor-deck-copy">
+                        <span>00 / WHY IT MATTERS</span>
+                        <h2>{floorPlanDeck.context.title}</h2>
+                        <p>{floorPlanDeck.context.summary}</p>
+                      </div>
+                      <div class="floor-deck-market" aria-hidden="true">
+                        <div class="market-card market-card-main">
+                          <img src="/case-studies/floor-plan/source-to-segmentation.webp" alt="" />
+                        </div>
+                        <div class="market-card market-card-bim">BIM</div>
+                        <div class="market-card market-card-search">SEARCH</div>
+                        <div class="market-card market-card-cost">MANUAL<br />REBUILD</div>
+                        <div class="market-path"></div>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section
+                    class="viewer-episode"
+                    data-viewer-episode
+                    data-episode-title="Synthetic data"
+                    data-episode-summary={floorPlanDeck.synthetic.summary}
+                    aria-hidden="true"
+                    inert
+                  >
+                    <div class="floor-deck floor-deck-synthetic">
+                      <div class="floor-deck-copy">
+                        <span>SYNTHETIC DATA</span>
+                        <h2>{floorPlanDeck.synthetic.title}</h2>
+                        <p>{floorPlanDeck.synthetic.summary}</p>
+                      </div>
+                      <div class="synthetic-grid" aria-hidden="true">
+                        {["linework", "labels", "symbols", "noise", "style", "mask"].map((item, itemIndex) => (
+                          <div class={`synthetic-tile synthetic-tile-${itemIndex}`}>
+                            <i></i>
+                            <b>{item}</b>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </section>
+
+                  <section
+                    class="viewer-episode"
+                    data-viewer-episode
+                    data-episode-title="Graph optimization"
+                    data-episode-summary={floorPlanDeck.graph.summary}
+                    aria-hidden="true"
+                    inert
+                  >
+                    <div class="floor-deck floor-deck-graph">
+                      <div class="floor-deck-copy">
+                        <span>GRAPH OPTIMIZATION</span>
+                        <h2>{floorPlanDeck.graph.title}</h2>
+                        <p>{floorPlanDeck.graph.summary}</p>
+                      </div>
+                      <div class="graph-board" aria-hidden="true">
+                        <img src="/case-studies/floor-plan/process-raster.png" alt="" />
+                        <svg viewBox="0 0 520 340" role="presentation">
+                          <path d="M72 70 H245 V122 H322 V262 H198 V292 H72 Z" />
+                          <path d="M245 70 H440 V285 H322 V122 H245 Z" />
+                          <path d="M72 177 H198 V292" />
+                          <circle cx="72" cy="70" r="5" />
+                          <circle cx="245" cy="70" r="5" />
+                          <circle cx="322" cy="122" r="5" />
+                          <circle cx="440" cy="285" r="5" />
+                          <circle cx="198" cy="292" r="5" />
+                          <circle cx="72" cy="292" r="5" />
+                        </svg>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section
+                    class="viewer-episode"
+                    data-viewer-episode
+                    data-episode-title="Vector BIM result"
+                    data-episode-summary={floorPlanDeck.result.summary}
+                    aria-hidden="true"
+                    inert
+                  >
+                    <div class="floor-deck floor-deck-result">
+                      <div class="floor-deck-copy">
+                        <span>VECTOR / IFC RESULT</span>
+                        <h2>{floorPlanDeck.result.title}</h2>
+                        <p>{floorPlanDeck.result.summary}</p>
+                      </div>
+                      <div class="result-stack" aria-hidden="true">
+                        <img src="/case-studies/floor-plan/annotated-plan.jpg" alt="" />
+                        <video
+                          src="/case-studies/floor-plan/floorplan-hero-gradient-textured.mp4"
+                          poster="/case-studies/floor-plan/floorplan-hero-gradient-textured-poster.jpg"
+                          autoplay
+                          muted
+                          loop
+                          playsinline
+                        ></video>
+                      </div>
+                    </div>
+                  </section>
+                </>
+              ) : storyDeck ? (
+                <>
+                  {storyDeck.map((slide, slideIndex) => (
+                    <section
+                      class={`viewer-episode${slideIndex === 0 ? " is-active" : ""}`}
+                      data-viewer-episode
+                      data-episode-title={slide.kicker}
+                      data-episode-summary={slide.summary}
+                      aria-hidden={slideIndex === 0 ? "false" : "true"}
+                      inert={slideIndex === 0 ? undefined : true}
+                    >
+                      <div
+                        class={`floor-deck story-deck story-deck-${project.data.slug} story-visual-${slide.visual}`}
+                      >
+                        <div class="floor-deck-copy">
+                          <span>{String(slideIndex + 1).padStart(2, "0")} / {slide.kicker}</span>
+                          <h2>{slide.title}</h2>
+                          <p>{slide.summary}</p>
+                        </div>
+                        <div class="story-deck-stage" aria-hidden="true">
+                          <div class="story-media-card">
+                            {slide.media?.type === "video" ? (
+                              <video
+                                src={slide.media.src}
+                                poster={slide.media.poster}
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                preload="metadata"
+                              ></video>
+                            ) : slide.media ? (
+                              <img src={slide.media.src} alt={slide.media.alt ?? ""} loading="lazy" />
+                            ) : (
+                              <div class="story-abstract">
+                                <i></i>
+                                <i></i>
+                                <i></i>
+                              </div>
+                            )}
+                          </div>
+                          <div class="story-signal-grid">
+                            {Array.from({ length: 9 }).map((_, signalIndex) => (
+                              <i class={`story-signal-${signalIndex}`}></i>
+                            ))}
+                          </div>
+                          {slide.chips ? (
+                            <div class="story-chip-row">
+                              {slide.chips.map((chip) => (
+                                <span>{chip}</span>
+                              ))}
+                            </div>
+                          ) : null}
+                          {slide.metrics ? (
+                            <dl class="story-metrics">
+                              {slide.metrics.map((metric) => (
+                                <div>
+                                  <dt>{metric.value}</dt>
+                                  <dd>{metric.label}</dd>
+                                </div>
+                              ))}
+                            </dl>
+                          ) : null}
+                        </div>
+                      </div>
+                    </section>
+                  ))}
+                </>
+              ) : (
+                <>
+                  <section
+                    class="viewer-episode is-active"
+                    data-viewer-episode
+                    data-episode-title={copy.overview}
+                    data-episode-summary={project.data.summary}
+                    aria-hidden="false"
+                  >
+                    {project.data.sessionVideo ? (
+                      <div class="media-scene" aria-label={project.data.diagramAlt}>
+                        <video
+                          src={project.data.sessionVideo}
+                          poster={project.data.sessionPoster ?? project.data.sessionVisual}
+                          autoplay
+                          muted
+                          loop
+                          playsinline
+                          preload="auto"
+                        ></video>
+                      </div>
+                    ) : (
+                      <div class="diagram-scene" role="img" aria-label={project.data.diagramAlt}>
+                        <img src={project.data.diagram} alt="" decoding="async" />
+                      </div>
+                    )}
+
+                    <div class="screen-caption">
+                      <div>
+                        <p>{copy.scene} 01 · {copy.overview}</p>
+                        <h1>{project.data.title}</h1>
+                      </div>
+                      <p>{project.data.summary}</p>
+                    </div>
+                  </section>
+
+                  <section
+                    class="viewer-episode"
+                    data-viewer-episode
+                    data-episode-title={copy.system}
+                    data-episode-summary={copy.systemSummary}
+                    aria-hidden="true"
+                    inert
+                  >
+                    <div class="episode-architecture">
+                      <div>
+                        <span>02</span>
+                        <h2>{copy.system}</h2>
+                        <p>{copy.systemSummary}</p>
+                      </div>
+                      <img src={project.data.diagram} alt={project.data.diagramAlt} loading="lazy" />
+                    </div>
+                  </section>
+
+                  <section
+                    class="viewer-episode"
+                    data-viewer-episode
+                    data-episode-title={copy.evidence}
+                    data-episode-summary={copy.evidenceSummary}
+                    aria-hidden="true"
+                    inert
+                  >
+                    <div class="episode-evidence">
+                      <header>
+                        <span>03</span>
+                        <div>
+                          <h2>{copy.evidence}</h2>
+                          <p>{copy.evidenceSummary}</p>
+                        </div>
+                      </header>
+                      <dl>
+                        {project.data.metrics.slice(0, 4).map((metric) => (
+                          <div>
+                            <dt>{metric.value}</dt>
+                            <dd>{metric.label}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                    </div>
+                  </section>
+
+                  <section
+                    class="viewer-episode"
+                    data-viewer-episode
+                    data-episode-title={copy.ownership}
+                    data-episode-summary={copy.ownershipSummary}
+                    aria-hidden="true"
+                    inert
+                  >
+                    <div class="episode-ownership">
+                      <header>
+                        <span>04</span>
+                        <div>
+                          <h2>{copy.ownership}</h2>
+                          <p>{copy.ownershipSummary}</p>
+                        </div>
+                      </header>
+                      <div class="ownership-content">
+                        <div>
+                          <small>{copy.role}</small>
+                          <strong>{project.data.role}</strong>
+                          <span>{project.data.period}</span>
+                        </div>
+                        <ul>
+                          {project.data.technologies.slice(0, 6).map((technology) => (
+                            <li>{technology}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </section>
+                </>
+              )}
+            </div>
+
+            <aside class="viewer-info-panel" data-viewer-info-panel aria-hidden="true">
+              <div class="viewer-info-heading">
+                <div>
+                  <p>{copy.info}</p>
+                  <h2>{project.data.title}</h2>
+                </div>
+                <button type="button" data-viewer-info-close aria-label={copy.close}>
+                  <ViewerIcon name="close" size={18} />
+                </button>
+              </div>
+              <dl>
+                <div>
+                  <dt>{copy.role}</dt>
+                  <dd>{project.data.role}</dd>
+                </div>
+                {project.data.metrics.slice(0, 3).map((metric) => (
+                  <div>
+                    <dt>{metric.label}</dt>
+                    <dd>{metric.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </aside>
+          </div>
+        </article>
+      );
+    })}
   </div>
 
-  <dialog class="channel-guide" data-channel-dialog>
-    <div class="channel-guide-header">
-      <div>
-        <p>{copy.series}</p>
-        <h2>{copy.guide}</h2>
-      </div>
-      <button type="button" data-channel-dialog-close>{copy.close}</button>
-    </div>
-    <ol>
-      {projects.map((project, index) => (
-        <li>
-          <button type="button" data-channel-dialog-select={index}>
-            <span class="channel-guide-index">{String(index + 1).padStart(2, "0")}</span>
-            <span class="channel-guide-copy">
-              <strong>{project.data.title}</strong>
-              <small>{project.data.eyebrow}</small>
-            </span>
-            <span class="channel-guide-meta">
-              <small>{copy.details}</small>
-              <span>{project.data.role} · {project.data.period}</span>
-            </span>
-          </button>
-        </li>
-      ))}
-    </ol>
-  </dialog>
+  <FlowControlPill projects={projects} locale={locale} />
 </section>
 
-<script>
-  const channel = document.querySelector("[data-project-channel]");
-  if (channel instanceof HTMLElement) {
-    const episodes = [...channel.querySelectorAll("[data-channel-episode]")];
-    const selectors = [...channel.querySelectorAll("[data-channel-select]")];
-    const dialogSelectors = [...channel.querySelectorAll("[data-channel-dialog-select]")];
-    const title = channel.querySelector("[data-channel-title]");
-    const progress = channel.querySelector("[data-channel-progress]");
-    const toggle = channel.querySelector("[data-channel-toggle]");
-    const pauseIcon = channel.querySelector("[data-pause-icon]");
-    const playIcon = channel.querySelector("[data-play-icon]");
-    const dialog = channel.querySelector("[data-channel-dialog]");
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const intervalMs = 9000;
+<script is:inline define:vars={{ projects: projects.map((project) => ({
+  slug: project.data.slug,
+  title: project.data.title,
+  pillTitleLines: (pillTitles[project.data.slug]?.[locale] ?? [project.data.sessionHeadline ?? project.data.title, ""]),
+  timelineDate: timelineMeta[project.data.slug]?.date ?? project.data.period,
+  timelineCompanyName: companyLinks[timelineMeta[project.data.slug]?.company]?.name ?? "",
+  timelineCompanyHref: companyLinks[timelineMeta[project.data.slug]?.company]?.href ?? "",
+  summary: project.data.summary,
+  eyebrow: project.data.eyebrow,
+  role: project.data.role,
+  diagram: project.data.diagram,
+})) }}>
+  const viewer = document.querySelector("[data-work-viewer]");
+
+  if (viewer instanceof HTMLElement) {
+    viewer.classList.add("is-hydrating");
+    const projectData = projects;
+    const projectNodes = [...viewer.querySelectorAll("[data-viewer-project]")];
+    const title = viewer.querySelector("[data-viewer-title]");
+    const edition = viewer.querySelector("[data-viewer-edition]");
+    const editionDate = viewer.querySelector("[data-viewer-edition-date]");
+    const editionCompany = viewer.querySelector("[data-viewer-edition-company]");
+    const thumbnail = viewer.querySelector("[data-viewer-thumbnail]");
+    const episodeReadout = viewer.querySelector("[data-episode-readout]");
+    const consoleEpisodeSummary = viewer.querySelector("[data-console-episode-summary]");
+    const episodeDots = [...viewer.querySelectorAll("[data-episode-select]")];
     let activeIndex = 0;
-    let playing = !reducedMotion;
-    let startedAt = performance.now();
-    let remaining = intervalMs;
-    let animationFrame = 0;
-    let touchStartX = 0;
+    let activeEpisode = 0;
 
-    const localizedLabels =
-      document.documentElement.lang === "zh-CN"
-        ? { pause: "暂停自动播放", play: "继续自动播放" }
-        : { pause: "Pause autoplay", play: "Resume autoplay" };
+    const activeEpisodeNodes = () => [
+      ...(projectNodes[activeIndex]?.querySelectorAll("[data-viewer-episode]") ?? []),
+    ];
 
-    const setProgress = (value: number) => {
-      if (progress instanceof HTMLElement) {
-        progress.style.transform = `scaleX(${Math.min(1, Math.max(0, value))})`;
-      }
-    };
-
-    const updateToggle = () => {
-      if (!(toggle instanceof HTMLButtonElement)) return;
-      toggle.setAttribute("aria-label", playing ? localizedLabels.pause : localizedLabels.play);
-      if (pauseIcon instanceof HTMLElement) pauseIcon.hidden = !playing;
-      if (playIcon instanceof HTMLElement) playIcon.hidden = playing;
-    };
-
-    const selectEpisode = (nextIndex: number, userInitiated = false) => {
+    const showEpisode = (nextEpisode) => {
+      const episodes = activeEpisodeNodes();
       if (!episodes.length) return;
-      activeIndex = (nextIndex + episodes.length) % episodes.length;
+      activeEpisode = (nextEpisode + episodes.length) % episodes.length;
       episodes.forEach((episode, index) => {
-        const active = index === activeIndex;
+        const active = index === activeEpisode;
         episode.classList.toggle("is-active", active);
         episode.setAttribute("aria-hidden", active ? "false" : "true");
+        episode.inert = !active;
       });
-      selectors.forEach((selector, index) => {
+      episodeDots.forEach((dot, index) => {
+        const active = index === activeEpisode;
+        dot.classList.toggle("is-active", active);
+        dot.setAttribute("aria-selected", active ? "true" : "false");
+      });
+      if (episodeReadout) {
+        const label = document.documentElement.lang === "zh-CN" ? "章节" : "Episode";
+        episodeReadout.textContent = `${label} ${String(activeEpisode + 1).padStart(2, "0")} / ${String(episodes.length).padStart(2, "0")}`;
+      }
+      const activeEpisodeNode = episodes[activeEpisode];
+      const episodeSummary = activeEpisodeNode?.getAttribute("data-episode-summary") ?? "";
+      if (consoleEpisodeSummary) consoleEpisodeSummary.textContent = episodeSummary;
+      projectNodes[activeIndex]?.querySelectorAll("[data-screen-episode-count]").forEach((counter) => {
+        counter.textContent = ` EP ${String(activeEpisode + 1).padStart(2, "0")} / ${String(episodes.length).padStart(2, "0")}`;
+      });
+    };
+
+    const showProject = (nextIndex, announce = true) => {
+      activeIndex = (nextIndex + projectNodes.length) % projectNodes.length;
+      projectNodes.forEach((node, index) => {
         const active = index === activeIndex;
-        selector.classList.toggle("is-active", active);
-        selector.setAttribute("aria-selected", active ? "true" : "false");
+        node.classList.toggle("is-active", active);
+        node.setAttribute("aria-hidden", active ? "false" : "true");
+        node.inert = !active;
+        node.querySelector("[data-viewer-info-panel]")?.classList.remove("is-visible");
+        node.querySelector("[data-viewer-info-panel]")?.setAttribute("aria-hidden", "true");
       });
-      const activeEpisode = episodes[activeIndex];
-      const heading = activeEpisode?.querySelector("h1")?.textContent?.trim() ?? "";
-      if (title) title.textContent = heading;
-      const slug = activeEpisode?.getAttribute("data-slug");
-      if (slug) history.replaceState(null, "", `#${slug}`);
-      remaining = intervalMs;
-      startedAt = performance.now();
-      setProgress(0);
-      if (userInitiated && playing) {
-        playing = false;
-        updateToggle();
+
+      const project = projectData[activeIndex];
+      if (!project) return;
+      if (title) {
+        title.replaceChildren(
+          ...project.pillTitleLines.map((line) => {
+            const span = document.createElement("span");
+            span.textContent = line;
+            return span;
+          }),
+        );
       }
+      if (edition) edition.setAttribute("aria-label", `${project.timelineDate} @ ${project.timelineCompanyName}`);
+      if (editionDate) editionDate.textContent = project.timelineDate;
+      if (editionCompany instanceof HTMLAnchorElement) {
+        editionCompany.textContent = project.timelineCompanyName;
+        editionCompany.href = project.timelineCompanyHref;
+      }
+      if (thumbnail instanceof HTMLImageElement) thumbnail.src = project.diagram;
+      if (announce) {
+        window.dispatchEvent(
+          new CustomEvent("portfolio:project-change", {
+            detail: { slug: project.slug, source: "tv" },
+          }),
+        );
+      }
+      showEpisode(0);
     };
 
-    const tick = (now: number) => {
-      if (playing) {
-        const elapsed = now - startedAt;
-        setProgress(elapsed / remaining);
-        if (elapsed >= remaining) selectEpisode(activeIndex + 1);
+    viewer.querySelector("[data-episode-previous]")?.addEventListener("click", () => {
+      showEpisode(activeEpisode - 1);
+    });
+    viewer.querySelector("[data-episode-next]")?.addEventListener("click", () => {
+      showEpisode(activeEpisode + 1);
+    });
+    viewer.querySelector("[data-viewer-fullscreen]")?.addEventListener("click", async () => {
+      try {
+        if (!document.fullscreenElement) await viewer.requestFullscreen?.();
+        else await document.exitFullscreen?.();
+      } catch {
+        // Fullscreen availability depends on browser and embedding context.
       }
-      animationFrame = requestAnimationFrame(tick);
-    };
-
-    channel.querySelector("[data-channel-previous]")?.addEventListener("click", () => {
-      selectEpisode(activeIndex - 1, true);
     });
-    channel.querySelector("[data-channel-next]")?.addEventListener("click", () => {
-      selectEpisode(activeIndex + 1, true);
+    viewer.querySelector("[data-viewer-back]")?.addEventListener("click", () => {
+      const project = projectData[activeIndex];
+      window.dispatchEvent(
+        new CustomEvent("portfolio:back-to-sessions", {
+          detail: { slug: project?.slug },
+        }),
+      );
     });
-    toggle?.addEventListener("click", () => {
-      playing = !playing;
-      remaining = intervalMs;
-      startedAt = performance.now();
-      setProgress(0);
-      updateToggle();
-    });
-
-    selectors.forEach((selector) => {
-      selector.addEventListener("click", () => {
-        selectEpisode(Number(selector.getAttribute("data-channel-select")), true);
+    episodeDots.forEach((dot) => {
+      dot.addEventListener("click", () => {
+        showEpisode(Number(dot.getAttribute("data-episode-select")));
       });
     });
-
-    dialogSelectors.forEach((selector) => {
-      selector.addEventListener("click", () => {
-        selectEpisode(Number(selector.getAttribute("data-channel-dialog-select")), true);
-        if (dialog instanceof HTMLDialogElement) dialog.close();
+    viewer.querySelector("[data-project-previous]")?.addEventListener("click", () => {
+      showProject(activeIndex - 1);
+    });
+    viewer.querySelector("[data-project-next]")?.addEventListener("click", () => {
+      showProject(activeIndex + 1);
+    });
+    viewer.querySelector("[data-viewer-info]")?.addEventListener("click", () => {
+      const panel = projectNodes[activeIndex]?.querySelector("[data-viewer-info-panel]");
+      if (panel instanceof HTMLElement) {
+        const visible = panel.classList.toggle("is-visible");
+        panel.setAttribute("aria-hidden", visible ? "false" : "true");
+      }
+    });
+    viewer.querySelectorAll("[data-viewer-info-close]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const panel = button.closest("[data-viewer-info-panel]");
+        panel?.classList.remove("is-visible");
+        panel?.setAttribute("aria-hidden", "true");
       });
     });
-
-    channel.querySelector("[data-channel-guide]")?.addEventListener("click", () => {
-      if (dialog instanceof HTMLDialogElement) dialog.showModal();
-    });
-    channel.querySelector("[data-channel-dialog-close]")?.addEventListener("click", () => {
-      if (dialog instanceof HTMLDialogElement) dialog.close();
-    });
-    dialog?.addEventListener("click", (event) => {
-      if (event.target === dialog && dialog instanceof HTMLDialogElement) dialog.close();
-    });
-
     window.addEventListener("keydown", (event) => {
-      if (dialog instanceof HTMLDialogElement && dialog.open) return;
-      if (event.key === "ArrowLeft") {
-        event.preventDefault();
-        selectEpisode(activeIndex - 1, true);
-      }
-      if (event.key === "ArrowRight") {
-        event.preventDefault();
-        selectEpisode(activeIndex + 1, true);
-      }
-      if (event.key === " ") {
-        event.preventDefault();
-        toggle?.dispatchEvent(new MouseEvent("click"));
-      }
+      const panel = viewer.closest("[data-view-panel]");
+      if (panel instanceof HTMLElement && panel.hidden) return;
+      if (event.key === "ArrowLeft") showEpisode(activeEpisode - 1);
+      if (event.key === "ArrowRight") showEpisode(activeEpisode + 1);
+      if (event.key === "ArrowUp") showProject(activeIndex - 1);
+      if (event.key === "ArrowDown") showProject(activeIndex + 1);
     });
 
-    channel.addEventListener("touchstart", (event) => {
-      touchStartX = event.touches[0]?.clientX ?? 0;
-    }, { passive: true });
-    channel.addEventListener("touchend", (event) => {
-      const endX = event.changedTouches[0]?.clientX ?? touchStartX;
-      const distance = endX - touchStartX;
-      if (Math.abs(distance) < 55) return;
-      selectEpisode(activeIndex + (distance < 0 ? 1 : -1), true);
-    }, { passive: true });
-
-    const hashSlug = decodeURIComponent(window.location.hash.slice(1));
-    const hashIndex = episodes.findIndex((episode) => episode.getAttribute("data-slug") === hashSlug);
-    if (hashIndex >= 0) selectEpisode(hashIndex);
-    updateToggle();
-    animationFrame = requestAnimationFrame(tick);
-    window.addEventListener("pagehide", () => cancelAnimationFrame(animationFrame), { once: true });
+    const initialSlug = decodeURIComponent(window.location.hash.slice(1));
+    const initialIndex = projectData.findIndex((project) => project.slug === initialSlug);
+    if (initialIndex >= 0) showProject(initialIndex, false);
+    else showEpisode(0);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        viewer.classList.remove("is-hydrating");
+      });
+    });
+    window.addEventListener("portfolio:navigate", (event) => {
+      const index = projectData.findIndex((project) => project.slug === event.detail?.slug);
+      if (index >= 0) showProject(index, false);
+    });
+    window.addEventListener("portfolio:project-change", (event) => {
+      if (event.detail?.source === "tv") return;
+      const index = projectData.findIndex((project) => project.slug === event.detail?.slug);
+      if (index >= 0) showProject(index, false);
+    });
   }
 </script>

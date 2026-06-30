@@ -1,12 +1,13 @@
 ---
 locale: zh
 slug: floor-plan-reconstruction
-order: 1
+order: 5
 title: 从栅格图片到可编辑户型数据
 eyebrow: 空间智能 · 计算机视觉
-summary: 结合视觉感知与几何重建，把非结构化房产网站图片转化为可编辑建筑数据，并实现规模化生产。
+summary: >-
+  在实践中，设计师常常通过工程图纸用抽象的图形、符号、注释表达设计意图，但图像这个媒介难以进行数字化的管理、统计、计量和应用。该项目通过建立全流程的算法管线，结合计算机视觉与几何优化，将栅格户型图转换为可编辑、结构化的建筑数据结构，以支持产品与业务上的大规模应用。
 role: 端到端算法负责人；带领 4 名工程师和 1 名实习生
-period: 小库科技任职期间
+period: 2022.03–2023.01
 technologies:
   - 语义分割
   - 合成数据
@@ -27,6 +28,18 @@ disclosure: 本案例仅使用脱敏架构与独立绘制的示意图，不包�
 featured: true
 diagram: /diagrams/floor-plan.svg
 diagramAlt: 栅格户型图依次经过语义分割、多边形提取、空间图构建、约束优化，最终生成矢量结果的流程图。
+framework: 计算机视觉
+frameworkSummary: 只有把像素感知与几何、拓扑和产品约束结合，视觉结果才能成为可用数据。
+sessionTitle: 户型图矢量重建
+sessionHeadline: 从视觉到结构
+sessionDescription: 通过全流程算法管线，将栅格户型图从难以管理和计量的图像媒介，转换为可编辑、结构化的建筑数据。
+sessionVisual: /case-studies/floor-plan/source-to-segmentation.webp
+sessionVideo: /case-studies/floor-plan/floorplan-hero-gradient-textured.mp4
+sessionPoster: /case-studies/floor-plan/floorplan-hero-gradient-textured-poster.jpg
+sessionMetric:
+  value: 7万
+  label: 张户型图完成重建
+implementationStatus: 已投入生产
 accent: terracotta
 ---
 

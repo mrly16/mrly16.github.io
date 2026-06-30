@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import ProjectChannel from "../../components/ProjectChannel.astro";
+import PortfolioViewer from "../../components/PortfolioViewer.astro";
 
 const projects = (await getCollection("projects", ({ data }) => data.locale === "zh" && data.featured))
   .sort((a, b) => a.data.order - b.data.order);
@@ -14,5 +14,5 @@ const projects = (await getCollection("projects", ({ data }) => data.locale === 
   locale="zh"
   className="channel-home"
 >
-  <ProjectChannel projects={projects} locale="zh" />
+  <PortfolioViewer projects={projects} locale="zh" />
 </BaseLayout>

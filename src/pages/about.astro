@@ -6,8 +6,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   title="About | Liangyi Murong"
   description="Applied AI engineer and technical leader with experience across computer vision, generative AI, spatial computing, cloud platforms, and customer delivery."
   locale="en"
+  className="identity-page"
 >
-  <header class="page-intro">
+  <header class="page-intro identity-intro">
     <div>
       <p class="eyebrow">About</p>
       <h1>I work where the problem is not fully specified.</h1>
@@ -18,7 +19,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     </p>
   </header>
 
-  <section class="about-grid">
+  <section class="about-grid identity-panel">
     <div class="about-story">
       <p>
         I started in architecture, moved through information science and
@@ -36,7 +37,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         with robots, drones, designers, product teams, and customers.
       </p>
     </div>
-    <div>
+    <div class="identity-track">
       <p class="eyebrow">Experience</p>
       <dl class="timeline">
         <div>
@@ -65,5 +66,23 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         </div>
       </dl>
     </div>
+  </section>
+
+  <section class="identity-signal-grid" aria-label="Working principles">
+    <article>
+      <span>01</span>
+      <h2>Domain before model</h2>
+      <p>Understand the workflow, failure mode, and decision loop before choosing the technical shape.</p>
+    </article>
+    <article>
+      <span>02</span>
+      <h2>Structure where it matters</h2>
+      <p>Use geometry, systems, and constraints when pure model output is not reliable enough.</p>
+    </article>
+    <article>
+      <span>03</span>
+      <h2>Field reality over demos</h2>
+      <p>Build toward deployed usage, customer evidence, and measurable workflow improvement.</p>
+    </article>
   </section>
 </BaseLayout>

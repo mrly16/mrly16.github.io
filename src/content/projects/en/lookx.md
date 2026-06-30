@@ -1,12 +1,13 @@
 ---
 locale: en
 slug: lookx-generative-ai
-order: 3
+order: 4
 title: Making architectural generation usable
 eyebrow: Generative AI · Product Engineering
-summary: Task-specific generative workflows that hid model complexity and helped architecture professionals move from sketches and 3D models to renders.
+summary: >-
+  When generative AI first emerged, many people imagined diffusion models overturning every vertical industry. In reality, vertical products cannot ignore user habits, existing workflows, or what professionals expect from tools. For architects, faithful rendering of design details is a prerequisite, while a low barrier to use and clear usability are what sustain engagement and growth.
 role: Sole algorithm engineer on the product team
-period: XKool tenure
+period: 2023.09–2024.09
 technologies:
   - Stable Diffusion 1.5
   - ControlNet
@@ -27,6 +28,18 @@ disclosure: Product architecture and outcomes are described without publishing t
 featured: true
 diagram: /diagrams/lookx.svg
 diagramAlt: Diagram showing sketch, conceptual volume, and detailed 3D model inputs flowing through task-specific conditioning and diffusion pipelines to architectural renders.
+framework: Image Generation
+frameworkSummary: Model capability was shaped into simple, professional workflows instead of exposing a general-purpose diffusion interface.
+sessionTitle: Architectural AI Rendering
+sessionHeadline: Generation without the interface tax
+sessionDescription: Diffusion workflows shaped around architectural habits, preserving design-detail control while lowering the barrier to use.
+sessionVisual: /case-studies/lookx/lookx-hero-poster.jpg
+sessionVideo: /case-studies/lookx/lookx-hero.mp4
+sessionPoster: /case-studies/lookx/lookx-hero-poster.jpg
+sessionMetric:
+  value: 400K+
+  label: registered users
+implementationStatus: Shipped commercial product
 accent: gold
 ---
 

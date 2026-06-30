@@ -1,0 +1,893 @@
+---
+import type { CollectionEntry } from "astro:content";
+import type { Locale } from "../lib/i18n";
+import FloorPlanProcess from "./FloorPlanProcess.astro";
+import ViewerIcon from "./ViewerIcon.astro";
+
+interface Props {
+  projects: CollectionEntry<"projects">[];
+  locale: Locale;
+}
+
+const { projects, locale } = Astro.props;
+const frameworkLinesBySlug: Record<string, string[]> =
+  locale === "zh"
+    ? {
+        "floor-plan-reconstruction": ["计算机", "视觉"],
+        "robotic-video-intelligence": ["产品/系统", "设计"],
+        "lookx-generative-ai": ["生成式", "模型"],
+        "multimodal-asset-search": ["云原生", "架构"],
+        "vision-agent": ["视觉", "智能体"],
+      }
+    : {
+        "floor-plan-reconstruction": ["Computer", "Vision"],
+        "robotic-video-intelligence": ["System", "Design"],
+        "lookx-generative-ai": ["Generative", "Models"],
+        "multimodal-asset-search": ["Cloud", "Architecture"],
+        "vision-agent": ["Vision", "Agent"],
+      };
+const titleLinesBySlug: Record<string, string[]> =
+  locale === "zh"
+    ? {
+        "floor-plan-reconstruction": ["户型图", "矢量重建"],
+        "robotic-video-intelligence": ["机器人", "视频智能"],
+        "lookx-generative-ai": ["建筑 AI", "渲染"],
+        "multimodal-asset-search": ["多模态", "图片检索"],
+        "vision-agent": ["视觉代理", "进行中"],
+      }
+    : {
+        "floor-plan-reconstruction": ["Raster-to-Vector", "Floor Plans"],
+        "robotic-video-intelligence": ["Robotic Video", "Intelligence"],
+        "lookx-generative-ai": ["Architectural", "AI Rendering"],
+        "multimodal-asset-search": ["Multimodal", "Image Search"],
+        "vision-agent": ["Vision Agent", "Work in Progress"],
+      };
+const copy =
+  locale === "zh"
+    ? {
+        title: "项目展映",
+        previous: "上一个项目",
+        next: "下一个项目",
+        watch: "观看项目细节",
+      }
+    : {
+        title: "Project sessions",
+        previous: "Previous project",
+        next: "Next project",
+        watch: "Watch the story",
+      };
+---
+
+<div class="sessions-view is-hydrating" data-sessions-view tabindex="0" aria-label={copy.title}>
+  <div class="sessions-backgrounds" aria-hidden="true">
+    {projects.map((project, index) => (
+      <div
+        class={`sessions-background accent-${project.data.accent}${index === 0 ? " is-active" : ""}`}
+        data-session-background
+      >
+        {project.data.sessionVideo ? (
+          <video
+            src={project.data.sessionVideo}
+            poster={project.data.sessionPoster ?? project.data.sessionVisual}
+            muted
+            loop
+            playsinline
+            preload="auto"
+          ></video>
+        ) : (
+          <img src={project.data.sessionVisual} alt="" />
+        )}
+      </div>
+    ))}
+  </div>
+  <div class="sessions-shade" aria-hidden="true"></div>
+
+  <nav class="sessions-index" aria-label={copy.title}>
+    <ol>
+      {projects.map((project, index) => (
+        <li data-session-index-item class={index === 0 ? "is-active" : ""}>
+          <button type="button" data-session-select={index}>
+            <strong>
+              {(frameworkLinesBySlug[project.data.slug] ?? [project.data.framework]).map((line) => (
+                <span>{line}</span>
+              ))}
+            </strong>
+          </button>
+        </li>
+      ))}
+    </ol>
+  </nav>
+
+  <div class="sessions-project-stage">
+    <div class="sessions-visuals" aria-live="polite">
+      {projects.map((project, index) => (
+        <figure
+          class={`session-visual accent-${project.data.accent}${index === 0 ? " is-active" : ""}`}
+          data-session-visual
+          aria-hidden={index === 0 ? "false" : "true"}
+        >
+          <div class="session-visual-frame">
+            {project.data.sessionVideo ? (
+              <video
+                src={project.data.sessionVideo}
+                poster={project.data.sessionPoster ?? project.data.sessionVisual}
+                aria-label={project.data.diagramAlt}
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="auto"
+              ></video>
+            ) : project.data.slug === "floor-plan-reconstruction" ? (
+              <FloorPlanProcess alt={project.data.diagramAlt} />
+            ) : (
+              <img src={project.data.sessionVisual} alt={project.data.diagramAlt} />
+            )}
+          </div>
+        </figure>
+      ))}
+    </div>
+
+    <div class="sessions-copy-stack">
+      <div class="sessions-details">
+        {projects.map((project, index) => (
+          <article
+            class={`session-detail${index === 0 ? " is-active" : ""}`}
+            data-session-detail
+            data-slug={project.data.slug}
+            aria-hidden={index === 0 ? "false" : "true"}
+            inert={index === 0 ? undefined : true}
+          >
+            <h1 aria-label={project.data.sessionTitle}>
+              {(titleLinesBySlug[project.data.slug] ?? [project.data.sessionTitle]).map((line) => (
+                <span>{line}</span>
+              ))}
+            </h1>
+            <p class="session-summary">{project.data.sessionDescription}</p>
+            <button type="button" class="session-watch" data-session-watch>
+              <span>{copy.watch}</span>
+            </button>
+          </article>
+        ))}
+      </div>
+
+      <div class="sessions-navigation">
+        <button type="button" data-session-previous aria-label={copy.previous}>
+          <ViewerIcon name="up" size={21} />
+        </button>
+        <button type="button" data-session-next aria-label={copy.next}>
+          <ViewerIcon name="down" size={21} />
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script is:inline define:vars={{ projectSlugs: projects.map((project) => project.data.slug) }}>
+  const sessionsView = document.querySelector("[data-sessions-view]");
+
+  if (sessionsView instanceof HTMLElement) {
+    const indexItems = [...sessionsView.querySelectorAll("[data-session-index-item]")];
+    const visuals = [...sessionsView.querySelectorAll("[data-session-visual]")];
+    const details = [...sessionsView.querySelectorAll("[data-session-detail]")];
+    const backgrounds = [...sessionsView.querySelectorAll("[data-session-background]")];
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let activeIndex = 0;
+    let wheelLocked = false;
+
+    const circularDistance = (index, center) => {
+      const count = projectSlugs.length;
+      let distance = (index - center) % count;
+      if (distance > count / 2) distance -= count;
+      if (distance < -count / 2) distance += count;
+      return distance;
+    };
+
+    const showProject = (nextIndex, announce = true) => {
+      activeIndex = (nextIndex + projectSlugs.length) % projectSlugs.length;
+      const collections = [indexItems, visuals, details, backgrounds];
+
+      collections.forEach((nodes) => {
+        nodes.forEach((node, index) => {
+          const distance = circularDistance(index, activeIndex);
+          const active = index === activeIndex;
+          node.classList.toggle("is-active", active);
+          node.classList.toggle("is-previous", distance === -1);
+          node.classList.toggle("is-next", distance === 1);
+          node.classList.toggle("is-far", Math.abs(distance) > 1);
+          node.style.setProperty("--session-distance", String(distance));
+          node.style.setProperty("--session-depth", String(Math.abs(distance)));
+          node.style.zIndex = String(projectSlugs.length - Math.abs(distance));
+          if (node.matches("[data-session-detail], [data-session-visual]")) {
+            node.setAttribute("aria-hidden", active ? "false" : "true");
+          }
+          if (node.matches("[data-session-detail]")) node.inert = !active;
+        });
+      });
+
+      sessionsView.querySelectorAll("video").forEach((video) => {
+        const owner = video.closest("[data-session-visual], [data-session-background]");
+        const ownerIndex = owner?.matches("[data-session-visual]")
+          ? visuals.indexOf(owner)
+          : backgrounds.indexOf(owner);
+        if (ownerIndex === activeIndex && !reducedMotion) {
+          video.play().catch(() => {});
+          return;
+        }
+        video.pause();
+      });
+
+      if (window.matchMedia("(max-width: 760px)").matches) {
+        indexItems[activeIndex]?.scrollIntoView({
+          behavior: reducedMotion ? "auto" : "smooth",
+          block: "nearest",
+          inline: "center",
+        });
+      }
+
+      if (announce) {
+        window.dispatchEvent(
+          new CustomEvent("portfolio:project-change", {
+            detail: { slug: projectSlugs[activeIndex], source: "sessions" },
+          }),
+        );
+      }
+    };
+
+    sessionsView.querySelectorAll("[data-session-select]").forEach((button) => {
+      button.addEventListener("click", () => {
+        showProject(Number(button.getAttribute("data-session-select")));
+      });
+    });
+    sessionsView.querySelectorAll("[data-session-previous]").forEach((button) => {
+      button.addEventListener("click", () => showProject(activeIndex - 1));
+    });
+    sessionsView.querySelectorAll("[data-session-next]").forEach((button) => {
+      button.addEventListener("click", () => showProject(activeIndex + 1));
+    });
+    sessionsView.querySelectorAll("[data-session-watch]").forEach((button) => {
+      button.addEventListener("click", () => {
+        window.dispatchEvent(
+          new CustomEvent("portfolio:open-deck", {
+            detail: { slug: projectSlugs[activeIndex] },
+          }),
+        );
+      });
+    });
+    sessionsView.addEventListener(
+      "wheel",
+      (event) => {
+        if (Math.abs(event.deltaY) < 18 || wheelLocked) return;
+        event.preventDefault();
+        wheelLocked = true;
+        showProject(activeIndex + (event.deltaY > 0 ? 1 : -1));
+        window.setTimeout(() => {
+          wheelLocked = false;
+        }, reducedMotion ? 120 : 650);
+      },
+      { passive: false },
+    );
+
+    sessionsView.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowUp") {
+        event.preventDefault();
+        showProject(activeIndex - 1);
+      }
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        showProject(activeIndex + 1);
+      }
+    });
+
+    window.addEventListener("portfolio:navigate", (event) => {
+      const index = projectSlugs.indexOf(event.detail?.slug);
+      if (index >= 0) showProject(index, false);
+    });
+    window.addEventListener("portfolio:project-change", (event) => {
+      if (event.detail?.source === "sessions") return;
+      const index = projectSlugs.indexOf(event.detail?.slug);
+      if (index >= 0) showProject(index, false);
+    });
+
+    const initialSlug = decodeURIComponent(window.location.hash.slice(1));
+    const initialIndex = projectSlugs.indexOf(initialSlug);
+    showProject(initialIndex >= 0 ? initialIndex : 0, false);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        sessionsView.classList.remove("is-hydrating");
+      });
+    });
+  }
+</script>
+
+<style>
+  .sessions-view {
+    --session-ink: #f3f0e8;
+    --session-index-face: var(--sans);
+    --session-title-face: var(--serif);
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    grid-template-columns: minmax(18rem, 0.72fr) minmax(42rem, 1.72fr);
+    column-gap: clamp(1.5rem, 3vw, 3.75rem);
+    align-items: center;
+    min-height: calc(100svh - 5.4rem);
+    padding: clamp(5.5rem, 9vh, 8rem) clamp(2rem, 3.4vw, 4.25rem) clamp(3rem, 6vh, 5rem);
+    overflow: hidden;
+    color: var(--session-ink);
+    background: #101514;
+    outline: none;
+  }
+
+  .sessions-view.is-hydrating *,
+  .sessions-view.is-hydrating *::before,
+  .sessions-view.is-hydrating *::after {
+    transition: none !important;
+    animation-duration: 0.001ms !important;
+    animation-delay: 0s !important;
+  }
+
+  .sessions-backgrounds,
+  .sessions-background,
+  .sessions-shade {
+    position: absolute;
+    inset: 0;
+  }
+
+  .sessions-backgrounds {
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .sessions-background {
+    --session-accent: #d58b6c;
+    opacity: 0;
+    transform: scale(1.16) translateY(calc(var(--session-distance, 0) * 8%));
+    transition:
+      opacity 680ms ease,
+      transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+    overflow: hidden;
+  }
+
+  .sessions-background.accent-sage {
+    --session-accent: #90a892;
+  }
+
+  .sessions-background.accent-blue {
+    --session-accent: #7aa8b6;
+  }
+
+  .sessions-background.accent-gold {
+    --session-accent: #d5aa58;
+  }
+
+  .sessions-background::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 62% 44%, color-mix(in srgb, var(--session-accent, #d58b6c) 30%, transparent), transparent 38%),
+      linear-gradient(90deg, rgba(5, 8, 8, 0.58), rgba(9, 12, 12, 0.14) 50%, rgba(7, 9, 9, 0.5)),
+      linear-gradient(180deg, rgba(6, 8, 8, 0.02), rgba(6, 8, 8, 0.28));
+    mix-blend-mode: normal;
+  }
+
+  .sessions-background img,
+  .sessions-background video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(30px) saturate(1.35) contrast(1.08) brightness(0.82);
+    transform: scale(1.12);
+    transform-origin: center;
+  }
+
+  .sessions-background.is-active {
+    opacity: 1;
+    transform: scale(1.08) translateY(0);
+  }
+
+  .sessions-background.is-active img,
+  .sessions-background.is-active video {
+    animation: sessionBackgroundDrift 16s ease-in-out infinite alternate;
+  }
+
+  .sessions-shade {
+    z-index: 1;
+    background:
+      radial-gradient(circle at 58% 44%, transparent 0 24%, rgba(6, 8, 8, 0.1) 58%, rgba(6, 8, 8, 0.46) 100%),
+      linear-gradient(90deg, rgba(4, 6, 6, 0.34), rgba(4, 6, 6, 0.08) 50%, rgba(4, 6, 6, 0.24)),
+      linear-gradient(rgba(4, 6, 6, 0.02), rgba(4, 6, 6, 0.26));
+    pointer-events: none;
+  }
+
+  @keyframes sessionBackgroundDrift {
+    from {
+      transform: scale(1.12) translate3d(-2.4%, -1.6%, 0);
+    }
+    to {
+      transform: scale(1.2) translate3d(2.4%, 1.6%, 0);
+    }
+  }
+
+  .sessions-index {
+    position: relative;
+    z-index: 3;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .sessions-project-stage {
+    position: relative;
+    z-index: 2;
+    align-self: center;
+    display: grid;
+    grid-template-columns: minmax(20rem, 0.88fr) minmax(26rem, 1.12fr);
+    align-items: stretch;
+    gap: clamp(2rem, 3.4vw, 4.75rem);
+    width: 100%;
+    height: min(40rem, 74vh);
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .sessions-index ol {
+    position: relative;
+    height: min(27rem, 56vh);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .sessions-index li {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    opacity: 0;
+    filter: blur(5px);
+    transform: translateY(calc(-50% + var(--session-distance, 0) * 9.8rem)) scale(0.72);
+    transform-origin: left center;
+    transition:
+      opacity 520ms ease,
+      filter 520ms ease,
+      transform 680ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .sessions-view .sessions-index li.is-active {
+    opacity: 1;
+    filter: none;
+    transform: translateY(-50%) scale(1);
+  }
+
+  .sessions-view .sessions-index li.is-previous,
+  .sessions-view .sessions-index li.is-next {
+    opacity: 0.25;
+    filter: blur(2.5px);
+  }
+
+  .sessions-index li.is-far {
+    pointer-events: none;
+  }
+
+  .sessions-index button {
+    display: block;
+    width: 100%;
+    padding: 1rem 1rem 1rem 0;
+    border: 0;
+    color: inherit;
+    text-align: left;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .sessions-index button strong {
+    display: block;
+    max-width: 9ch;
+    font-family: var(--session-index-face);
+    font-size: clamp(3.2rem, 5vw, 6.2rem);
+    font-weight: 600;
+    line-height: 0.88;
+    letter-spacing: -0.065em;
+    text-wrap: balance;
+  }
+
+  .sessions-index button strong span {
+    display: block;
+  }
+
+  .sessions-visuals {
+    position: relative;
+    z-index: 2;
+    align-self: center;
+    width: 100%;
+    aspect-ratio: 1 / 0.74;
+    perspective: 1100px;
+    grid-column: 1;
+  }
+
+  .session-visual {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    margin: 0;
+    opacity: 0;
+    pointer-events: none;
+    transform:
+      translate3d(calc(var(--session-distance, 0) * -46%), calc(var(--session-distance, 0) * 58%), -180px)
+      rotateX(calc(var(--session-distance, 0) * -4deg))
+      rotateY(calc(var(--session-distance, 0) * 8deg))
+      scale(0.92);
+    transform-style: preserve-3d;
+    transition:
+      opacity 380ms ease,
+      transform 720ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .sessions-view .session-visual.is-active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate3d(0, 0, 0) rotateX(1.5deg) rotateY(-5deg) scale(1);
+  }
+
+  .sessions-view .session-visual.is-previous,
+  .sessions-view .session-visual.is-next {
+    opacity: 0.22;
+    filter: blur(2.5px) saturate(0.72);
+  }
+
+  .session-visual.is-far {
+    opacity: 0;
+  }
+
+  .session-visual-frame {
+    --session-media-background: #e7e3d9;
+    position: relative;
+    width: min(100%, 32rem);
+    aspect-ratio: 4 / 3;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: clamp(0.45rem, 0.9vw, 0.8rem);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.04) inset,
+      0 32px 70px rgba(0, 0, 0, 0.38);
+    overflow: hidden;
+  }
+
+  .session-visual-frame::after {
+    content: none;
+  }
+
+  .session-visual-frame img,
+  .session-visual-frame video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--session-media-background);
+    object-position: center;
+  }
+
+  .session-visual-frame img {
+    object-fit: contain;
+  }
+
+  .session-visual-frame video {
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .sessions-copy-stack {
+    position: relative;
+    z-index: 3;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    width: 100%;
+    height: 100%;
+    grid-column: 2;
+  }
+
+  .sessions-details {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .session-detail {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-bottom: 1.75rem;
+    opacity: 0;
+    filter: blur(5px);
+    pointer-events: none;
+    transform: translateY(calc(var(--session-distance, 0) * 24%));
+    transition:
+      opacity 220ms ease,
+      filter 320ms ease,
+      transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .session-detail.is-active {
+    opacity: 1;
+    filter: none;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .session-detail h1 {
+    max-width: 12ch;
+    margin: 0;
+    font-family: var(--session-title-face);
+    font-size: clamp(3.35rem, 4.9vw, 6.2rem);
+    font-optical-sizing: auto;
+    font-weight: 500;
+    line-height: 0.88;
+    letter-spacing: -0.05em;
+    text-wrap: balance;
+  }
+
+  .session-detail h1 span {
+    display: block;
+  }
+
+  .session-summary {
+    max-width: 31rem;
+    margin: 1.55rem 0 0;
+    color: rgba(255, 255, 255, 0.78);
+    font: 450 clamp(0.95rem, 1.08vw, 1.12rem)/1.52 var(--sans);
+  }
+
+  .session-watch {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 1.35rem;
+    padding: 0;
+    border: 0;
+    color: rgba(255, 255, 255, 0.74);
+    background: transparent;
+    font: 300 clamp(0.78rem, 0.84vw, 0.88rem)/1.35 var(--text);
+    line-height: 1.3;
+    letter-spacing: 0.01em;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-color: rgba(255, 255, 255, 0.36);
+    text-underline-offset: 0.28em;
+    cursor: pointer;
+  }
+
+  .session-watch:hover,
+  .session-watch:focus-visible {
+    color: rgba(255, 250, 240, 0.94);
+    text-decoration-color: rgba(255, 250, 240, 0.68);
+  }
+
+  .session-watch:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.45);
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+
+  .sessions-copy-stack > .sessions-navigation {
+    position: relative;
+    z-index: 8;
+    display: flex;
+    gap: 0.55rem;
+    width: fit-content;
+    flex: 0 0 auto;
+  }
+
+  .sessions-copy-stack > .sessions-navigation button {
+    display: grid;
+    place-items: center;
+    width: 2.34rem;
+    height: 2.34rem;
+    border: 0;
+    border-radius: 50%;
+    color: #151817;
+    background: #f2eee5;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+    cursor: pointer;
+    transition:
+      transform 180ms ease,
+      background 180ms ease;
+  }
+
+  .sessions-copy-stack > .sessions-navigation button:hover {
+    background: #fffdf7;
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 1050px) {
+    .sessions-view {
+      grid-template-columns: minmax(11rem, 0.58fr) minmax(35rem, 1.65fr);
+      padding-inline: 2rem;
+    }
+
+    .sessions-project-stage {
+      grid-template-columns: minmax(16rem, 0.82fr) minmax(19rem, 1fr);
+      gap: 1.5rem;
+    }
+
+    .session-detail h1 {
+      font-size: clamp(3.2rem, 5.8vw, 5.2rem);
+    }
+  }
+
+  :global(html[lang="zh-CN"]) .sessions-index button strong {
+    font-size: clamp(2.85rem, 4.35vw, 5.25rem);
+    line-height: 1.15;
+    letter-spacing: normal;
+  }
+
+  :global(html[lang="zh-CN"]) .session-detail h1 {
+    font-size: clamp(3.2rem, 4.3vw, 5.3rem);
+    line-height: 1.18;
+    letter-spacing: normal;
+  }
+
+  @media (max-width: 760px) {
+    .sessions-view {
+      display: grid;
+      grid-template: "visual" minmax(14rem, 32vh) "detail" auto / 1fr;
+      align-content: start;
+      min-height: calc(100svh - 4.5rem);
+      padding: 7.3rem 1rem 6.2rem;
+    }
+
+    .sessions-index {
+      position: absolute;
+      z-index: 6;
+      top: 5.2rem;
+      bottom: auto;
+      left: 1rem;
+      width: 42%;
+      height: 15rem;
+      align-self: auto;
+      overflow: visible;
+    }
+
+    .sessions-project-stage {
+      display: contents;
+    }
+
+    .sessions-index ol {
+      position: relative;
+      display: block;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .sessions-index li,
+    .sessions-index li.is-active {
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      opacity: 0;
+      filter: blur(2.5px);
+      transform: translateY(calc(-50% + var(--session-distance, 0) * 6.2rem)) scale(0.74);
+      transform-origin: left center;
+    }
+
+    .sessions-view .sessions-index li.is-active {
+      opacity: 1;
+      filter: none;
+      transform: translateY(-50%) scale(1);
+    }
+
+    .sessions-index li.is-active strong {
+      text-shadow: 0 2px 18px rgba(0, 0, 0, 0.72);
+    }
+
+    .sessions-view .sessions-index li.is-previous,
+    .sessions-view .sessions-index li.is-next {
+      opacity: 0.45;
+      filter: blur(1.5px);
+    }
+
+    .sessions-index button {
+      display: block;
+      min-height: 0;
+      padding: 0.5rem 0;
+      border: 0;
+      border-radius: 0;
+    }
+
+    .sessions-index button strong {
+      max-width: 8ch;
+      font-size: clamp(1.65rem, 7.6vw, 2.35rem);
+      line-height: 0.9;
+      letter-spacing: -0.055em;
+      white-space: normal;
+    }
+
+    .sessions-visuals {
+      grid-area: visual;
+      aspect-ratio: auto;
+    }
+
+    .session-visual-frame {
+      width: min(62%, 20rem);
+      height: auto;
+      aspect-ratio: 4 / 3;
+      margin-left: 38%;
+    }
+
+    .session-visual.is-previous,
+    .session-visual.is-next,
+    .session-visual.is-far {
+      opacity: 0;
+    }
+
+    .sessions-copy-stack {
+      grid-area: detail;
+      height: auto;
+      min-height: 20rem;
+    }
+
+    .sessions-details {
+      min-height: 20rem;
+    }
+
+    .session-detail {
+      justify-content: flex-start;
+      padding-top: 4rem;
+      padding-bottom: 0;
+    }
+
+    .session-detail h1 {
+      max-width: 12ch;
+      font-size: clamp(3rem, 14vw, 4.8rem);
+      line-height: 0.88;
+    }
+
+    .session-summary {
+      margin-top: 0.85rem;
+      font-size: 0.9rem;
+    }
+
+    .sessions-copy-stack > .sessions-navigation {
+      position: fixed;
+      z-index: 55;
+      right: 1rem;
+      bottom: 5.4rem;
+      margin: 0;
+    }
+
+    :global(html[lang="zh-CN"]) .sessions-index button strong {
+      font-size: clamp(1.48rem, 6.55vw, 2rem);
+      line-height: 1.15;
+      letter-spacing: normal;
+    }
+
+    :global(html[lang="zh-CN"]) .session-detail h1 {
+      font-size: clamp(2.55rem, 11.4vw, 3.85rem);
+      line-height: 1.18;
+      letter-spacing: normal;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sessions-background,
+    .sessions-index li,
+    .session-visual,
+    .session-detail,
+    .sessions-copy-stack > .sessions-navigation button {
+      transition: none;
+    }
+
+    .sessions-background.is-active img,
+    .sessions-background.is-active video {
+      animation: none;
+    }
+  }
+</style>
