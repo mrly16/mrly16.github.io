@@ -17,12 +17,19 @@ const localeTarget =
 const isCurrent = (href: string) => currentPath === href || `${currentPath}/` === href;
 const nameLabel = locale === "zh" ? "慕容良一" : "Liangyi Murong";
 const homeLabel = locale === "zh" ? `返回首页，${nameLabel}` : `Home, ${nameLabel}`;
-const monogram = locale === "zh" ? "良一" : "LM";
 ---
 
 <header class="site-header">
   <a class="wordmark" href={copy.home} aria-label={homeLabel}>
-    <span class="wordmark-name" aria-hidden="true">{monogram}</span>
+    <svg class="wordmark-logo" xmlns="http://www.w3.org/2000/svg" width="1600" height="360" viewBox="0 0 1600 360" role="img" aria-hidden="true" fill="none">
+      <rect width="1600" height="360" fill="transparent"/>
+      <text x="40" y="286"
+            font-family="halyard-display-variable, Impact, 'Arial Black', sans-serif"
+            font-size="340"
+            font-weight="900"
+            letter-spacing="8"
+            fill="#f8f4eb">MRLY</text>
+    </svg>
   </a>
   <nav aria-label={locale === "zh" ? "主导航" : "Primary navigation"}>
     <a href={copy.projects} aria-current={isCurrent(copy.projects) ? "page" : undefined}>{copy.nav.work}</a>

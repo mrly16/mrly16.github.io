@@ -33,9 +33,9 @@ frameworkSummary: Model capability was shaped into simple, professional workflow
 sessionTitle: Architectural AI Rendering
 sessionHeadline: Generation without the interface tax
 sessionDescription: Diffusion workflows shaped around architectural habits, preserving design-detail control while lowering the barrier to use.
-sessionVisual: /case-studies/lookx/lookx-hero-poster.jpg
+sessionVisual: /case-studies/lookx/lookx-hero-video-poster.jpg
 sessionVideo: /case-studies/lookx/lookx-hero.mp4
-sessionPoster: /case-studies/lookx/lookx-hero-poster.jpg
+sessionPoster: /case-studies/lookx/lookx-hero-video-poster.jpg
 sessionMetric:
   value: 400K+
   label: registered users

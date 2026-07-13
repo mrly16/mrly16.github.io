@@ -33,9 +33,9 @@ frameworkSummary: 将模型能力封装为专业而简单的任务工作流，�
 sessionTitle: 建筑 AI 渲染
 sessionHeadline: 隐藏模型，保留创造
 sessionDescription: 把扩散模型封装进建筑师熟悉的任务流程，在保持设计细节控制的同时降低使用门槛。
-sessionVisual: /case-studies/lookx/lookx-hero-poster.jpg
+sessionVisual: /case-studies/lookx/lookx-hero-video-poster.jpg
 sessionVideo: /case-studies/lookx/lookx-hero.mp4
-sessionPoster: /case-studies/lookx/lookx-hero-poster.jpg
+sessionPoster: /case-studies/lookx/lookx-hero-video-poster.jpg
 sessionMetric:
   value: 40万+
   label: 注册用户

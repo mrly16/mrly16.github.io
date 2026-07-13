@@ -34,44 +34,74 @@ const pillTitles: Record<string, { en: [string, string]; zh: [string, string] }>
   "lookx-generative-ai": { en: ["Images learn", "to dream"], zh: ["图像开始", "做梦"] },
   "floor-plan-reconstruction": { en: ["Pixels become", "rooms"], zh: ["像素长成", "房间"] },
 };
+const pillThumbs: Record<string, string> = {
+  "robotic-video-intelligence": "/case-studies/pill-thumbs/videointelligence.png",
+  "floor-plan-reconstruction": "/case-studies/pill-thumbs/floorplan.png",
+  "lookx-generative-ai": "/case-studies/pill-thumbs/lookx.png",
+  "multimodal-asset-search": "/case-studies/pill-thumbs/mmsearch.png",
+};
 const firstTimeline = projects[0] ? timelineMeta[projects[0].data.slug] : undefined;
 const firstCompany = firstTimeline ? companyLinks[firstTimeline.company] : undefined;
 const floorPlanDeck =
   locale === "zh"
     ? {
         context: {
-          title: "让户型图成为空间数据",
-          summary: "把静态图纸转成可编辑、可检索、可计算的空间模型，连接设计自动化、资产管理与数字孪生。",
+          title: "户型图能被读懂，却不能被计算",
+          summary: "设计师能从图纸中理解空间关系，但产品系统无法直接统计面积、生成变体、做结构分析或复用空间数据。",
+        },
+        bottleneck: {
+          title: "缺少中间层，应用只能重画",
+          summary: "如果图像不能变成墙、门窗、房间和拓扑关系，后续的计量、检索、BIM 导出和业务应用都会停在人工环节。",
         },
         synthetic: {
-          title: "合成数据训练分割",
-          summary: "真实标注稀缺，先用可控合成户型和语义标签训练模型，再用风格扰动覆盖真实图纸差异。",
+          title: "用前端渲染生成可训练的户型图",
+          summary: "我把 Xkool 既有矢量户型重新渲染成户型图图像，再用几何计算同步生成分割、房间和边界标注，绕开高成本人工标注。",
         },
         graph: {
-          title: "图优化重建墙线拓扑",
-          summary: "房间多边形提供墙体中心线线索；节点融合、正交约束和边线吸附把噪声轮廓收敛成稳定图结构。",
+          title: "再把分割结果优化成墙体中心线图",
+          summary: "从 segmentation 得到房间轮廓后，通过多边形简化和两轮图优化，把噪声边界收敛为可编辑的空间骨架。",
+        },
+        roomOptimization: {
+          title: "房间轮廓从像素边界收敛为稳定多边形",
+          summary: "通过顶点合并、边界吸附和几何约束，把像素级分割轮廓优化成可继续建模的房间多边形。",
+        },
+        wallCenterOptimization: {
+          title: "墙体中心线把房间多边形合并为空间骨架",
+          summary: "通过尺度估计、墙宽计算和图优化，把房间边界收敛为表达墙段、房间和构件关系的中心线图。",
         },
         result: {
-          title: "矢量化导出 BIM / IFC",
-          summary: "门窗投影回墙线，房间和墙体变成语义几何，最终可以导出、渲染、测量和交互。",
+          title: "最终得到的是可复用的空间数据",
+          summary: "系统生成 5 万+ 矢量户型数据，覆盖中国主流住宅户型，并在 Xkool 多个产品和业务场景中复用。",
         },
       }
     : {
         context: {
-          title: "Floor plans become spatial data",
-          summary: "Turning static plans into editable, searchable, computable space unlocks design automation, asset intelligence, and digital-twin workflows.",
+          title: "Floor plans are readable, but not computable",
+          summary: "Designers can read spatial intent from drawings, but product systems cannot directly measure, vary, analyze, or reuse that space.",
+        },
+        bottleneck: {
+          title: "Without structure, every application redraws",
+          summary: "If an image cannot become walls, openings, rooms, and topology, measurement, retrieval, BIM export, and business workflows stay manual.",
         },
         synthetic: {
-          title: "Synthetic data for segmentation",
-          summary: "Scarce labels are bootstrapped with controllable generated plans, semantic masks, and style randomization across drawing conventions.",
+          title: "Frontend rendering made floor-plan data trainable",
+          summary: "I rendered existing Xkool vector layouts back into floor-plan images, then used geometry calculation to generate segmentation, room, and boundary annotations without manual labeling.",
         },
         graph: {
-          title: "Graph optimization for topology",
-          summary: "Room polygons imply wall centerlines; node fusion, orthogonal constraints, and edge attraction stabilize the structural graph.",
+          title: "Geometry optimization turns masks into wall centerlines",
+          summary: "Segmentation gives room contours; polygon simplification and two graph-optimization rounds turn noisy boundaries into editable spatial skeletons.",
+        },
+        roomOptimization: {
+          title: "Room contours stabilize into polygon graphs",
+          summary: "Vertices are merged and edges are adjusted so pixel-level contours become stable room polygon graphs.",
+        },
+        wallCenterOptimization: {
+          title: "Wall centerlines turn room polygons into a spatial skeleton",
+          summary: "Scale estimation, wall-width calculation, and graph optimization turn room boundaries into wall segments that organize rooms and components.",
         },
         result: {
-          title: "Vectorization to BIM / IFC",
-          summary: "Openings are projected back onto wall lines; rooms and walls become semantic geometry that can be exported, rendered, measured, and interacted with.",
+          title: "The output is reusable spatial data",
+          summary: "The system generated 50K+ vectorized layouts across mainstream Chinese residential plans and was reused in multiple Xkool projects.",
         },
       };
 type StoryDeckSlide = {
@@ -79,423 +109,409 @@ type StoryDeckSlide = {
   title: string;
   summary: string;
   visual: string;
+  layout?: "statement" | "split" | "board" | "process" | "metrics";
+  eyebrow?: string;
+  points?: string[];
+  callout?: {
+    label: string;
+    value: string;
+  };
   media?: {
     type: "image" | "video";
     src: string;
     poster?: string;
     alt?: string;
+    caption?: string;
   };
   chips?: string[];
   metrics?: { value: string; label: string }[];
 };
+const resolveStoryLayout = (slide: StoryDeckSlide, index: number): NonNullable<StoryDeckSlide["layout"]> => {
+  if (slide.layout) return slide.layout;
+  if (slide.metrics) return "metrics";
+  if (index === 0 && slide.callout) return "statement";
+  if (slide.points && !slide.media) return "process";
+  if (slide.media) return "split";
+  return "board";
+};
 const storyDecks: Record<string, StoryDeckSlide[]> =
   locale === "zh"
     ? {
-        "lookx-generative-ai": [
-          {
-            kicker: "WHY IT MATTERS",
-            title: "建筑生成必须可控",
-            summary:
-              "建筑师需要的是可迭代的视觉方案，不是复杂的模型参数。生成式 AI 只有被封装进专业工作流，才可能进入真实产品。",
-            visual: "lookx-context",
-            media: {
-              type: "video",
-              src: "/case-studies/lookx/lookx-hero.mp4",
-              poster: "/case-studies/lookx/lookx-hero-poster.jpg",
-            },
-            chips: ["Sketch", "Concept", "Render"],
-          },
-          {
-            kicker: "WORKFLOW DESIGN",
-            title: "三种任务模式",
-            summary:
-              "Sketch、Concept、Render 对应不同设计阶段，把 ControlNet、默认参数和模型行为藏在少量有意义的操作后面。",
-            visual: "lookx-workflow",
-            chips: ["草图探索", "体块概念", "精细渲染"],
-          },
-          {
-            kicker: "MODEL / DATA",
-            title: "领域模型与数据工具",
-            summary:
-              "基于 Stable Diffusion 1.5 和定制 ControlNet，配合约 1 万张建筑训练图、caption 与清洗工具迭代模型。",
-            visual: "lookx-model",
-            media: {
-              type: "image",
-              src: "/diagrams/lookx.svg",
-              alt: "LookX architecture diagram",
-            },
-            chips: ["SD 1.5", "ControlNet", "10K data", "ComfyUI"],
-          },
-          {
-            kicker: "PRODUCT RESULT",
-            title: "从模型能力到商业产品",
-            summary:
-              "Render Mode 成为主要使用场景；关键不是模型炫技，而是几何控制、速度和交互封装。",
-            visual: "lookx-result",
-            media: {
-              type: "video",
-              src: "/case-studies/lookx/lookx-hero.mp4",
-              poster: "/case-studies/lookx/lookx-hero-poster.jpg",
-            },
-            metrics: [
-              { value: "40万+", label: "注册用户" },
-              { value: "70%+", label: "来自 Render 模式" },
-              { value: "20秒", label: "单次生成" },
-            ],
-          },
-        ],
         "multimodal-asset-search": [
           {
-            kicker: "WHY IT MATTERS",
-            title: "百万图片不能靠文件夹管理",
-            summary:
-              "建模、测试、算法和产品团队需要共享发现系统，而不是在本地目录里猜文件名。",
-            visual: "mm-context",
-            media: {
-              type: "video",
-              src: "/case-studies/multimodal-search/mmsearch-hero-gradient.mp4",
-              poster: "/case-studies/multimodal-search/mmsearch-hero-gradient-poster.jpg",
-            },
-            chips: ["Text", "Image", "Tag", "Caption"],
-          },
-          {
-            kicker: "EMBEDDING LAYER",
-            title: "CLIP 让视觉资产可检索",
-            summary:
-              "文本、图片、标签和 caption 被映射到同一语义空间，搜索从文件管理变成视觉发现。",
-            visual: "mm-embedding",
-            chips: ["CLIP", "Vector Search", "Metadata"],
-          },
-          {
-            kicker: "CLOUD SYSTEM",
-            title: "GPU 批处理与云检索分层",
-            summary:
-              "GKE 承接长时间 GPU embedding 批任务，Cloud Run 承接用户搜索，BigQuery 和 Vertex 连接语义与元数据。",
-            visual: "mm-architecture",
+            kicker: "视觉数据",
+            title: "视觉数据难以存储、组织、管理和检索",
+            summary: "丰富的元数据——来自模型预测、人工标注、传感器日志和运维上下文——让图像可被发现，但前提是它们被结构化并可搜索。",
+            visual: "mm-frontpage",
+            layout: "statement",
             media: {
               type: "image",
-              src: "/diagrams/multimodal-search.svg",
-              alt: "Multimodal search cloud architecture",
+              src: "/case-studies/multimodal-search/frontpage-hero.png",
+              alt: "多模态检索系统界面",
+              caption: "Annotated Stuffing Box of a pumpjack in drone-shot images",
             },
+          },
+          {
+            kicker: "元数据层",
+            title: "一张图像需要被多种线索理解",
+            summary: "文本、图像 embedding、caption、annotation、tag、description 和业务 metadata 都是检索入口。它们让用户能从不同工作流切入同一批视觉资产。",
+            visual: "mm-metadata",
+            layout: "board",
+          },
+          {
+            kicker: "系统架构",
+            title: "成本、吞吐和检索体验需要一起设计",
+            summary: "我选择自托管 CLIP 承接高吞吐 embedding，用 Vertex AI 做相似度检索，并用 BigQuery 作为连接 GCS 与 Web 应用的主特征表。",
+            visual: "mm-infra",
+            layout: "board",
+            points: ["100 万图像入库", "120 images/s CLIP embedding", "< 1s 查询响应时间"],
+          },
+          {
+            kicker: "真实演示",
+            title: "文本和图像都可以成为查询入口",
+            summary: "",
+            visual: "mm-real-demo",
+            layout: "board",
+            media: {
+              type: "video",
+              src: "/case-studies/multimodal-search/real-demo-video.mp4",
+              alt: "多模态检索真实演示录屏",
+            },
+          },
+        ],
+        "lookx-generative-ai": [
+          {
+            kicker: "WHY",
+            title: "AI 产品应该尊重它服务的人",
+            summary: "对建筑师来说，AI 应该保留设计意图，交付可控而精确的渲染，并让早期设计叙事比反复试错更低成本。",
+            visual: "lookx-context",
+            layout: "statement",
+            media: {
+              type: "image",
+              src: "/case-studies/lookx/lookx-hero-image.webp",
+              alt: "LookX 建筑 AI 渲染界面",
+            },
+          },
+          {
+            kicker: "RENDER MODE",
+            title: "用户带来的不是同一种图片",
+            summary: "有人上传草图寻找灵感，有人用体块图快速表达方案，也有人拿专业模型截图要求精确渲染。我把这些入口整理成三类输入，并用意图匹配与 ComfyUI workflow handler 接到不同生成管线。",
+            visual: "lookx-render-mode",
+            layout: "split",
+          },
+          {
+            kicker: "AUTO TRAINING",
+            title: "把模型训练藏进一个自然动作",
+            summary: "LoRA 训练需要处理学习率、network dimension、alpha 等细节，它们会影响风格表达、泛化能力和 GPU 成本。我把这些参数决策收进自动训练管线，让用户只需要上传参考图。",
+            visual: "lookx-lora-training",
+            layout: "split",
+          },
+          {
+            kicker: "GENERATE SAME",
+            title: "好结果不该只能被猜出来",
+            summary: "生成图本身比 prompt 透露更多信息。Generate Same 让用户复用广场作品背后的 prompt、参考图、模型和 LoRA 组合，也让自己的历史结果成为下一次创作的锚点。",
+            visual: "lookx-generate-same",
+            layout: "split",
+          },
+          {
+            kicker: "TECH",
+            title: "深入技术，让工具真正专业可用",
+            summary: "",
+            visual: "lookx-tech-system",
+            layout: "board",
           },
           {
             kicker: "RESULT",
-            title: "一秒级多模态发现",
-            summary:
-              "100 万张图片被索引进统一平台，预热后搜索约 1 秒返回，支持多个内部团队复用资产。",
-            visual: "mm-result",
+            title: "产品增长来自真实的建筑师使用",
+            summary: "LookX 成为全球市场上表现最好的建筑 AI SaaS 产品之一。AI 热潮带来了自然流量，但真正留下用户的是可控渲染、低门槛工作流和社区传播。",
+            visual: "lookx-market-result",
+            layout: "metrics",
             media: {
-              type: "video",
-              src: "/case-studies/multimodal-search/mmsearch-hero-gradient.mp4",
-              poster: "/case-studies/multimodal-search/mmsearch-hero-gradient-poster.jpg",
+              type: "image",
+              src: "/case-studies/lookx/user-sharing-on-social-media.png",
+              alt: "Users sharing LookX AI rendering workflows on social media",
             },
             metrics: [
-              { value: "100万", label: "图片索引" },
-              { value: "约1秒", label: "预热后搜索" },
-              { value: "100+ FPS", label: "embedding 吞吐" },
+              { value: "$30K", label: "MRR" },
+              { value: "600K", label: "Registered users" },
+              { value: "$0", label: "Marketing budget" },
             ],
           },
         ],
         "robotic-video-intelligence": [
           {
-            kicker: "WHY IT MATTERS",
-            title: "POC 缺的是共同系统",
-            summary:
-              "设备、算法、操作人员和客户证据需要被连接起来；缺的不是另一个检测模型，而是一条可复现的现场链路。",
-            visual: "video-context",
+            kicker: "WHY",
+            title: "视觉模型的难题常发生在部署后",
+            summary: "模型在实验室里看似稳定，到了客户现场却会遇到新场景、新链路和缺少证据的问题，导致“为什么没检测出来”很难回答。",
+            visual: "video-frontpage",
+            layout: "statement",
             media: {
               type: "image",
-              src: "/case-studies/video-intelligence/operations-loop.svg",
-              alt: "Video operations loop",
+              src: "/case-studies/video-intelligence/video-intelligence-hero.png",
+              alt: "视频智能平台界面",
             },
           },
           {
-            kicker: "TASK WORKFLOW",
-            title: "任务比模型调用更重要",
-            summary:
-              "流转流、文件转流、文件转文件把实时演示、历史回放和批量回归统一到同一个任务系统。",
+            kicker: "BOTTLENECK",
+            title: "漏检不是算法一个人的问题",
+            summary: "算法、推理、产品、方案、客户和飞控平台都在同一条链路里。没有统一证据界面时，每个角色只能看到问题的一部分。",
+            visual: "video-roles",
+            layout: "board",
+            chips: ["Algorithm", "Inference", "Product", "Customer"],
+          },
+          {
+            kicker: "CHOICE",
+            title: "视频任务成为共享证据入口",
+            summary: "实时流、历史回放、批量测试和客户演示都围绕视频卡片展开，让产品、算法、测试和方案团队在同一个对象上协作。",
             visual: "video-workflow",
-            chips: ["Stream → Stream", "File → Stream", "File → File"],
+            layout: "process",
+            points: ["视频卡片承载任务状态和操作入口", "片段选择帮助定位具体失败时刻", "前端渲染与模型推理解耦"],
           },
           {
-            kicker: "SYSTEM LAYERS",
-            title: "媒体、GPU、事件证据层",
-            summary:
-              "GStreamer 管媒体，GPU 服务管推理，事件层保存快照、时间戳和帧级结果，让失败可以复现。",
+            kicker: "CORE",
+            title: "系统核心是重构视频分析引擎",
+            summary: "我用微服务桥接跨服务器推理结果，让一个 GPU 实例承接实时和离线分析，并避免流式管线阻塞或回灌。",
             visual: "video-system",
-            media: {
-              type: "image",
-              src: "/diagrams/video-platform.svg",
-              alt: "Video intelligence platform architecture",
-            },
+            layout: "split",
+            chips: ["Microservice inference", "Streaming pipeline", "Replay logs"],
           },
           {
             kicker: "RESULT",
-            title: "让现场演示可复现",
-            summary:
-              "平台把算法接入、客户测试和现场演示收敛到统一工作区，减少重复部署与分散反馈。",
+            title: "现场演示和回归测试变得更可控",
+            summary: "系统把查询 FPS 从约 5 提升到 40，离线分析接近满速推理，也显著降低客户测试和模型接入的人力成本。",
             visual: "video-result",
-            media: {
-              type: "video",
-              src: "/case-studies/video-intelligence/wanxiang-hero.mp4",
-              poster: "/case-studies/video-intelligence/operations-loop.svg",
-            },
+            layout: "metrics",
             metrics: [
-              { value: "8×30 FPS", label: "RTX 4090 并发流" },
-              { value: "100→5", label: "集成调试人天" },
+              { value: "5→40", label: "查询 FPS" },
+              { value: "120 FPS", label: "离线推理速度" },
               { value: "80→2", label: "客户测试人天" },
             ],
           },
         ],
         "vision-agent": [
           {
-            kicker: "PLACEHOLDER",
-            title: "让视觉理解带着目标行动",
-            summary:
-              "这是一个进行中的 Vision Agent 项目位。先用占位 deck 保持整体叙事节奏，后续再替换成真实任务、系统和证据。",
+            kicker: "WHY",
+            title: "视觉智能体需要工程化上下文",
+            summary: "巡检机器人面对的是连续视频、变化场景、误报和任务上下文。系统要判断该看什么、记什么、何时验证，而不是只生成一句回答。",
             visual: "vision-context",
-            media: {
-              type: "image",
-              src: "/diagrams/vision-agent-placeholder.svg",
-              alt: "Vision agent placeholder",
-            },
-            chips: ["Observe", "Reason", "Act"],
+            layout: "statement",
           },
           {
-            kicker: "TASK LOOP",
-            title: "从看见到决策闭环",
-            summary:
-              "未来内容会围绕感知输入、任务状态、工具调用和反馈闭环展开，而不是只展示一次模型推理。",
+            kicker: "CHOICE",
+            title: "用记忆、工具、规范和循环组织判断",
+            summary: "文本 Agent 有相对成熟的套路，但视觉任务需要重新组织 memory、tools、specs 和 loop，避免上下文过载或证据缺失。",
             visual: "vision-loop",
-            chips: ["Perception", "State", "Tool use"],
+            layout: "process",
+            points: ["Memory：历史与场景状态", "Tools：检测、检索和验证接口", "Loop：观察、推理、行动、复盘"],
           },
           {
-            kicker: "SYSTEM SHAPE",
-            title: "视觉、记忆与执行层",
-            summary:
-              "占位结构预留给视觉编码、短期记忆、动作规划和执行验证，保证项目加入后不破坏现有 deck 体系。",
+            kicker: "CORE",
+            title: "分层知识库提供现场判断依据",
+            summary: "知识库不是存档，而是现场决策的事实来源：它帮助系统处理 out-of-scope 事件、减少误报，并保留渐进式理解。",
             visual: "vision-system",
-            media: {
-              type: "image",
-              src: "/diagrams/vision-agent-placeholder.svg",
-              alt: "Vision agent system placeholder",
-            },
+            layout: "split",
+            chips: ["Knowledge store", "Context window", "Tool calls"],
           },
           {
-            kicker: "COMING NEXT",
-            title: "真实项目完成后替换",
-            summary:
-              "当前只承担入口和节奏占位；等项目素材稳定后，再补充真实指标、过程图和演示媒体。",
+            kicker: "RESULT",
+            title: "这是研究型系统设计",
+            summary: "价值在于验证视觉智能体的工程形态：如何用记忆、工具和规范提升巡检判断，并在有限测试中降低误报风险。",
             visual: "vision-result",
+            layout: "metrics",
             metrics: [
-              { value: "2026", label: "active project" },
-              { value: "TBD", label: "media" },
-              { value: "TBD", label: "evidence" },
+              { value: "Memory", label: "核心设计对象" },
+              { value: "Tools", label: "可验证行动接口" },
+              { value: "Limited", label: "battle tests" },
             ],
           },
         ],
       }
     : {
-        "lookx-generative-ai": [
-          {
-            kicker: "WHY IT MATTERS",
-            title: "Architectural generation must be controllable",
-            summary:
-              "Architects need iterative visual options, not a wall of model parameters. Generative AI becomes useful only when it is wrapped into a professional workflow.",
-            visual: "lookx-context",
-            media: {
-              type: "video",
-              src: "/case-studies/lookx/lookx-hero.mp4",
-              poster: "/case-studies/lookx/lookx-hero-poster.jpg",
-            },
-            chips: ["Sketch", "Concept", "Render"],
-          },
-          {
-            kicker: "WORKFLOW DESIGN",
-            title: "Three task-shaped modes",
-            summary:
-              "Sketch, Concept, and Render map to real design stages, hiding ControlNet setup, defaults, and model behavior behind meaningful actions.",
-            visual: "lookx-workflow",
-            chips: ["Sketch exploration", "Concept massing", "Detailed render"],
-          },
-          {
-            kicker: "MODEL / DATA",
-            title: "Domain model and data tooling",
-            summary:
-              "Stable Diffusion 1.5 and custom ControlNet were iterated with roughly 10K architectural training images, captions, and cleaning tools.",
-            visual: "lookx-model",
-            media: {
-              type: "image",
-              src: "/diagrams/lookx.svg",
-              alt: "LookX architecture diagram",
-            },
-            chips: ["SD 1.5", "ControlNet", "10K data", "ComfyUI"],
-          },
-          {
-            kicker: "PRODUCT RESULT",
-            title: "From model capability to product",
-            summary:
-              "Render Mode became the dominant use case; the point was not model spectacle, but geometry control, latency, and interaction design.",
-            visual: "lookx-result",
-            media: {
-              type: "video",
-              src: "/case-studies/lookx/lookx-hero.mp4",
-              poster: "/case-studies/lookx/lookx-hero-poster.jpg",
-            },
-            metrics: [
-              { value: "400K+", label: "registered users" },
-              { value: "70%+", label: "from Render Mode" },
-              { value: "20s", label: "generation time" },
-            ],
-          },
-        ],
         "multimodal-asset-search": [
           {
-            kicker: "WHY IT MATTERS",
-            title: "A million images cannot live in folders",
-            summary:
-              "Modeling, testing, algorithm, and product teams needed shared visual discovery instead of guessing filenames in local directories.",
-            visual: "mm-context",
-            media: {
-              type: "video",
-              src: "/case-studies/multimodal-search/mmsearch-hero-gradient.mp4",
-              poster: "/case-studies/multimodal-search/mmsearch-hero-gradient-poster.jpg",
-            },
-            chips: ["Text", "Image", "Tag", "Caption"],
-          },
-          {
-            kicker: "EMBEDDING LAYER",
-            title: "CLIP makes visual assets searchable",
-            summary:
-              "Text, image, tags, and captions are projected into one semantic space, turning file management into visual discovery.",
-            visual: "mm-embedding",
-            chips: ["CLIP", "Vector Search", "Metadata"],
-          },
-          {
-            kicker: "CLOUD SYSTEM",
-            title: "GPU batch and cloud search split cleanly",
-            summary:
-              "GKE handles long GPU embedding jobs; Cloud Run serves user search; BigQuery and Vertex connect semantics with metadata.",
-            visual: "mm-architecture",
+            kicker: "VISION DATA",
+            title: "Vision data are hard to store, organize, manage, and search",
+            summary: "Rich metadata — from model predictions, human annotations, sensor logs, and operational context — makes images findable, but only when it is structured and searchable.",
+            visual: "mm-frontpage",
+            layout: "statement",
             media: {
               type: "image",
-              src: "/diagrams/multimodal-search.svg",
-              alt: "Multimodal search cloud architecture",
+              src: "/case-studies/multimodal-search/frontpage-hero.png",
+              alt: "Multimodal search system interface",
+              caption: "Annotated Stuffing Box of a pumpjack in drone-shot images",
             },
+          },
+          {
+            kicker: "METADATA LAYER",
+            title: "One image needs many ways to be understood",
+            summary: "Text, image embeddings, captions, annotations, tags, descriptions, and business metadata all act as retrieval lenses. They let users approach the same visual asset from different workflows.",
+            visual: "mm-metadata",
+            layout: "board",
+          },
+          {
+            kicker: "SYSTEM ARCHITECTURE",
+            title: "Cost, throughput, and retrieval experience had to be designed together",
+            summary: "I used a self-hosted CLIP service for high-throughput embeddings, Vertex AI for similarity search, and BigQuery as the main feature table connecting GCS with the web application.",
+            visual: "mm-infra",
+            layout: "board",
+            points: ["1 million images stored", "120 images/s CLIP embedding", "< 1s query response time"],
+          },
+          {
+            kicker: "REAL DEMO",
+            title: "Text and images can both become query inputs",
+            summary: "",
+            visual: "mm-real-demo",
+            layout: "board",
+            media: {
+              type: "video",
+              src: "/case-studies/multimodal-search/real-demo-video.mp4",
+              alt: "Real multimodal search demo recording",
+            },
+          },
+        ],
+        "lookx-generative-ai": [
+          {
+            kicker: "WHY",
+            title: "AI Products Should Respect the People They Serve",
+            summary: "For architects, AI should preserve design intent, deliver precise renderings, and make early design narration cheaper than endless trial-and-error.",
+            visual: "lookx-context",
+            layout: "statement",
+            media: {
+              type: "image",
+              src: "/case-studies/lookx/lookx-hero-image.webp",
+              alt: "LookX architectural AI rendering interface",
+            },
+          },
+          {
+            kicker: "RENDER MODE",
+            title: "Users Did Not Bring the Same Kind of Image",
+            summary: "Some uploaded sketches for inspiration, some used massing images to narrate an idea, and others brought detailed model snapshots for precise rendering. I organized these cases into input types, then used intent matching and ComfyUI workflow handlers to route each one to the right pipeline.",
+            visual: "lookx-render-mode",
+            layout: "split",
+          },
+          {
+            kicker: "AUTO TRAINING",
+            title: "Model Training Became One Natural Action",
+            summary: "LoRA training depends on parameters like learning rate, network dimension, and alpha, which shape style strength, generalization, and GPU cost. I moved those decisions into an automated pipeline so users could train from reference images without touching model terms.",
+            visual: "lookx-lora-training",
+            layout: "split",
+          },
+          {
+            kicker: "GENERATE SAME",
+            title: "Strong Results Became Reusable Starting Points",
+            summary: "A generated image carries more information than its prompt. Generate Same let users reuse the prompt, references, models, and LoRA combination behind shared plaza works, while also anchoring future exploration from their own previous results.",
+            visual: "lookx-generate-same",
+            layout: "split",
+          },
+          {
+            kicker: "TECH",
+            title: "Technical Depth Made the Tools Useful for Architects",
+            summary: "",
+            visual: "lookx-tech-system",
+            layout: "board",
           },
           {
             kicker: "RESULT",
-            title: "One-second multimodal discovery",
-            summary:
-              "One million images were indexed into a shared platform with warm search around one second for multiple internal teams.",
-            visual: "mm-result",
+            title: "Growth Came From Architects Actually Using It",
+            summary: "LookX became one of the strongest architectural AI SaaS products in the global market. The AI wave created organic attention, but retention came from controlled rendering, low-friction workflows, and users sharing their results publicly.",
+            visual: "lookx-market-result",
+            layout: "metrics",
             media: {
-              type: "video",
-              src: "/case-studies/multimodal-search/mmsearch-hero-gradient.mp4",
-              poster: "/case-studies/multimodal-search/mmsearch-hero-gradient-poster.jpg",
+              type: "image",
+              src: "/case-studies/lookx/user-sharing-on-social-media.png",
+              alt: "Users sharing LookX AI rendering workflows on social media",
             },
             metrics: [
-              { value: "1M", label: "images indexed" },
-              { value: "~1s", label: "warm search" },
-              { value: "100+ FPS", label: "embedding throughput" },
+              { value: "$30K", label: "MRR" },
+              { value: "600K", label: "Registered users" },
+              { value: "$0", label: "Marketing budget" },
             ],
           },
         ],
         "robotic-video-intelligence": [
           {
-            kicker: "WHY IT MATTERS",
-            title: "POCs need a shared operating system",
-            summary:
-              "Devices, algorithms, operators, and customer evidence had to be connected. The missing piece was not another detector, but a repeatable field loop.",
-            visual: "video-context",
+            kicker: "WHY",
+            title: "Vision model failures often appear after deployment",
+            summary: "A model can look stable in the lab and still fail at a customer site because scenes, pipelines, and evidence workflows all change.",
+            visual: "video-frontpage",
+            layout: "statement",
             media: {
               type: "image",
-              src: "/case-studies/video-intelligence/operations-loop.svg",
-              alt: "Video operations loop",
+              src: "/case-studies/video-intelligence/video-intelligence-hero.png",
+              alt: "Video intelligence platform interface",
             },
           },
           {
-            kicker: "TASK WORKFLOW",
-            title: "The task matters more than the model call",
-            summary:
-              "Stream-to-stream, file-to-stream, and file-to-file modes unify live demos, historical replay, and regression testing.",
+            kicker: "BOTTLENECK",
+            title: "A missed detection is not only an algorithm problem",
+            summary: "Algorithm, inference, product, solution, customer, and flight-control systems all touch the same visual event. Without one evidence surface, each role sees only part of the issue.",
+            visual: "video-roles",
+            layout: "board",
+            chips: ["Algorithm", "Inference", "Product", "Customer"],
+          },
+          {
+            kicker: "CHOICE",
+            title: "Video tasks became the shared evidence object",
+            summary: "Live streams, historical replay, batch tests, and customer demos all operate around video cards, so product, algorithm, testing, and solution teams work on the same object.",
             visual: "video-workflow",
-            chips: ["Stream → Stream", "File → Stream", "File → File"],
+            layout: "process",
+            points: ["Video cards carry task state and operations", "Segment selection locates the exact failure moment", "Frontend rendering and model inference are decoupled"],
           },
           {
-            kicker: "SYSTEM LAYERS",
-            title: "Media, GPU, and evidence layers",
-            summary:
-              "GStreamer owns media, GPU services own inference, and the event layer persists snapshots, timestamps, and frame-level results.",
+            kicker: "CORE",
+            title: "The technical core was a rebuilt video analysis engine",
+            summary: "I used a microservice bridge to move cross-server inference results into the streaming pipeline, while keeping one GPU instance responsible for realtime and offline analysis.",
             visual: "video-system",
-            media: {
-              type: "image",
-              src: "/diagrams/video-platform.svg",
-              alt: "Video intelligence platform architecture",
-            },
+            layout: "split",
+            chips: ["Microservice inference", "Streaming pipeline", "Replay logs"],
           },
           {
             kicker: "RESULT",
-            title: "Field demos become repeatable",
-            summary:
-              "The platform folded algorithm integration, customer testing, and field demos into one workspace with less repeated setup and scattered feedback.",
+            title: "Field demos and regression tests became more controllable",
+            summary: "The system improved query FPS from about 5 to 40, kept offline analysis near full inference speed, and reduced customer-test and integration effort.",
             visual: "video-result",
-            media: {
-              type: "video",
-              src: "/case-studies/video-intelligence/wanxiang-hero.mp4",
-              poster: "/case-studies/video-intelligence/operations-loop.svg",
-            },
+            layout: "metrics",
             metrics: [
-              { value: "8×30 FPS", label: "RTX 4090 streams" },
-              { value: "100→5", label: "integration days" },
+              { value: "5→40", label: "query FPS" },
+              { value: "120 FPS", label: "offline inference" },
               { value: "80→2", label: "customer test days" },
             ],
           },
         ],
         "vision-agent": [
           {
-            kicker: "PLACEHOLDER",
-            title: "Vision that acts with intent",
-            summary:
-              "This is a placeholder for an active Vision Agent project. It keeps the TV narrative rhythm until the real task, system, and evidence are ready.",
+            kicker: "WHY",
+            title: "Visual agents need engineered context",
+            summary: "Inspection robots face continuous video, changing scenes, false alarms, and task context. The system must decide what to watch, remember, and verify.",
             visual: "vision-context",
-            media: {
-              type: "image",
-              src: "/diagrams/vision-agent-placeholder.svg",
-              alt: "Vision agent placeholder",
-            },
-            chips: ["Observe", "Reason", "Act"],
+            layout: "statement",
           },
           {
-            kicker: "TASK LOOP",
-            title: "From perception to decision loop",
-            summary:
-              "The eventual story should connect visual input, task state, tool use, and feedback rather than showing a single model inference.",
+            kicker: "CHOICE",
+            title: "Organize judgment with memory, tools, specs, and loop",
+            summary: "Text agents have familiar patterns, but visual tasks need memory, tools, specs, and loop design to avoid context overload and missing evidence.",
             visual: "vision-loop",
-            chips: ["Perception", "State", "Tool use"],
+            layout: "process",
+            points: ["Memory: history and scene state", "Tools: detection, retrieval, verification", "Loop: observe, reason, act, review"],
           },
           {
-            kicker: "SYSTEM SHAPE",
-            title: "Vision, memory, and execution layers",
-            summary:
-              "The placeholder reserves space for visual encoding, short-term memory, action planning, and execution validation.",
+            kicker: "CORE",
+            title: "A layered knowledge store supports field decisions",
+            summary: "The knowledge store is not an archive. It supports field decisions, handles out-of-scope events, reduces false alarms, and preserves progressive understanding.",
             visual: "vision-system",
-            media: {
-              type: "image",
-              src: "/diagrams/vision-agent-placeholder.svg",
-              alt: "Vision agent system placeholder",
-            },
+            layout: "split",
+            chips: ["Knowledge store", "Context window", "Tool calls"],
           },
           {
-            kicker: "COMING NEXT",
-            title: "Replace with the real project later",
-            summary:
-              "For now it only holds the slot and rhythm. Once project material stabilizes, it can be replaced with real metrics, process visuals, and media.",
+            kicker: "RESULT",
+            title: "This is a research system design",
+            summary: "The value is testing an engineering shape for visual agents: how memory, tools, and specs can improve inspection judgment in limited battle tests.",
             visual: "vision-result",
+            layout: "metrics",
             metrics: [
-              { value: "2026", label: "active project" },
-              { value: "TBD", label: "media" },
-              { value: "TBD", label: "evidence" },
+              { value: "Memory", label: "primary design object" },
+              { value: "Tools", label: "verifiable action layer" },
+              { value: "Limited", label: "battle tests" },
             ],
           },
         ],
@@ -552,12 +568,7 @@ const copy =
       };
 ---
 
-<section class="work-viewer" data-work-viewer>
-  <button type="button" class="viewer-back" data-viewer-back>
-    <span aria-hidden="true">←</span>
-    <span>{copy.backToProjects}</span>
-  </button>
-
+<section class={`work-viewer accent-${projects[0]?.data.accent ?? "terracotta"} project-${projects[0]?.data.slug ?? ""}`} data-work-viewer>
   <p class="viewer-edition" data-viewer-edition>
     <span data-viewer-edition-date>{firstTimeline?.date}</span>
     <span aria-hidden="true">@</span>
@@ -577,7 +588,7 @@ const copy =
       const storyDeck = storyDecks[project.data.slug];
       return (
         <article
-          class={`viewer-project accent-${project.data.accent}${index === 0 ? " is-active" : ""}`}
+          class={`viewer-project accent-${project.data.accent} project-${project.data.slug}${index === 0 ? " is-active" : ""}`}
           data-viewer-project
           data-slug={project.data.slug}
           data-index={index}
@@ -609,15 +620,21 @@ const copy =
                         <h2>{floorPlanDeck.context.title}</h2>
                         <p>{floorPlanDeck.context.summary}</p>
                       </div>
-                      <div class="floor-deck-market" aria-hidden="true">
-                        <div class="market-card market-card-main">
-                          <img src="/case-studies/floor-plan/source-to-segmentation.webp" alt="" />
-                        </div>
-                        <div class="market-card market-card-bim">BIM</div>
-                        <div class="market-card market-card-search">SEARCH</div>
-                        <div class="market-card market-card-cost">MANUAL<br />REBUILD</div>
-                        <div class="market-path"></div>
-                      </div>
+                      <figure class="floor-hero-visual" aria-label={locale === "zh" ? "户型图从栅格图像到重建模型的过程" : "Floor plan process from raster image to reconstructed model"}>
+                        <img src="/case-studies/floor-plan/floor-plan-hero.png" alt="" decoding="async" />
+                        <figcaption class="floor-hero-caption floor-hero-caption-reconstruction">
+                          {locale === "zh" ? "重建模型" : "Reconstruction"}
+                        </figcaption>
+                        <figcaption class="floor-hero-caption floor-hero-caption-vector">
+                          {locale === "zh" ? "矢量化数据" : "Vectorized Data"}
+                        </figcaption>
+                        <figcaption class="floor-hero-caption floor-hero-caption-segmentation">
+                          {locale === "zh" ? "语义分割" : "Segmentation"}
+                        </figcaption>
+                        <figcaption class="floor-hero-caption floor-hero-caption-raster">
+                          {locale === "zh" ? "栅格图像" : "Raster Image"}
+                        </figcaption>
+                      </figure>
                     </div>
                   </section>
 
@@ -629,19 +646,41 @@ const copy =
                     aria-hidden="true"
                     inert
                   >
-                    <div class="floor-deck floor-deck-synthetic">
+                    <div class="floor-deck floor-deck-synthetic-engine story-deck story-deck-floor-plan-reconstruction">
                       <div class="floor-deck-copy">
-                        <span>SYNTHETIC DATA</span>
                         <h2>{floorPlanDeck.synthetic.title}</h2>
                         <p>{floorPlanDeck.synthetic.summary}</p>
                       </div>
-                      <div class="synthetic-grid" aria-hidden="true">
-                        {["linework", "labels", "symbols", "noise", "style", "mask"].map((item, itemIndex) => (
-                          <div class={`synthetic-tile synthetic-tile-${itemIndex}`}>
-                            <i></i>
-                            <b>{item}</b>
-                          </div>
-                        ))}
+                      <div class="floor-synthetic-pipeline">
+                        <figure class="floor-synthetic-source">
+                          <img
+                            src="/case-studies/floor-plan/synthetic-left.png"
+                            alt={locale === "zh" ? "Xkool ABC 格式的户型矢量数据" : "Vectorized layout data in Xkool ABC format"}
+                            decoding="async"
+                          />
+                          <figcaption>
+                            {locale === "zh"
+                              ? "Xkool ABC 格式矢量数据"
+                              : "Vectorized data in Xkool ABC format"}
+                          </figcaption>
+                        </figure>
+                        <img
+                          class="floor-synthetic-arrow"
+                          src="/case-studies/floor-plan/synthetic-arrow.png"
+                          alt=""
+                          aria-hidden="true"
+                          decoding="async"
+                        />
+                        <figure class="floor-synthetic-demo">
+                          <video
+                            src="/case-studies/floor-plan/synthetic-demo.mp4"
+                            autoplay
+                            muted
+                            loop
+                            playsinline
+                            preload="metadata"
+                          ></video>
+                        </figure>
                       </div>
                     </div>
                   </section>
@@ -649,30 +688,104 @@ const copy =
                   <section
                     class="viewer-episode"
                     data-viewer-episode
-                    data-episode-title="Graph optimization"
+                    data-episode-title="Segmentation model"
                     data-episode-summary={floorPlanDeck.graph.summary}
                     aria-hidden="true"
                     inert
                   >
-                    <div class="floor-deck floor-deck-graph">
+                    <div class="floor-deck floor-deck-segmentation story-deck story-deck-floor-plan-reconstruction">
                       <div class="floor-deck-copy">
-                        <span>GRAPH OPTIMIZATION</span>
                         <h2>{floorPlanDeck.graph.title}</h2>
-                        <p>{floorPlanDeck.graph.summary}</p>
                       </div>
-                      <div class="graph-board" aria-hidden="true">
-                        <img src="/case-studies/floor-plan/process-raster.png" alt="" />
-                        <svg viewBox="0 0 520 340" role="presentation">
-                          <path d="M72 70 H245 V122 H322 V262 H198 V292 H72 Z" />
-                          <path d="M245 70 H440 V285 H322 V122 H245 Z" />
-                          <path d="M72 177 H198 V292" />
-                          <circle cx="72" cy="70" r="5" />
-                          <circle cx="245" cy="70" r="5" />
-                          <circle cx="322" cy="122" r="5" />
-                          <circle cx="440" cy="285" r="5" />
-                          <circle cx="198" cy="292" r="5" />
-                          <circle cx="72" cy="292" r="5" />
-                        </svg>
+                      <div class="floor-segment-layout" aria-hidden="true">
+                        <figure class="floor-segment-panel floor-segment-panel-left">
+                          <img src="/case-studies/floor-plan/segment-left.png" alt="" decoding="async" />
+                          <figcaption>{locale === "zh" ? "7 万张像素级精确标注" : "70k pixel-perfect annotations"}</figcaption>
+                        </figure>
+                        <figure class="floor-segment-panel floor-segment-panel-right">
+                          <img src="/case-studies/floor-plan/segment-right.png" alt="" decoding="async" />
+                          <figcaption>{locale === "zh" ? "基于 DeepLabV3 训练（mIoU 0.85）" : "Trained with DeepLabV3 (mIoU 0.85)"}</figcaption>
+                        </figure>
+                        <img
+                          class="floor-segment-bottom"
+                          src="/case-studies/floor-plan/segment-bottom.png"
+                          alt=""
+                          decoding="async"
+                        />
+                      </div>
+                    </div>
+                  </section>
+
+                  <section
+                    class="viewer-episode"
+                    data-viewer-episode
+                    data-episode-title="Room polygon optimization"
+                    data-episode-summary={floorPlanDeck.roomOptimization.summary}
+                    aria-hidden="true"
+                    inert
+                  >
+                    <div class="floor-deck floor-deck-room-optimization story-deck story-deck-floor-plan-reconstruction">
+                      <div class="floor-deck-copy">
+                        <h2>{floorPlanDeck.roomOptimization.title}</h2>
+                      </div>
+                      <div class="floor-room-op-layout" aria-hidden="true">
+                        <figure class="floor-room-op-card">
+                          <img src="/case-studies/floor-plan/room-op-1.png" alt="" decoding="async" />
+                          <figcaption>{locale === "zh" ? "分割是像素级预测，缺少空间结构信息" : "Segmentation is pixel-level prediction without spatial information."}</figcaption>
+                        </figure>
+                        <figure class="floor-room-op-card">
+                          <img src="/case-studies/floor-plan/room-op-2.png" alt="" decoding="async" />
+                          <figcaption>{locale === "zh" ? "锯齿轮廓会让房间多边形变得复杂" : "Zigzag contours make room polygons unnecessarily complex."}</figcaption>
+                        </figure>
+                        <figure class="floor-room-op-card floor-room-op-card-final">
+                          <span class="floor-room-op-final-media">
+                            <img src="/case-studies/floor-plan/room-op-3.png" alt="" decoding="async" />
+                            <img
+                              class="floor-room-op-gif"
+                              src="/case-studies/floor-plan/room-boundary-optimization.gif"
+                              alt=""
+                              loading="eager"
+                            />
+                          </span>
+                          <figcaption>{locale === "zh" ? "通过删除与合并顶点，让图结构收敛为稳定房间多边形" : "Remove and merge vertices until the room polygon graph stabilizes."}</figcaption>
+                        </figure>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section
+                    class="viewer-episode"
+                    data-viewer-episode
+                    data-episode-title="Wall centerline optimization"
+                    data-episode-summary={floorPlanDeck.wallCenterOptimization.summary}
+                    aria-hidden="true"
+                    inert
+                  >
+                    <div class="floor-deck floor-deck-wallcenter-optimization story-deck story-deck-floor-plan-reconstruction">
+                      <div class="floor-deck-copy">
+                        <h2>{floorPlanDeck.wallCenterOptimization.title}</h2>
+                      </div>
+                      <div class="floor-room-op-layout floor-wallcenter-op-layout" aria-hidden="true">
+                        <figure class="floor-room-op-card">
+                          <img src="/case-studies/floor-plan/wallcenter-op-1.png" alt="" decoding="async" />
+                          <figcaption>{locale === "zh" ? "墙体不应停留为不规则填充多边形" : "Walls should become centerlines, not irregular filled polygons."}</figcaption>
+                        </figure>
+                        <figure class="floor-room-op-card">
+                          <img src="/case-studies/floor-plan/wallcenter-op-2.png" alt="" decoding="async" />
+                          <figcaption>{locale === "zh" ? "矢量户型以墙段组织房间并挂接构件" : "Vector layouts use wall segments to bound rooms and anchor components."}</figcaption>
+                        </figure>
+                        <figure class="floor-room-op-card floor-room-op-card-final floor-wallcenter-op-card-final">
+                          <span class="floor-room-op-final-media">
+                            <img src="/case-studies/floor-plan/wallcenter-op-3.png" alt="" decoding="async" />
+                            <img
+                              class="floor-room-op-gif floor-wallcenter-op-gif"
+                              src="/case-studies/floor-plan/full-layout-optimization-transparent.gif"
+                              alt=""
+                              loading="eager"
+                            />
+                          </span>
+                          <figcaption>{locale === "zh" ? "结合比例与墙宽计算，图像才能变成完整设计数据" : "Scale and wall-width estimation turn the layout image into design data."}</figcaption>
+                        </figure>
                       </div>
                     </div>
                   </section>
@@ -717,34 +830,206 @@ const copy =
                       inert={slideIndex === 0 ? undefined : true}
                     >
                       <div
-                        class={`floor-deck story-deck story-deck-${project.data.slug} story-visual-${slide.visual}`}
+                        class={`floor-deck story-deck story-deck-${project.data.slug} story-visual-${slide.visual} story-layout-${resolveStoryLayout(slide, slideIndex)}`}
                       >
                         <div class="floor-deck-copy">
-                          <span>{String(slideIndex + 1).padStart(2, "0")} / {slide.kicker}</span>
                           <h2>{slide.title}</h2>
                           <p>{slide.summary}</p>
+                          {slide.points ? (
+                            <ul class="story-points">
+                              {slide.points.map((point) => (
+                                <li>{point}</li>
+                              ))}
+                            </ul>
+                          ) : null}
                         </div>
+                        {slide.visual === "lookx-tech-system" ? (
+                          <figure class="lookx-tech-visual" aria-label="LookX model training, workflow development, and prompt routing system">
+                            <div class="lookx-tech-panel lookx-tech-base">
+                              <img src="/case-studies/lookx/tech/base-model-training.png" alt="" decoding="async" />
+                              <figcaption class="lookx-tech-caption lookx-tech-caption-title lookx-tech-base-title">
+                                {locale === "zh" ? "基础模型训练" : "Base Model Training"}
+                              </figcaption>
+                              <figcaption class="lookx-tech-caption lookx-tech-caption-small lookx-tech-base-dataset">
+                                {locale === "zh" ? "私有数据集" : "Proprietary Dataset"}
+                              </figcaption>
+                              <figcaption class="lookx-tech-caption lookx-tech-caption-small lookx-tech-base-caption-tool">
+                                {locale === "zh" ? "内部图文标注工具" : "Internal Caption Tool"}
+                              </figcaption>
+                              <figcaption class="lookx-tech-caption lookx-tech-caption-small lookx-tech-base-pairs">
+                                {locale === "zh" ? "{图像，描述} 对" : "{image, caption} Pairs"}
+                              </figcaption>
+                              <figcaption class="lookx-tech-caption lookx-tech-caption-small lookx-tech-base-model">
+                                {locale === "zh" ? "建筑扩散模型" : "Architectural Diffusion Model"}
+                              </figcaption>
+                            </div>
+                            <div class="lookx-tech-panel lookx-tech-workflow">
+                              <img src="/case-studies/lookx/tech/image-generation.png" alt="" decoding="async" />
+                              <figcaption class="lookx-tech-caption lookx-tech-caption-title lookx-tech-workflow-title">
+                                {locale === "zh" ? "图像生成" : "Image Generation"}
+                              </figcaption>
+                              <figcaption class="lookx-tech-caption lookx-tech-caption-small lookx-tech-workflow-comfy">
+                                {locale === "zh" ? "ComfyUI 工作流" : "Comfyui Workflows"}
+                              </figcaption>
+                              <figcaption class="lookx-tech-caption lookx-tech-caption-small lookx-tech-workflow-json">
+                                {locale === "zh" ? "API 请求的 .json 配置" : ".json for API requests"}
+                              </figcaption>
+                              <figcaption class="lookx-tech-caption lookx-tech-caption-small lookx-tech-workflow-features">
+                                {locale === "zh" ? "产品功能" : "Product Features"}
+                              </figcaption>
+                            </div>
+                            <div class="lookx-tech-panel lookx-tech-routing">
+                              <img src="/case-studies/lookx/tech/prompt-routing.png" alt="" decoding="async" />
+                              <figcaption class="lookx-tech-caption lookx-tech-caption-title lookx-tech-routing-title">
+                                {locale === "zh" ? "提示词路由" : "Prompt Routing"}
+                              </figcaption>
+                              <figcaption class="lookx-tech-caption lookx-tech-caption-small lookx-tech-routing-prompt">
+                                {locale === "zh" ? "用户提示词" : "User Prompt"}
+                              </figcaption>
+                              <figcaption class="lookx-tech-caption lookx-tech-caption-small lookx-tech-routing-embedding">
+                                {locale === "zh" ? "提示词嵌入模型" : "Prompt Embedding Model"}
+                              </figcaption>
+                              <figcaption class="lookx-tech-caption lookx-tech-caption-small lookx-tech-routing-similar">
+                                {locale === "zh" ? "查找最相似描述" : "Find Most Similar"}
+                              </figcaption>
+                              <figcaption class="lookx-tech-caption lookx-tech-caption-small lookx-tech-routing-pipeline">
+                                {locale === "zh" ? "生成管线路由" : "Pipeline Routing"}
+                              </figcaption>
+                            </div>
+                          </figure>
+                        ) : null}
+                        {slide.visual === "mm-metadata" ? (
+                          <figure class="mm-metadata-visual" aria-label="Multimodal image metadata with annotations, embeddings, captions, tags, and description">
+                            <img
+                              class="mm-metadata-image"
+                              src="/case-studies/multimodal-search/mmsearch-metadata.png"
+                              alt=""
+                              decoding="async"
+                            />
+                          </figure>
+                        ) : null}
+                        {slide.visual === "mm-infra" ? (
+                          <figure class="mm-infra-visual" aria-label="Multimodal search infrastructure balancing cost, throughput, and retrieval experience">
+                            <img
+                              class="mm-infra-image"
+                              src="/case-studies/multimodal-search/mmsearch-infra.png"
+                              alt=""
+                              decoding="async"
+                            />
+                          </figure>
+                        ) : null}
+                        {slide.visual === "lookx-render-mode" ? (
+                          <figure class="lookx-pipeline-visual" aria-label="Three architectural design stages routed into tailored generation pipelines">
+                            <img
+                              class="lookx-pipeline-image"
+                              src="/case-studies/lookx/lookx-rendering-v3.png"
+                              alt=""
+                              decoding="async"
+                            />
+                            <figcaption class="lookx-pipeline-caption-row">
+                              <p class="lookx-pipeline-caption lookx-pipeline-caption-stages">
+                                {locale === "zh" ? (
+                                  <>建筑设计流程的<br />三个核心阶段</>
+                                ) : (
+                                  <>3 core stages of<br />architectural design process</>
+                                )}
+                              </p>
+                              <p class="lookx-pipeline-caption lookx-pipeline-caption-render">
+                                {locale === "zh" ? (
+                                  <>3 条定制生成管线<br />确保生产级建筑渲染质量</>
+                                ) : (
+                                  <>3 tailored generation pipelines<br />Ensuring production-quality architectural rendering</>
+                                )}
+                              </p>
+                            </figcaption>
+                          </figure>
+                        ) : null}
+                        {slide.visual === "lookx-lora-training" ? (
+                          <figure class="lookx-lora-visual" aria-label="One-click LoRA training workflow for architectural images">
+                            <img
+                              class="lookx-lora-image"
+                              src="/case-studies/lookx/lookx-lora-training.png"
+                              alt=""
+                              decoding="async"
+                            />
+                            <figcaption class="lookx-lora-caption-row">
+                              <p class="lookx-lora-caption lookx-lora-caption-setup">
+                                {locale === "zh" ? (
+                                  <>上传图片，命名 LoRA<br />选择底模，即可训练</>
+                                ) : (
+                                  <>Upload images, name the LoRA<br />choose a base, and train</>
+                                )}
+                              </p>
+                              <p class="lookx-lora-caption lookx-lora-caption-quality">
+                                {locale === "zh" ? (
+                                  <>可迁移、有表达力、易融合的 LoRA<br />为建筑图像定制</>
+                                ) : (
+                                  <>Transferable, expressive, easy-fusion LoRAs<br />tailored for architectural images</>
+                                )}
+                              </p>
+                            </figcaption>
+                          </figure>
+                        ) : null}
+                        {slide.visual === "lookx-generate-same" ? (
+                          <figure class="lookx-same-visual" aria-label="Generate Same workflow for recreating shared works">
+                            <img
+                              class="lookx-same-image"
+                              src="/case-studies/lookx/lookx-generate-same.png"
+                              alt=""
+                              decoding="async"
+                            />
+                            <figcaption class="lookx-same-caption-row">
+                              <p class="lookx-same-caption lookx-same-caption-recreate">
+                                {locale === "zh" ? (
+                                  <>生成同款可以<br />精确复刻一张作品</>
+                                ) : (
+                                  <>Generate-the-same feature allows<br />user to precisely recreate a work</>
+                                )}
+                              </p>
+                              <p class="lookx-same-caption lookx-same-caption-community">
+                                {locale === "zh" ? (
+                                  <>创作广场的共享参数包<br />让社区成为可复用工作流来源</>
+                                ) : (
+                                  <>Shared parameter bundles in Creation Plaza turn the community into a<br />living source of reusable workflows</>
+                                )}
+                              </p>
+                            </figcaption>
+                          </figure>
+                        ) : null}
+                        {slide.media ? (
+                          <figure class="story-cover-asset" aria-label={slide.media.alt ?? ""}>
+                            {slide.media.type === "video" ? (
+                              <video src={slide.media.src} poster={slide.media.poster} autoplay muted loop playsinline preload="metadata"></video>
+                            ) : (
+                              <img src={slide.media.src} alt={slide.media.alt ?? ""} decoding="async" />
+                            )}
+                            {slide.media.caption ? (
+                              <figcaption>
+                                {slide.visual === "mm-frontpage" ? (
+                                  <>
+                                    Annotated <span>Stuffing Box</span> of a pumpjack in drone-shot images
+                                  </>
+                                ) : (
+                                  slide.media.caption
+                                )}
+                              </figcaption>
+                            ) : null}
+                          </figure>
+                        ) : null}
                         <div class="story-deck-stage" aria-hidden="true">
                           <div class="story-media-card">
-                            {slide.media?.type === "video" ? (
-                              <video
-                                src={slide.media.src}
-                                poster={slide.media.poster}
-                                autoplay
-                                muted
-                                loop
-                                playsinline
-                                preload="metadata"
-                              ></video>
-                            ) : slide.media ? (
-                              <img src={slide.media.src} alt={slide.media.alt ?? ""} loading="lazy" />
-                            ) : (
-                              <div class="story-abstract">
-                                <i></i>
-                                <i></i>
-                                <i></i>
-                              </div>
-                            )}
+                            <div class="story-abstract">
+                              <i></i>
+                              <i></i>
+                              <i></i>
+                              <i></i>
+                            </div>
+                          </div>
+                          <div class="story-layout-geometry" aria-hidden="true">
+                            <i></i>
+                            <i></i>
+                            <i></i>
+                            <i></i>
                           </div>
                           <div class="story-signal-grid">
                             {Array.from({ length: 9 }).map((_, signalIndex) => (
@@ -756,6 +1041,12 @@ const copy =
                               {slide.chips.map((chip) => (
                                 <span>{chip}</span>
                               ))}
+                            </div>
+                          ) : null}
+                          {slide.callout ? (
+                            <div class="story-callout">
+                              <span>{slide.callout.label}</span>
+                              <strong>{slide.callout.value}</strong>
                             </div>
                           ) : null}
                           {slide.metrics ? (
@@ -931,6 +1222,8 @@ const copy =
   eyebrow: project.data.eyebrow,
   role: project.data.role,
   diagram: project.data.diagram,
+  pillThumb: pillThumbs[project.data.slug] ?? project.data.diagram,
+  accent: project.data.accent,
 })) }}>
   const viewer = document.querySelector("[data-work-viewer]");
 
@@ -944,7 +1237,9 @@ const copy =
     const editionCompany = viewer.querySelector("[data-viewer-edition-company]");
     const thumbnail = viewer.querySelector("[data-viewer-thumbnail]");
     const episodeReadout = viewer.querySelector("[data-episode-readout]");
-    const consoleEpisodeSummary = viewer.querySelector("[data-console-episode-summary]");
+    const pageCurrent = viewer.querySelector("[data-page-current]");
+    const pageTotal = viewer.querySelector("[data-page-total]");
+    const pillChannel = viewer.querySelector("[data-pill-channel]");
     const episodeDots = [...viewer.querySelectorAll("[data-episode-select]")];
     let activeIndex = 0;
     let activeEpisode = 0;
@@ -972,12 +1267,10 @@ const copy =
         const label = document.documentElement.lang === "zh-CN" ? "章节" : "Episode";
         episodeReadout.textContent = `${label} ${String(activeEpisode + 1).padStart(2, "0")} / ${String(episodes.length).padStart(2, "0")}`;
       }
-      const activeEpisodeNode = episodes[activeEpisode];
-      const episodeSummary = activeEpisodeNode?.getAttribute("data-episode-summary") ?? "";
-      if (consoleEpisodeSummary) consoleEpisodeSummary.textContent = episodeSummary;
       projectNodes[activeIndex]?.querySelectorAll("[data-screen-episode-count]").forEach((counter) => {
         counter.textContent = ` EP ${String(activeEpisode + 1).padStart(2, "0")} / ${String(episodes.length).padStart(2, "0")}`;
       });
+      if (pageCurrent) pageCurrent.textContent = String(activeEpisode + 1).padStart(2, "0");
     };
 
     const showProject = (nextIndex, announce = true) => {
@@ -1008,7 +1301,13 @@ const copy =
         editionCompany.textContent = project.timelineCompanyName;
         editionCompany.href = project.timelineCompanyHref;
       }
-      if (thumbnail instanceof HTMLImageElement) thumbnail.src = project.diagram;
+      if (thumbnail instanceof HTMLImageElement) thumbnail.src = project.pillThumb;
+      viewer.className = viewer.className.replace(/\baccent-\S+/g, "").replace(/\bproject-\S+/g, "");
+      viewer.classList.add(`accent-${project.accent}`, `project-${project.slug}`);
+      if (pillChannel) {
+        pillChannel.className = pillChannel.className.replace(/\baccent-\S+/g, "").replace(/\bproject-\S+/g, "");
+        pillChannel.classList.add(`accent-${project.accent}`, `project-${project.slug}`);
+      }
       if (announce) {
         window.dispatchEvent(
           new CustomEvent("portfolio:project-change", {
@@ -1017,6 +1316,7 @@ const copy =
         );
       }
       showEpisode(0);
+      if (pageTotal) pageTotal.textContent = String(activeEpisodeNodes().length).padStart(2, "0");
     };
 
     viewer.querySelector("[data-episode-previous]")?.addEventListener("click", () => {
@@ -1025,15 +1325,8 @@ const copy =
     viewer.querySelector("[data-episode-next]")?.addEventListener("click", () => {
       showEpisode(activeEpisode + 1);
     });
-    viewer.querySelector("[data-viewer-fullscreen]")?.addEventListener("click", async () => {
-      try {
-        if (!document.fullscreenElement) await viewer.requestFullscreen?.();
-        else await document.exitFullscreen?.();
-      } catch {
-        // Fullscreen availability depends on browser and embedding context.
-      }
-    });
-    viewer.querySelector("[data-viewer-back]")?.addEventListener("click", () => {
+    document.querySelector(".wordmark")?.addEventListener("click", (event) => {
+      event.preventDefault();
       const project = projectData[activeIndex];
       window.dispatchEvent(
         new CustomEvent("portfolio:back-to-sessions", {
@@ -1041,6 +1334,7 @@ const copy =
         }),
       );
     });
+
     episodeDots.forEach((dot) => {
       dot.addEventListener("click", () => {
         showEpisode(Number(dot.getAttribute("data-episode-select")));

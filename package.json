@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro check && astro build",
+    "build:fast": "astro build",
     "preview": "astro preview",
     "check": "astro check"
   },
@@ -14,5 +15,8 @@
     "@astrojs/sitemap": "^3.7.3",
     "astro": "^6.4.4",
     "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@firecms/neat": "^1.0.1"
   }
 }

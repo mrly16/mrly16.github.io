@@ -37,9 +37,9 @@ frameworkSummary: 连接实时感知、可重复任务、证据与人工决策�
 sessionTitle: 机器人视频智能
 sessionHeadline: 让实时感知可被使用
 sessionDescription: 一个面向多角色协作的视频智能平台，统一实时分析、算法测试、事件证据和客户演示路径。
-sessionVisual: /case-studies/video-intelligence/operations-loop.svg
+sessionVisual: /case-studies/video-intelligence/wanxiang-hero-poster.jpg
 sessionVideo: /case-studies/video-intelligence/wanxiang-hero.mp4
-sessionPoster: /case-studies/video-intelligence/operations-loop.svg
+sessionPoster: /case-studies/video-intelligence/wanxiang-hero-poster.jpg
 sessionMetric:
   value: 8 × 30 FPS
   label: 单张 RTX 4090 并发视频流

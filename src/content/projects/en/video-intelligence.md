@@ -37,9 +37,9 @@ frameworkSummary: An agent-ready operating layer that connects live perception, 
 sessionTitle: Robotic Video Intelligence
 sessionHeadline: Live perception, operationalized
 sessionDescription: A shared video-intelligence platform that connects live analysis, algorithm testing, event evidence, and customer demonstrations.
-sessionVisual: /case-studies/video-intelligence/operations-loop.svg
+sessionVisual: /case-studies/video-intelligence/wanxiang-hero-poster.jpg
 sessionVideo: /case-studies/video-intelligence/wanxiang-hero.mp4
-sessionPoster: /case-studies/video-intelligence/operations-loop.svg
+sessionPoster: /case-studies/video-intelligence/wanxiang-hero-poster.jpg
 sessionMetric:
   value: 8 × 30 FPS
   label: concurrent streams on one RTX 4090

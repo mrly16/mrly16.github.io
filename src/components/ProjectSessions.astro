@@ -17,30 +17,30 @@ const frameworkLinesBySlug: Record<string, string[]> =
         "robotic-video-intelligence": ["产品/系统", "设计"],
         "lookx-generative-ai": ["生成式", "模型"],
         "multimodal-asset-search": ["云原生", "架构"],
-        "vision-agent": ["视觉", "智能体"],
+        "vision-agent": ["智能体", "架构"],
       }
     : {
         "floor-plan-reconstruction": ["Computer", "Vision"],
         "robotic-video-intelligence": ["System", "Design"],
         "lookx-generative-ai": ["Generative", "Models"],
         "multimodal-asset-search": ["Cloud", "Architecture"],
-        "vision-agent": ["Vision", "Agent"],
+        "vision-agent": ["Agent", "Harness"],
       };
 const titleLinesBySlug: Record<string, string[]> =
   locale === "zh"
     ? {
         "floor-plan-reconstruction": ["户型图", "矢量重建"],
-        "robotic-video-intelligence": ["机器人", "视频智能"],
-        "lookx-generative-ai": ["建筑 AI", "渲染"],
+        "robotic-video-intelligence": ["实时直播流", "视觉分析"],
+        "lookx-generative-ai": ["建筑模型", "AI渲染"],
         "multimodal-asset-search": ["多模态", "图片检索"],
-        "vision-agent": ["视觉代理", "进行中"],
+        "vision-agent": ["实时视觉", "Agent"],
       }
     : {
         "floor-plan-reconstruction": ["Raster-to-Vector", "Floor Plans"],
         "robotic-video-intelligence": ["Robotic Video", "Intelligence"],
         "lookx-generative-ai": ["Architectural", "AI Rendering"],
         "multimodal-asset-search": ["Multimodal", "Image Search"],
-        "vision-agent": ["Vision Agent", "Work in Progress"],
+        "vision-agent": ["Realtime", "Visual Agent"],
       };
 const copy =
   locale === "zh"
@@ -60,24 +60,12 @@ const copy =
 
 <div class="sessions-view is-hydrating" data-sessions-view tabindex="0" aria-label={copy.title}>
   <div class="sessions-backgrounds" aria-hidden="true">
+    <canvas class="sessions-neat-gradient" data-sessions-neat-gradient></canvas>
     {projects.map((project, index) => (
       <div
-        class={`sessions-background accent-${project.data.accent}${index === 0 ? " is-active" : ""}`}
+        class={`sessions-background accent-${project.data.accent} project-${project.data.slug}${index === 0 ? " is-active" : ""}`}
         data-session-background
-      >
-        {project.data.sessionVideo ? (
-          <video
-            src={project.data.sessionVideo}
-            poster={project.data.sessionPoster ?? project.data.sessionVisual}
-            muted
-            loop
-            playsinline
-            preload="auto"
-          ></video>
-        ) : (
-          <img src={project.data.sessionVisual} alt="" />
-        )}
-      </div>
+      ></div>
     ))}
   </div>
   <div class="sessions-shade" aria-hidden="true"></div>
@@ -300,6 +288,124 @@ const copy =
   }
 </script>
 
+<script>
+  import { NeatGradient } from "@firecms/neat";
+
+  const gradientCanvas = document.querySelector("[data-sessions-neat-gradient]");
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const neatPalettes: Record<string, string[]> = {
+    "vision-agent": ["#846AFF", "#001129", "#0F0025", "#06100D", "#50FFB9"],
+    "robotic-video-intelligence": ["#50FFB9", "#04120D", "#0A1C12", "#112506", "#ABEE6A"],
+    "multimodal-asset-search": ["#ABEE6A", "#001129", "#06142B", "#003381", "#2C95FF"],
+    "lookx-generative-ai": ["#2C95FF", "#14080A", "#1D1207", "#4F2100", "#FFB22D"],
+    "floor-plan-reconstruction": ["#FFB22D", "#14080A", "#21100A", "#381007", "#846AFF"],
+  };
+
+  const toNeatColors = (colors: string[]) => colors.map((color: string) => ({ color, enabled: true }));
+
+  if (gradientCanvas instanceof HTMLCanvasElement && !reducedMotion) {
+    try {
+      const gradient = new NeatGradient({
+        ref: gradientCanvas,
+        colors: toNeatColors(neatPalettes[decodeURIComponent(window.location.hash.slice(1))] ?? neatPalettes["vision-agent"]),
+        speed: 0.85,
+        horizontalPressure: 4,
+        verticalPressure: 4,
+        waveFrequencyX: 3,
+        waveFrequencyY: 2,
+        waveAmplitude: 1,
+        shadows: 2,
+        highlights: 2,
+        colorBrightness: 0.82,
+        colorSaturation: -0.55,
+        wireframe: false,
+        colorBlending: 7,
+        backgroundColor: "#010101",
+        backgroundAlpha: 1,
+        grainScale: 2,
+        grainSparsity: 0,
+        grainIntensity: 0,
+        grainSpeed: 1,
+        resolution: 0.42,
+        yOffset: 38,
+        yOffsetWaveMultiplier: 2.2,
+        yOffsetColorMultiplier: 2.5,
+        yOffsetFlowMultiplier: 2.8,
+        flowDistortionA: 0.4,
+        flowDistortionB: 3,
+        flowScale: 3.3,
+        flowEase: 0.53,
+        flowEnabled: false,
+        enableProceduralTexture: false,
+        transparentTextureVoid: false,
+        textureVoidLikelihood: 0.06,
+        textureVoidWidthMin: 10,
+        textureVoidWidthMax: 500,
+        textureBandDensity: 0.8,
+        textureColorBlending: 0.06,
+        textureSeed: 333,
+        textureEase: 0.68,
+        proceduralBackgroundColor: "#003FFF",
+        textureShapeTriangles: 20,
+        textureShapeCircles: 15,
+        textureShapeBars: 15,
+        textureShapeSquiggles: 10,
+        domainWarpEnabled: false,
+        domainWarpIntensity: 0,
+        domainWarpScale: 3,
+        vignetteIntensity: 0,
+        vignetteRadius: 0.8,
+        fresnelEnabled: false,
+        fresnelPower: 2,
+        fresnelIntensity: 0.5,
+        fresnelColor: "#FFFFFF",
+        iridescenceEnabled: false,
+        iridescenceIntensity: 0.5,
+        iridescenceSpeed: 1,
+        bloomIntensity: 0,
+        bloomThreshold: 0.7,
+        chromaticAberration: 0,
+        shapeType: "plane",
+        shapeRotationX: 0,
+        shapeRotationY: 0,
+        shapeRotationZ: 0,
+        shapeAutoRotateSpeedX: 0,
+        shapeAutoRotateSpeedY: 0,
+        sphereRadius: 15,
+        torusRadius: 15,
+        torusTube: 5,
+        cylinderRadius: 10,
+        cylinderHeight: 40,
+        planeBend: 0,
+        planeTwist: 0,
+        silhouetteFade: 0.25,
+        cylinderFade: 0.08,
+        ribbonFade: 0.05,
+        flatShading: true,
+        cameraLock: true,
+        cameraX: 0,
+        cameraY: 0,
+        cameraZ: 0,
+        cameraRotationX: 0,
+        cameraRotationY: 0,
+        cameraRotationZ: 0,
+        cameraZoom: 1,
+      });
+
+      window.addEventListener("portfolio:project-change", (event: Event) => {
+        if (!(event instanceof CustomEvent)) return;
+        const slug = event.detail?.slug;
+        if (typeof slug === "string" && slug in neatPalettes) {
+          gradient.colors = toNeatColors(neatPalettes[slug]);
+        }
+      });
+      window.addEventListener("pagehide", () => gradient.destroy(), { once: true });
+    } catch {
+      gradientCanvas.hidden = true;
+    }
+  }
+</script>
+
 <style>
   .sessions-view {
     --session-ink: #f3f0e8;
@@ -340,14 +446,33 @@ const copy =
     pointer-events: none;
   }
 
+  .sessions-neat-gradient {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    opacity: 0.34;
+    mix-blend-mode: screen;
+    pointer-events: none;
+  }
+
   .sessions-background {
     --session-accent: #d58b6c;
+    --session-base-1: #101514;
+    --session-base-2: #070909;
+    --session-corner-tr: rgba(255, 124, 82, 0.44);
+    --session-corner-bl: rgba(255, 226, 148, 0.18);
+    --session-glow-mid: rgba(255, 255, 255, 0.06);
     opacity: 0;
-    transform: scale(1.16) translateY(calc(var(--session-distance, 0) * 8%));
-    transition:
-      opacity 680ms ease,
-      transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
     overflow: hidden;
+    z-index: 1;
+    background:
+      radial-gradient(circle at 82% 18%, var(--session-corner-tr), transparent 40%),
+      radial-gradient(circle at 18% 82%, var(--session-corner-bl), transparent 48%),
+      radial-gradient(circle at 50% 48%, var(--session-glow-mid), transparent 42%),
+      linear-gradient(135deg, var(--session-base-1), var(--session-base-2));
+    transition: opacity 520ms ease;
   }
 
   .sessions-background.accent-sage {
@@ -362,53 +487,95 @@ const copy =
     --session-accent: #d5aa58;
   }
 
+  .sessions-background.project-vision-agent {
+    --session-base-1: #0a1230;
+    --session-base-2: #030506;
+    --session-corner-tr: rgba(132, 106, 255, 0.46);
+    --session-corner-bl: rgba(80, 255, 185, 0.28);
+    --session-glow-mid: rgba(92, 174, 255, 0.12);
+  }
+
+  .sessions-background.project-robotic-video-intelligence {
+    --session-base-1: #0b1812;
+    --session-base-2: #030605;
+    --session-corner-tr: rgba(80, 255, 185, 0.28);
+    --session-corner-bl: rgba(171, 238, 106, 0.38);
+    --session-glow-mid: rgba(255, 216, 112, 0.1);
+  }
+
+  .sessions-background.project-multimodal-asset-search {
+    --session-base-1: #06142b;
+    --session-base-2: #020509;
+    --session-corner-tr: rgba(171, 238, 106, 0.26);
+    --session-corner-bl: rgba(44, 149, 255, 0.52);
+    --session-glow-mid: rgba(79, 255, 219, 0.12);
+  }
+
+  .sessions-background.project-lookx-generative-ai {
+    --session-base-1: #1d1207;
+    --session-base-2: #060403;
+    --session-corner-tr: rgba(44, 149, 255, 0.28);
+    --session-corner-bl: rgba(255, 178, 45, 0.48);
+    --session-glow-mid: rgba(255, 89, 120, 0.1);
+  }
+
+  .sessions-background.project-floor-plan-reconstruction {
+    --session-base-1: #21100a;
+    --session-base-2: #070504;
+    --session-corner-tr: rgba(255, 178, 45, 0.3);
+    --session-corner-bl: rgba(132, 106, 255, 0.46);
+    --session-glow-mid: rgba(255, 231, 155, 0.12);
+  }
+
+  .sessions-background::before,
   .sessions-background::after {
     content: "";
     position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(circle at 62% 44%, color-mix(in srgb, var(--session-accent, #d58b6c) 30%, transparent), transparent 38%),
-      linear-gradient(90deg, rgba(5, 8, 8, 0.58), rgba(9, 12, 12, 0.14) 50%, rgba(7, 9, 9, 0.5)),
-      linear-gradient(180deg, rgba(6, 8, 8, 0.02), rgba(6, 8, 8, 0.28));
-    mix-blend-mode: normal;
+    pointer-events: none;
   }
 
-  .sessions-background img,
-  .sessions-background video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: blur(30px) saturate(1.35) contrast(1.08) brightness(0.82);
-    transform: scale(1.12);
-    transform-origin: center;
+  .sessions-background::before {
+    inset: -18%;
+    background:
+      radial-gradient(circle at 70% 24%, var(--session-corner-tr), transparent 34%),
+      radial-gradient(circle at 24% 76%, var(--session-corner-bl), transparent 42%),
+      radial-gradient(circle at 52% 46%, var(--session-glow-mid), transparent 40%);
+    opacity: 0.58;
+    transform: translate3d(-1.5%, 1.5%, 0) scale(1.04);
+    will-change: transform;
+  }
+
+  .sessions-background.is-active::before {
+    animation: sessionGradientDrift 20s ease-in-out infinite alternate;
+  }
+
+  .sessions-background::after {
+    inset: 0;
+    background:
+      linear-gradient(90deg, rgba(4, 6, 6, 0.68), rgba(4, 6, 6, 0.18) 48%, rgba(4, 6, 6, 0.46)),
+      radial-gradient(circle at 58% 44%, transparent 0 22%, rgba(5, 7, 7, 0.18) 58%, rgba(5, 7, 7, 0.62) 100%);
   }
 
   .sessions-background.is-active {
     opacity: 1;
-    transform: scale(1.08) translateY(0);
   }
 
-  .sessions-background.is-active img,
-  .sessions-background.is-active video {
-    animation: sessionBackgroundDrift 16s ease-in-out infinite alternate;
+  @keyframes sessionGradientDrift {
+    0% {
+      transform: translate3d(-1.5%, 1.5%, 0) scale(1.04);
+    }
+
+    100% {
+      transform: translate3d(1.8%, -1.2%, 0) scale(1.08);
+    }
   }
 
   .sessions-shade {
     z-index: 1;
     background:
-      radial-gradient(circle at 58% 44%, transparent 0 24%, rgba(6, 8, 8, 0.1) 58%, rgba(6, 8, 8, 0.46) 100%),
-      linear-gradient(90deg, rgba(4, 6, 6, 0.34), rgba(4, 6, 6, 0.08) 50%, rgba(4, 6, 6, 0.24)),
-      linear-gradient(rgba(4, 6, 6, 0.02), rgba(4, 6, 6, 0.26));
+      linear-gradient(rgba(4, 6, 6, 0.1), rgba(4, 6, 6, 0.3)),
+      radial-gradient(circle at 50% 50%, transparent 0 44%, rgba(4, 6, 6, 0.34) 100%);
     pointer-events: none;
-  }
-
-  @keyframes sessionBackgroundDrift {
-    from {
-      transform: scale(1.12) translate3d(-2.4%, -1.6%, 0);
-    }
-    to {
-      transform: scale(1.2) translate3d(2.4%, 1.6%, 0);
-    }
   }
 
   .sessions-index {
@@ -538,8 +705,8 @@ const copy =
 
   .sessions-view .session-visual.is-previous,
   .sessions-view .session-visual.is-next {
-    opacity: 0.22;
-    filter: blur(2.5px) saturate(0.72);
+    opacity: 0.4;
+    filter: blur(2px) saturate(0.72) brightness(0.72);
   }
 
   .session-visual.is-far {
@@ -630,9 +797,9 @@ const copy =
     font-family: var(--session-title-face);
     font-size: clamp(3.35rem, 4.9vw, 6.2rem);
     font-optical-sizing: auto;
-    font-weight: 500;
-    line-height: 0.88;
-    letter-spacing: -0.05em;
+    font-weight: 400;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
     text-wrap: balance;
   }
 
@@ -641,10 +808,10 @@ const copy =
   }
 
   .session-summary {
-    max-width: 31rem;
-    margin: 1.55rem 0 0;
+    max-width: 34rem;
+    margin: 2.5rem 0 0;
     color: rgba(255, 255, 255, 0.78);
-    font: 450 clamp(0.95rem, 1.08vw, 1.12rem)/1.52 var(--sans);
+    font: 200 clamp(1rem, 1.35vw, 1.25rem)/1.52 var(--sans);
   }
 
   .session-watch {
@@ -655,7 +822,7 @@ const copy =
     border: 0;
     color: rgba(255, 255, 255, 0.74);
     background: transparent;
-    font: 300 clamp(0.78rem, 0.84vw, 0.88rem)/1.35 var(--text);
+    font: 700 clamp(1rem, 1.15vw, 1.2rem)/1.35 var(--text);
     line-height: 1.3;
     letter-spacing: 0.01em;
     text-decoration: underline;
@@ -724,14 +891,16 @@ const copy =
   }
 
   :global(html[lang="zh-CN"]) .sessions-index button strong {
-    font-size: clamp(2.85rem, 4.35vw, 5.25rem);
-    line-height: 1.15;
+    font-size: clamp(2.45rem, 3.75vw, 4.55rem);
+    font-weight: 560;
+    line-height: 1.18;
     letter-spacing: normal;
   }
 
   :global(html[lang="zh-CN"]) .session-detail h1 {
-    font-size: clamp(3.2rem, 4.3vw, 5.3rem);
-    line-height: 1.18;
+    font-size: clamp(2.85rem, 3.85vw, 4.7rem);
+    font-weight: 560;
+    line-height: 1.2;
     letter-spacing: normal;
   }
 
@@ -847,12 +1016,12 @@ const copy =
     .session-detail h1 {
       max-width: 12ch;
       font-size: clamp(3rem, 14vw, 4.8rem);
-      line-height: 0.88;
+      line-height: 0.95;
     }
 
     .session-summary {
       margin-top: 0.85rem;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
     }
 
     .sessions-copy-stack > .sessions-navigation {
@@ -864,19 +1033,23 @@ const copy =
     }
 
     :global(html[lang="zh-CN"]) .sessions-index button strong {
-      font-size: clamp(1.48rem, 6.55vw, 2rem);
+      font-size: clamp(1.42rem, 6vw, 1.88rem);
       line-height: 1.15;
       letter-spacing: normal;
     }
 
     :global(html[lang="zh-CN"]) .session-detail h1 {
-      font-size: clamp(2.55rem, 11.4vw, 3.85rem);
+      font-size: clamp(2.35rem, 10.4vw, 3.45rem);
       line-height: 1.18;
       letter-spacing: normal;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .sessions-neat-gradient {
+      display: none;
+    }
+
     .sessions-background,
     .sessions-index li,
     .session-visual,
@@ -885,8 +1058,7 @@ const copy =
       transition: none;
     }
 
-    .sessions-background.is-active img,
-    .sessions-background.is-active video {
+    .sessions-background.is-active::before {
       animation: none;
     }
   }
