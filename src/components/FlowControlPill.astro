@@ -57,7 +57,11 @@ const copy =
 
     <div class={`flow-pill-channel accent-${first?.data.accent ?? "terracotta"} project-${first?.data.slug ?? ""}`} data-pill-channel>
       <div class="flow-pill-channel-thumb">
-        <img data-viewer-thumbnail src={firstPillThumb} alt="" />
+        <canvas
+          data-viewer-thumbnail
+          data-viewer-thumbnail-slug={first?.data.slug ?? ""}
+          aria-hidden="true"
+        ></canvas>
       </div>
       <div class="flow-pill-channel-copy">
         <button type="button" data-project-next aria-label={copy.nextChannel}>
@@ -79,3 +83,144 @@ const copy =
     </div>
   </div>
 </div>
+
+<script>
+  import { NeatGradient } from "@firecms/neat";
+
+  const thumbnailCanvas = document.querySelector("[data-viewer-thumbnail]");
+  const neatLicenseKey = import.meta.env.PUBLIC_NEAT_LICENSE_KEY;
+
+  const pillPalettes: Record<string, string[]> = {
+    "vision-agent": ["#6D3BFF", "#17E7FF", "#0B1738", "#A8E6CF"],
+    "robotic-video-intelligence": ["#A8E6CF", "#17E7FF", "#143B2F", "#FFC858"],
+    "multimodal-asset-search": ["#FFC858", "#17E7FF", "#003FFF", "#FF5373"],
+    "lookx-generative-ai": ["#FF5373", "#6D3BFF", "#2B0837", "#FFC858"],
+    "floor-plan-reconstruction": ["#FFC858", "#A8E6CF", "#5C3712", "#6D3BFF"],
+  };
+
+  const toNeatColors = (colors: string[]) => [
+    ...colors.map((color) => ({ color, enabled: true })),
+    { color: "#f5e1e5", enabled: false },
+    { color: "#A8E6CF", enabled: false },
+  ];
+
+  if (thumbnailCanvas instanceof HTMLCanvasElement) {
+    try {
+      const initialSlug = thumbnailCanvas.dataset.viewerThumbnailSlug ?? "vision-agent";
+      const gradient = new NeatGradient({
+        ref: thumbnailCanvas,
+        ...(neatLicenseKey ? { licenseKey: neatLicenseKey } : {}),
+        colors: toNeatColors(pillPalettes[initialSlug] ?? pillPalettes["vision-agent"]),
+        speed: 2,
+        horizontalPressure: 2,
+        verticalPressure: 5,
+        waveFrequencyX: 2,
+        waveFrequencyY: 2,
+        waveAmplitude: 5,
+        shadows: 10,
+        highlights: 8,
+        colorBrightness: 1,
+        colorSaturation: 10,
+        wireframe: true,
+        colorBlending: 6,
+        backgroundColor: "#003FFF",
+        backgroundAlpha: 1,
+        grainScale: 0,
+        grainSparsity: 0,
+        grainIntensity: 0,
+        grainSpeed: 0,
+        resolution: 0.95,
+        yOffset: 0,
+        yOffsetWaveMultiplier: 3.5,
+        yOffsetColorMultiplier: 3.5,
+        yOffsetFlowMultiplier: 3.5,
+        flowDistortionA: 0.4,
+        flowDistortionB: 3,
+        flowScale: 3.3,
+        flowEase: 0.53,
+        flowEnabled: false,
+        enableProceduralTexture: false,
+        transparentTextureVoid: false,
+        textureVoidLikelihood: 0.06,
+        textureVoidWidthMin: 10,
+        textureVoidWidthMax: 500,
+        textureBandDensity: 0.8,
+        textureColorBlending: 0.06,
+        textureSeed: 333,
+        textureEase: 0.6,
+        proceduralBackgroundColor: "#003FFF",
+        textureShapeTriangles: 20,
+        textureShapeCircles: 15,
+        textureShapeBars: 15,
+        textureShapeSquiggles: 10,
+        domainWarpEnabled: false,
+        domainWarpIntensity: 0,
+        domainWarpScale: 3,
+        vignetteIntensity: 0,
+        vignetteRadius: 0.8,
+        fresnelEnabled: false,
+        fresnelPower: 2,
+        fresnelIntensity: 0.5,
+        fresnelColor: "#FFFFFF",
+        iridescenceEnabled: false,
+        iridescenceIntensity: 0.5,
+        iridescenceSpeed: 1,
+        bloomIntensity: 0,
+        bloomThreshold: 0.7,
+        chromaticAberration: 0,
+        shapeType: "plane",
+        shapeRotationX: 0,
+        shapeRotationY: 0,
+        shapeRotationZ: 0,
+        shapeAutoRotateSpeedX: 0,
+        shapeAutoRotateSpeedY: 0,
+        sphereRadius: 15,
+        torusRadius: 15,
+        torusTube: 5,
+        cylinderRadius: 10,
+        cylinderHeight: 40,
+        planeBend: 0,
+        planeTwist: 0,
+        silhouetteFade: 0.25,
+        cylinderFade: 0.08,
+        ribbonFade: 0.05,
+        flatShading: true,
+        cameraLock: true,
+        cameraX: 0,
+        cameraY: 0,
+        cameraZ: 0,
+        cameraRotationX: 0,
+        cameraRotationY: 0,
+        cameraRotationZ: 0,
+        cameraZoom: 1,
+      });
+
+      const setPalette = (slug: string) => {
+        if (slug in pillPalettes) gradient.colors = toNeatColors(pillPalettes[slug]);
+      };
+
+      window.addEventListener("portfolio:project-change", (event: Event) => {
+        if (!(event instanceof CustomEvent)) return;
+        const slug = event.detail?.slug;
+        if (typeof slug === "string") setPalette(slug);
+      });
+
+      const observer = new MutationObserver(() => {
+        const slug = thumbnailCanvas.dataset.viewerThumbnailSlug;
+        if (slug) setPalette(slug);
+      });
+      observer.observe(thumbnailCanvas, { attributes: true, attributeFilter: ["data-viewer-thumbnail-slug"] });
+
+      window.addEventListener(
+        "pagehide",
+        () => {
+          observer.disconnect();
+          gradient.destroy();
+        },
+        { once: true },
+      );
+    } catch {
+      thumbnailCanvas.hidden = true;
+    }
+  }
+</script>

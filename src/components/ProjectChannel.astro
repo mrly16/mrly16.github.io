@@ -252,57 +252,65 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
             },
           },
           {
-            kicker: "BOTTLENECK",
-            title: "漏检不是算法一个人的问题",
-            summary: "算法、推理、产品、方案、客户和飞控平台都在同一条链路里。没有统一证据界面时，每个角色只能看到问题的一部分。",
-            visual: "video-roles",
-            layout: "board",
-            chips: ["Algorithm", "Inference", "Product", "Customer"],
+            kicker: "PROBLEM",
+            title: "同一个模型，现场结果可能完全不同",
+            summary: "机器人视觉项目里，实验室效果和客户现场效果之间常有落差。光照、视角、设备、数据链路和场景背景都会改变模型真正面对的问题。",
+            visual: "video-problem",
+            layout: "statement",
           },
           {
-            kicker: "CHOICE",
-            title: "视频任务成为共享证据入口",
-            summary: "实时流、历史回放、批量测试和客户演示都围绕视频卡片展开，让产品、算法、测试和方案团队在同一个对象上协作。",
-            visual: "video-workflow",
-            layout: "process",
-            points: ["视频卡片承载任务状态和操作入口", "片段选择帮助定位具体失败时刻", "前端渲染与模型推理解耦"],
+            kicker: "SYSTEM",
+            title: "视频分析引擎背后的系统架构",
+            summary: "",
+            visual: "video-system-architecture",
+            layout: "statement",
           },
           {
-            kicker: "CORE",
-            title: "系统核心是重构视频分析引擎",
-            summary: "我用微服务桥接跨服务器推理结果，让一个 GPU 实例承接实时和离线分析，并避免流式管线阻塞或回灌。",
-            visual: "video-system",
-            layout: "split",
-            chips: ["Microservice inference", "Streaming pipeline", "Replay logs"],
+            kicker: "PRODUCT",
+            title: "从现场采集到业务确认，都在同一个平台完成",
+            summary: "我把实时采集、离线验证和结果复盘放进同一套任务界面，让不同角色围绕同一份视频证据协作。",
+            visual: "video-product-workflow",
+            layout: "statement",
           },
           {
-            kicker: "RESULT",
-            title: "现场演示和回归测试变得更可控",
-            summary: "系统把查询 FPS 从约 5 提升到 40，离线分析接近满速推理，也显著降低客户测试和模型接入的人力成本。",
-            visual: "video-result",
-            layout: "metrics",
-            metrics: [
-              { value: "5→40", label: "查询 FPS" },
-              { value: "120 FPS", label: "离线推理速度" },
-              { value: "80→2", label: "客户测试人天" },
-            ],
+            kicker: "INTERACTION",
+            title: "把推理结果变成可操作的界面",
+            summary: "这些交互不是装饰，而是为了让用户更快定位问题、控制视频证据，并批量处理任务。",
+            visual: "video-uiux-highlights",
+            layout: "statement",
+          },
+          {
+            kicker: "ALGORITHM",
+            title: "融合可见光与红外，减少现场误报",
+            summary: "我把双光图像配准、相机畸变校正和可疑结果过滤串成一条检测链路，让系统在复杂现场更稳定。",
+            visual: "video-fusion-detection",
+            layout: "statement",
           },
         ],
         "vision-agent": [
           {
             kicker: "WHY",
-            title: "视觉智能体需要工程化上下文",
-            summary: "巡检机器人面对的是连续视频、变化场景、误报和任务上下文。系统要判断该看什么、记什么、何时验证，而不是只生成一句回答。",
-            visual: "vision-context",
+            title: "用 VLM 为传统 CV 任务补上上下文",
+            summary: "这是一个面向视觉任务的 Agent harness：让检测模型不只输出框，而能结合记忆、工具和任务规范理解现场发生了什么。",
+            visual: "vision-frontpage",
             layout: "statement",
+            media: {
+              type: "image",
+              src: "/case-studies/vision-agent/vision-agent-frontpage.png",
+              alt: "视觉智能体 harness 系统示意",
+            },
           },
           {
             kicker: "CHOICE",
-            title: "用记忆、工具、规范和循环组织判断",
-            summary: "文本 Agent 有相对成熟的套路，但视觉任务需要重新组织 memory、tools、specs 和 loop，避免上下文过载或证据缺失。",
-            visual: "vision-loop",
-            layout: "process",
-            points: ["Memory：历史与场景状态", "Tools：检测、检索和验证接口", "Loop：观察、推理、行动、复盘"],
+            title: "系统需要常识推理，也需要记住事情",
+            summary: "",
+            visual: "vision-common-sense",
+            layout: "statement",
+            media: {
+              type: "image",
+              src: "/case-studies/vision-agent/common-sense-memory.gif",
+              alt: "视觉智能体常识推理与记忆示意",
+            },
           },
           {
             kicker: "CORE",
@@ -313,16 +321,18 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
             chips: ["Knowledge store", "Context window", "Tool calls"],
           },
           {
-            kicker: "RESULT",
-            title: "这是研究型系统设计",
-            summary: "价值在于验证视觉智能体的工程形态：如何用记忆、工具和规范提升巡检判断，并在有限测试中降低误报风险。",
-            visual: "vision-result",
-            layout: "metrics",
-            metrics: [
-              { value: "Memory", label: "核心设计对象" },
-              { value: "Tools", label: "可验证行动接口" },
-              { value: "Limited", label: "battle tests" },
-            ],
+            kicker: "MEMORY",
+            title: "Feature dump 为长期记忆收集结构化事实",
+            summary: "不是所有视觉信息都值得昂贵地持久化。系统需要先收集便宜、稳定、可检索的结构化线索，再决定哪些事实进入长期记忆。",
+            visual: "vision-feature-dump",
+            layout: "statement",
+          },
+          {
+            kicker: "TRIGGER",
+            title: "设计 VLM/LMM 调用的触发时机",
+            summary: "",
+            visual: "vision-context-engineering",
+            layout: "statement",
           },
         ],
       }
@@ -442,57 +452,65 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
             },
           },
           {
-            kicker: "BOTTLENECK",
-            title: "A missed detection is not only an algorithm problem",
-            summary: "Algorithm, inference, product, solution, customer, and flight-control systems all touch the same visual event. Without one evidence surface, each role sees only part of the issue.",
-            visual: "video-roles",
-            layout: "board",
-            chips: ["Algorithm", "Inference", "Product", "Customer"],
+            kicker: "PROBLEM",
+            title: "The same model can behave differently in the field",
+            summary: "Robotics vision often breaks between lab tests and customer sites. Lighting, viewpoint, hardware, data pipelines, and scene context all change what the model actually sees.",
+            visual: "video-problem",
+            layout: "statement",
           },
           {
-            kicker: "CHOICE",
-            title: "Video tasks became the shared evidence object",
-            summary: "Live streams, historical replay, batch tests, and customer demos all operate around video cards, so product, algorithm, testing, and solution teams work on the same object.",
-            visual: "video-workflow",
-            layout: "process",
-            points: ["Video cards carry task state and operations", "Segment selection locates the exact failure moment", "Frontend rendering and model inference are decoupled"],
+            kicker: "SYSTEM",
+            title: "The system architecture behind the video analysis engine",
+            summary: "",
+            visual: "video-system-architecture",
+            layout: "statement",
           },
           {
-            kicker: "CORE",
-            title: "The technical core was a rebuilt video analysis engine",
-            summary: "I used a microservice bridge to move cross-server inference results into the streaming pipeline, while keeping one GPU instance responsible for realtime and offline analysis.",
-            visual: "video-system",
-            layout: "split",
-            chips: ["Microservice inference", "Streaming pipeline", "Replay logs"],
+            kicker: "PRODUCT",
+            title: "From field collection to stakeholder sign-off in one platform.",
+            summary: "I connected live collection, offline validation, and review workflows around the same video evidence, so every role could work from one shared surface.",
+            visual: "video-product-workflow",
+            layout: "statement",
           },
           {
-            kicker: "RESULT",
-            title: "Field demos and regression tests became more controllable",
-            summary: "The system improved query FPS from about 5 to 40, kept offline analysis near full inference speed, and reduced customer-test and integration effort.",
-            visual: "video-result",
-            layout: "metrics",
-            metrics: [
-              { value: "5→40", label: "query FPS" },
-              { value: "120 FPS", label: "offline inference" },
-              { value: "80→2", label: "customer test days" },
-            ],
+            kicker: "INTERACTION",
+            title: "Turning inference results into usable interactions",
+            summary: "These details made video evidence easier to inspect, customize, scrub through, and batch-manage without forcing users to watch every frame.",
+            visual: "video-uiux-highlights",
+            layout: "statement",
+          },
+          {
+            kicker: "ALGORITHM",
+            title: "Fusing visible-light and infrared detection",
+            summary: "I combined dual-spectrum registration, camera distortion correction, and suspicious-result filtering to make field detection more stable.",
+            visual: "video-fusion-detection",
+            layout: "statement",
           },
         ],
         "vision-agent": [
           {
             kicker: "WHY",
-            title: "Visual agents need engineered context",
-            summary: "Inspection robots face continuous video, changing scenes, false alarms, and task context. The system must decide what to watch, remember, and verify.",
-            visual: "vision-context",
+            title: "A harness system that complements CV tasks with VLM reasoning",
+            summary: "This project explores a visual-agent harness: detection models still do the perception work, while VLM reasoning, memory, tools, and task specs add context around what the system sees.",
+            visual: "vision-frontpage",
             layout: "statement",
+            media: {
+              type: "image",
+              src: "/case-studies/vision-agent/vision-agent-frontpage.png",
+              alt: "Vision agent harness system concept",
+            },
           },
           {
             kicker: "CHOICE",
-            title: "Organize judgment with memory, tools, specs, and loop",
-            summary: "Text agents have familiar patterns, but visual tasks need memory, tools, specs, and loop design to avoid context overload and missing evidence.",
-            visual: "vision-loop",
-            layout: "process",
-            points: ["Memory: history and scene state", "Tools: detection, retrieval, verification", "Loop: observe, reason, act, review"],
+            title: "The system needs common-sense reasoning and memory",
+            summary: "",
+            visual: "vision-common-sense",
+            layout: "statement",
+            media: {
+              type: "image",
+              src: "/case-studies/vision-agent/common-sense-memory.gif",
+              alt: "Vision agent common-sense reasoning and memory concept",
+            },
           },
           {
             kicker: "CORE",
@@ -503,16 +521,18 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
             chips: ["Knowledge store", "Context window", "Tool calls"],
           },
           {
-            kicker: "RESULT",
-            title: "This is a research system design",
-            summary: "The value is testing an engineering shape for visual agents: how memory, tools, and specs can improve inspection judgment in limited battle tests.",
-            visual: "vision-result",
-            layout: "metrics",
-            metrics: [
-              { value: "Memory", label: "primary design object" },
-              { value: "Tools", label: "verifiable action layer" },
-              { value: "Limited", label: "battle tests" },
-            ],
+            kicker: "MEMORY",
+            title: "Feature dumps collect cheap structure for long-term memory",
+            summary: "Not every visual signal should be persisted expensively. The system first gathers cheap, stable, searchable facts, then decides what deserves long-term memory.",
+            visual: "vision-feature-dump",
+            layout: "statement",
+          },
+          {
+            kicker: "TRIGGER",
+            title: "Designing when VLM/LMM calls should be triggered",
+            summary: "",
+            visual: "vision-context-engineering",
+            layout: "statement",
           },
         ],
       };
@@ -790,33 +810,6 @@ const copy =
                     </div>
                   </section>
 
-                  <section
-                    class="viewer-episode"
-                    data-viewer-episode
-                    data-episode-title="Vector BIM result"
-                    data-episode-summary={floorPlanDeck.result.summary}
-                    aria-hidden="true"
-                    inert
-                  >
-                    <div class="floor-deck floor-deck-result">
-                      <div class="floor-deck-copy">
-                        <span>VECTOR / IFC RESULT</span>
-                        <h2>{floorPlanDeck.result.title}</h2>
-                        <p>{floorPlanDeck.result.summary}</p>
-                      </div>
-                      <div class="result-stack" aria-hidden="true">
-                        <img src="/case-studies/floor-plan/annotated-plan.jpg" alt="" />
-                        <video
-                          src="/case-studies/floor-plan/floorplan-hero-gradient-textured.mp4"
-                          poster="/case-studies/floor-plan/floorplan-hero-gradient-textured-poster.jpg"
-                          autoplay
-                          muted
-                          loop
-                          playsinline
-                        ></video>
-                      </div>
-                    </div>
-                  </section>
                 </>
               ) : storyDeck ? (
                 <>
@@ -994,6 +987,220 @@ const copy =
                                 )}
                               </p>
                             </figcaption>
+                          </figure>
+                        ) : null}
+                        {slide.visual === "video-problem" ? (
+                          <div class="video-problem-visual" aria-label="Comparison between lab and field model inference results">
+                            <figure>
+                              <img src="/case-studies/video-intelligence/problem-left.png" alt="" decoding="async" />
+                              <figcaption>{locale === "zh" ? "室内结果" : "Result at home"}</figcaption>
+                            </figure>
+                            <figure>
+                              <img src="/case-studies/video-intelligence/problem-right.png" alt="" decoding="async" />
+                              <figcaption>{locale === "zh" ? "现场结果" : "Result in field"}</figcaption>
+                            </figure>
+                          </div>
+                        ) : null}
+                        {slide.visual === "video-system-architecture" ? (
+                          <figure class="video-system-architecture-visual" aria-label={locale === "zh" ? "视频分析引擎系统架构图" : "System architecture diagram for the video analysis engine"}>
+                            <img src="/case-studies/video-intelligence/system-architecture.png" alt="" decoding="async" />
+                          </figure>
+                        ) : null}
+                        {slide.visual === "video-product-workflow" ? (
+                          <div class="video-product-workflow-visual" aria-label={locale === "zh" ? "视频智能平台产品工作流" : "Video intelligence product workflow"}>
+                            {[
+                              {
+                                title: locale === "zh" ? "流式任务" : "Streaming Tasks",
+                                tags: ["FDE", locale === "zh" ? "客户" : "Client"],
+                                image: "/case-studies/video-intelligence/product-streaming.png",
+                                caption:
+                                  locale === "zh"
+                                    ? "现场数据采集与算法压力测试：无人机飞行、多路流模拟、实时 bbox 反馈"
+                                    : "Field data collection and algorithm stress-testing: drone flights, multi-stream simulation, live bbox feedback",
+                              },
+                              {
+                                title: locale === "zh" ? "文件推理" : "File Inference",
+                                tags: ["MLE", "Dev", "QA"],
+                                image: "/case-studies/video-intelligence/product-file-inference.png",
+                                caption:
+                                  locale === "zh"
+                                    ? "围绕验收标准做离线批量验证：模型 A/B 对比、逐帧真值复核"
+                                    : "Batch offline validation against exit criteria: model A/B comparison, per-frame ground truth review",
+                              },
+                              {
+                                title: locale === "zh" ? "复盘分析" : "Review & Analysis",
+                                tags: [locale === "zh" ? "销售" : "Sales", "MLE", "QA"],
+                                image: "/case-studies/video-intelligence/product-review-analysis.png",
+                                caption:
+                                  locale === "zh"
+                                    ? "为相关方整理可交付证据：时间线回放、事件截图、可分享片段"
+                                    : "Curated evidence for stakeholders: timeline replay, event snapshots, shareable clips",
+                              },
+                            ].map((item) => (
+                              <figure class="video-product-card">
+                                <header>
+                                  <h3>{item.title}</h3>
+                                  <div class="video-product-tags">
+                                    {item.tags.map((tag) => (
+                                      <span>{tag}</span>
+                                    ))}
+                                  </div>
+                                </header>
+                                <img src={item.image} alt="" decoding="async" />
+                                <figcaption>{item.caption}</figcaption>
+                              </figure>
+                            ))}
+                          </div>
+                        ) : null}
+                        {slide.visual === "video-uiux-highlights" ? (
+                          <div class="video-uiux-grid" aria-label={locale === "zh" ? "视频智能平台交互亮点" : "Video intelligence UI interaction highlights"}>
+                            {[
+                              {
+                                title: locale === "zh" ? "前端解耦渲染" : "Decoupled Rendering",
+                                image: "/case-studies/video-intelligence/uiux/decoupled-rendering.gif",
+                                caption:
+                                  locale === "zh"
+                                    ? "检测框与轨迹由前端渲染，而不是烧进视频帧，让结果展示可以随时筛选、换样式和叠加信息。"
+                                    : "Inference overlays are rendered in the frontend instead of burned into frames, making visualization flexible and customizable.",
+                              },
+                              {
+                                title: locale === "zh" ? "逐帧进度追踪" : "Frame Progress Tracking",
+                                image: "/case-studies/video-intelligence/uiux/progress-bar.gif",
+                                caption:
+                                  locale === "zh"
+                                    ? "文件推理任务展示每一帧的处理进度，用户可以自由快进、回看和定位结果。"
+                                    : "File inference tasks expose frame-level progress, so users can scrub, jump forward, and revisit results while processing continues.",
+                              },
+                              {
+                                title: locale === "zh" ? "拖拽多选" : "Drag Multi-select",
+                                image: "/case-studies/video-intelligence/uiux/slide-selection.gif",
+                                caption:
+                                  locale === "zh"
+                                    ? "媒体卡片和任务卡片支持拖拽框选，减少批量操作时的重复点击。"
+                                    : "Media and task cards support drag-to-select, reducing repetitive clicks for batch operations.",
+                              },
+                              {
+                                title: locale === "zh" ? "事件标记与提示" : "Event Markers",
+                                image: "/case-studies/video-intelligence/uiux/tooltip-marker.gif",
+                                caption:
+                                  locale === "zh"
+                                    ? "关键事件被标记在时间线上，用户可以直接跳到有价值的片段，而不是看完整段视频。"
+                                    : "Custom event markers and tooltips guide users straight to meaningful moments instead of making them watch the full video.",
+                              },
+                            ].map((item) => (
+                              <figure class="video-uiux-card">
+                                <img src={item.image} alt="" loading="lazy" decoding="async" />
+                                <figcaption>
+                                  <strong>{item.title}</strong>
+                                  <span>{item.caption}</span>
+                                </figcaption>
+                              </figure>
+                            ))}
+                          </div>
+                        ) : null}
+                        {slide.visual === "video-fusion-detection" ? (
+                          <div class="video-fusion-visual" aria-label={locale === "zh" ? "可见光与红外融合检测算法演示" : "Visible-light and infrared fusion detection demo"}>
+                            <video src="/case-studies/video-intelligence/fusion/fusion-detection.mp4" autoplay muted loop playsinline preload="metadata"></video>
+                            <div class="video-fusion-overlay">
+                              {[
+                                {
+                                  n: "1",
+                                  text:
+                                    locale === "zh"
+                                      ? "SEI 帧数据用于红外与可见光图像配准"
+                                      : "SEI frame data for Infrared and visible-light image registration",
+                                },
+                                {
+                                  n: "2",
+                                  text:
+                                    locale === "zh"
+                                      ? "单应性矩阵用于相机畸变校正"
+                                      : "Homography Matrix for camera distortion correction",
+                                },
+                                {
+                                  n: "3",
+                                  text:
+                                    locale === "zh"
+                                      ? "过滤可疑 YOLO 结果，降低误报"
+                                      : "Filter suspicious YOLO result to reduce false alarms",
+                                },
+                              ].map((item) => (
+                                <div class={`video-fusion-note video-fusion-note-${item.n}`}>
+                                  <b>{item.n}</b>
+                                  <span>{item.text}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        ) : null}
+                        {slide.visual === "vision-feature-dump" ? (
+                          <div class="vision-feature-dump-visual" aria-label={locale === "zh" ? "Feature dump memory structure" : "Feature dump memory structure"}>
+                            <figure class="vision-feature-image">
+                              <img src="/case-studies/vision-agent/feature-dump.png" alt="" decoding="async" />
+                            </figure>
+                            <div class="vision-feature-list">
+                              {[
+                                {
+                                  label: "Events",
+                                  image: "/case-studies/vision-agent/feature-line-1.png",
+                                  text:
+                                    locale === "zh"
+                                      ? "用户关心的领域事件"
+                                      : "Domain-meaningful occurrences user cares about",
+                                  sub:
+                                    locale === "zh"
+                                      ? "e.g. 00:03–00:05 之间发现违停车辆"
+                                      : "e.g. illegal parking vehicle found between 00:03 ~ 00:05 seconds",
+                                },
+                                {
+                                  label: "Detections",
+                                  image: "/case-studies/vision-agent/feature-line-2.png",
+                                  text:
+                                    locale === "zh"
+                                      ? "来自 CV 模型的逐帧 bbox 快照"
+                                      : "Raw per-frame bbox snapshots from CV models",
+                                  sub:
+                                    locale === "zh"
+                                      ? 'e.g. [{"x1":643.125, "y1":529.5, "class_name":"car", "conf":0.9404, "track_id":52}, ...]'
+                                      : 'e.g. [{"x1":643.125, "y1":529.5, "class_name":"car", "conf":0.9404, "track_id":52}, ...]',
+                                },
+                                {
+                                  label: "Memory",
+                                  image: "/case-studies/vision-agent/feature-line-3.png",
+                                  text:
+                                    locale === "zh"
+                                      ? "主动 VLM/LMM 操作产生的行动事实"
+                                      : "Active VLM/LMM operation action facts",
+                                  sub:
+                                    locale === "zh"
+                                      ? '{"summary_id":"sum_27_t300", "t_start":2.0, "content":"Highway section G2km34–35..."}'
+                                      : '{"summary_id":"sum_27_t300", "t_start":2.0, "content":"Highway section G2km34–35..."}',
+                                },
+                                {
+                                  label: "History",
+                                  image: "/case-studies/vision-agent/feature-line-4.png",
+                                  text:
+                                    locale === "zh"
+                                      ? "历史判断原因与任务相关事实"
+                                      : "History verdict reasons and task-specific facts",
+                                  sub:
+                                    locale === "zh"
+                                      ? 'e.g. record_id="a3f7c912", reason="low-angle morning sun shadow"'
+                                      : 'e.g. record_id="a3f7c912", reason="shadow cast by overpass girder during low-angle morning sun"',
+                                },
+                              ].map((item, index) => (
+                                <section class="vision-feature-item">
+                                  <img src={item.image} alt={item.label} decoding="async" />
+                                  <h3>{item.text}</h3>
+                                  <p>{item.sub}</p>
+                                </section>
+                              ))}
+                            </div>
+                          </div>
+                        ) : null}
+                        {slide.visual === "vision-context-engineering" ? (
+                          <figure class="vision-context-engineering-visual" aria-label={locale === "zh" ? "VLM/LMM 调用触发与上下文工程示意" : "VLM/LMM trigger and context engineering diagram"}>
+                            <img src="/case-studies/vision-agent/context-engineering.png" alt="" decoding="async" />
                           </figure>
                         ) : null}
                         {slide.media ? (
@@ -1301,7 +1508,11 @@ const copy =
         editionCompany.textContent = project.timelineCompanyName;
         editionCompany.href = project.timelineCompanyHref;
       }
-      if (thumbnail instanceof HTMLImageElement) thumbnail.src = project.pillThumb;
+      if (thumbnail instanceof HTMLCanvasElement) {
+        thumbnail.dataset.viewerThumbnailSlug = project.slug;
+      } else if (thumbnail instanceof HTMLImageElement) {
+        thumbnail.src = project.pillThumb;
+      }
       viewer.className = viewer.className.replace(/\baccent-\S+/g, "").replace(/\bproject-\S+/g, "");
       viewer.classList.add(`accent-${project.accent}`, `project-${project.slug}`);
       if (pillChannel) {

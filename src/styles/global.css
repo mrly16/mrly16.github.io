@@ -2279,9 +2279,7 @@ html[lang="zh-CN"] .channel-episode h1 {
   padding: 8px 10px;
   border: 1.5px solid color-mix(in srgb, var(--viewer-accent) 24%, rgba(255, 255, 255, 0.08));
   border-radius: 22px;
-  background:
-    radial-gradient(circle at 16% 50%, color-mix(in srgb, var(--viewer-accent) 16%, transparent), transparent 32%),
-    linear-gradient(135deg, color-mix(in srgb, var(--viewer-accent) 11%, #171c1a), #111513);
+  background: color-mix(in srgb, var(--viewer-accent) 10%, #111513);
   box-shadow:
     0 2px 0 rgba(255, 255, 255, 0.03) inset,
     0 18px 48px rgba(0, 0, 0, 0.4),
@@ -2308,9 +2306,7 @@ html[lang="zh-CN"] .channel-episode h1 {
   padding: 0.38rem 0.52rem;
   border-radius: 999px;
   border: 1px solid color-mix(in srgb, var(--viewer-accent) 16%, rgba(255, 255, 255, 0.04));
-  background:
-    linear-gradient(135deg, color-mix(in srgb, var(--viewer-accent) 10%, transparent), transparent),
-    color-mix(in srgb, var(--viewer-accent) 12%, #202522);
+  background: color-mix(in srgb, var(--viewer-accent) 12%, #202522);
   transform: translate(-50%, -50%);
   z-index: 2;
 }
@@ -2353,10 +2349,7 @@ html[lang="zh-CN"] .channel-episode h1 {
   padding: 0.38rem 0.54rem 0.38rem 0.44rem;
   border: 1px solid color-mix(in srgb, var(--viewer-accent) 34%, rgba(255, 255, 255, 0.08));
   border-radius: 22px;
-  background:
-    radial-gradient(circle at 22% 24%, color-mix(in srgb, var(--viewer-accent-2) 18%, transparent), transparent 42%),
-    linear-gradient(135deg, color-mix(in srgb, var(--viewer-accent) 24%, rgba(255, 255, 255, 0.03)), transparent 62%),
-    color-mix(in srgb, var(--viewer-accent) 18%, #262c29);
+  background: color-mix(in srgb, var(--viewer-accent) 18%, #262c29);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.04) inset,
     0 10px 24px rgba(0, 0, 0, 0.25);
@@ -2375,9 +2368,7 @@ html[lang="zh-CN"] .channel-episode h1 {
   padding: 0 0.8rem;
   border-radius: 22px;
   border: 1px solid color-mix(in srgb, var(--viewer-accent) 18%, rgba(255, 255, 255, 0.04));
-  background:
-    linear-gradient(135deg, color-mix(in srgb, var(--viewer-accent) 11%, transparent), transparent),
-    rgba(255, 255, 255, 0.03);
+  background: color-mix(in srgb, var(--viewer-accent) 8%, rgba(255, 255, 255, 0.03));
   color: rgba(237, 233, 222, 0.34);
   font: 500 0.7rem var(--mono);
   letter-spacing: 0.08em;
@@ -2396,30 +2387,31 @@ html[lang="zh-CN"] .channel-episode h1 {
   place-items: center;
   overflow: hidden;
   border-radius: 16px;
-  background:
-    radial-gradient(circle at 20% 20%, color-mix(in srgb, var(--viewer-accent-2) 32%, transparent), transparent 42%),
-    color-mix(in srgb, var(--viewer-accent) 12%, #ddd8cd);
+  background: #111513;
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.4) inset,
     0 6px 16px rgba(0, 0, 0, 0.25);
 }
 
 .flow-pill-channel-thumb::after {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(180deg, rgba(4, 6, 6, 0.04), rgba(4, 6, 6, 0.22)),
-    rgba(4, 6, 6, 0.1);
-  content: "";
-  pointer-events: none;
+  display: none;
 }
 
+.flow-pill-channel-thumb canvas,
 .flow-pill-channel-thumb img {
   width: 100%;
   height: 100%;
   padding: 0;
-  filter: brightness(0.74) saturate(0.92);
   object-fit: cover;
+}
+
+.flow-pill-channel-thumb canvas {
+  display: block;
+  filter: none;
+}
+
+.flow-pill-channel-thumb img {
+  filter: brightness(0.74) saturate(0.92);
 }
 
 .flow-pill-channel-copy {
@@ -6725,35 +6717,195 @@ html[lang="zh-CN"] .floor-hero-caption {
   background: #050505;
 }
 
-.story-deck-robotic-video-intelligence.story-visual-video-frontpage::after {
+.story-deck-robotic-video-intelligence.story-visual-video-problem {
+  grid-template-columns: minmax(210px, 0.68fr) minmax(440px, 1.32fr);
+  gap: clamp(1rem, 2.4vw, 2.4rem);
+  padding: clamp(1.25rem, 3vw, 2.6rem);
+  background: #050505;
+}
+
+.story-deck-robotic-video-intelligence.story-visual-video-system-architecture {
+  grid-template-columns: 1fr;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: clamp(1.25rem, 2.6vw, 2.35rem);
+  padding: clamp(1.25rem, 3vw, 2.6rem);
+  background: #050505;
+}
+
+.story-deck-robotic-video-intelligence.story-visual-video-product-workflow {
+  grid-template-columns: 1fr;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: clamp(0.65rem, 1.25vw, 1.05rem);
+  padding: clamp(1.15rem, 2.6vw, 2.25rem);
+  background: #050505;
+}
+
+.story-deck-robotic-video-intelligence.story-visual-video-uiux-highlights {
+  grid-template-columns: 1fr;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: clamp(0.75rem, 1.35vw, 1.15rem);
+  padding: clamp(1.15rem, 2.6vw, 2.25rem);
+  background: #050505;
+}
+
+.story-deck-robotic-video-intelligence.story-visual-video-fusion-detection {
+  grid-template-columns: minmax(210px, 0.58fr) minmax(480px, 1.42fr);
+  gap: clamp(1rem, 2.4vw, 2.2rem);
+  padding: clamp(1.15rem, 2.6vw, 2.25rem);
+  background: #050505;
+}
+
+.story-deck-robotic-video-intelligence.story-visual-video-frontpage::after,
+.story-deck-robotic-video-intelligence.story-visual-video-problem::after,
+.story-deck-robotic-video-intelligence.story-visual-video-system-architecture::after,
+.story-deck-robotic-video-intelligence.story-visual-video-product-workflow::after,
+.story-deck-robotic-video-intelligence.story-visual-video-uiux-highlights::after,
+.story-deck-robotic-video-intelligence.story-visual-video-fusion-detection::after {
   background: none;
 }
 
-.story-deck-robotic-video-intelligence.story-visual-video-frontpage .floor-deck-copy {
+.story-deck-robotic-video-intelligence.story-visual-video-frontpage .floor-deck-copy,
+.story-deck-robotic-video-intelligence.story-visual-video-problem .floor-deck-copy {
   max-width: min(100%, 620px);
 }
 
-.story-deck-robotic-video-intelligence.story-visual-video-frontpage .floor-deck-copy h2 {
+.story-deck-robotic-video-intelligence.story-visual-video-frontpage .floor-deck-copy h2,
+.story-deck-robotic-video-intelligence.story-visual-video-problem .floor-deck-copy h2 {
   max-width: 12em;
   font-size: clamp(1.55rem, 2.5vw, 2.75rem);
   line-height: 1.08;
   color: rgba(246, 242, 232, 0.96);
 }
 
-.story-deck-robotic-video-intelligence.story-visual-video-frontpage .floor-deck-copy p {
+.story-deck-robotic-video-intelligence.story-visual-video-frontpage .floor-deck-copy p,
+.story-deck-robotic-video-intelligence.story-visual-video-problem .floor-deck-copy p {
   max-width: 40ch;
   font-size: clamp(0.78rem, 0.92vw, 0.94rem);
   color: rgba(246, 242, 232, 0.64);
 }
 
-html[lang="zh-CN"] .story-deck-robotic-video-intelligence.story-visual-video-frontpage .floor-deck-copy h2 {
-  max-width: 8em;
+html[lang="zh-CN"] .story-deck-robotic-video-intelligence.story-visual-video-frontpage .floor-deck-copy h2,
+html[lang="zh-CN"] .story-deck-robotic-video-intelligence.story-visual-video-problem .floor-deck-copy h2 {
+  max-width: 9em;
   font-size: clamp(1.45rem, 2.3vw, 2.5rem);
   line-height: 1.12;
 }
 
-html[lang="zh-CN"] .story-deck-robotic-video-intelligence.story-visual-video-frontpage .floor-deck-copy p {
+html[lang="zh-CN"] .story-deck-robotic-video-intelligence.story-visual-video-frontpage .floor-deck-copy p,
+html[lang="zh-CN"] .story-deck-robotic-video-intelligence.story-visual-video-problem .floor-deck-copy p {
   max-width: 34ch;
+}
+
+.story-deck-robotic-video-intelligence.story-visual-video-system-architecture .floor-deck-copy {
+  align-self: start;
+  justify-self: stretch;
+  max-width: none;
+}
+
+.story-deck-robotic-video-intelligence.story-visual-video-system-architecture .floor-deck-copy h2 {
+  max-width: none;
+  font-size: clamp(1.45rem, 2.25vw, 2.45rem);
+  line-height: 1.08;
+  color: rgba(246, 242, 232, 0.96);
+}
+
+.story-deck-robotic-video-intelligence.story-visual-video-system-architecture .floor-deck-copy p {
+  display: none;
+}
+
+html[lang="zh-CN"] .story-deck-robotic-video-intelligence.story-visual-video-system-architecture .floor-deck-copy h2 {
+  font-size: clamp(1.35rem, 2.05vw, 2.25rem);
+  line-height: 1.12;
+}
+
+.story-deck-robotic-video-intelligence.story-visual-video-product-workflow .floor-deck-copy {
+  align-self: start;
+  justify-self: stretch;
+  max-width: none;
+}
+
+.story-deck-robotic-video-intelligence.story-visual-video-uiux-highlights .floor-deck-copy {
+  align-self: start;
+  justify-self: stretch;
+  max-width: none;
+}
+
+.story-deck-robotic-video-intelligence.story-visual-video-fusion-detection .floor-deck-copy {
+  align-self: center;
+  justify-self: stretch;
+  max-width: min(100%, 560px);
+}
+
+.story-deck-robotic-video-intelligence.story-visual-video-product-workflow .floor-deck-copy h2 {
+  max-width: none;
+  font-size: clamp(1.45rem, 2.22vw, 2.42rem);
+  line-height: 1.08;
+  color: rgba(246, 242, 232, 0.97);
+}
+
+.story-deck-robotic-video-intelligence.story-visual-video-uiux-highlights .floor-deck-copy h2 {
+  max-width: none;
+  font-size: clamp(1.45rem, 2.15vw, 2.35rem);
+  line-height: 1.08;
+  color: rgba(246, 242, 232, 0.97);
+}
+
+.story-deck-robotic-video-intelligence.story-visual-video-fusion-detection .floor-deck-copy h2 {
+  max-width: 11em;
+  font-size: clamp(1.42rem, 2.2vw, 2.4rem);
+  line-height: 1.08;
+  color: rgba(246, 242, 232, 0.97);
+}
+
+.story-deck-robotic-video-intelligence.story-visual-video-product-workflow .floor-deck-copy p {
+  max-width: 72ch;
+  margin-top: clamp(0.22rem, 0.52vw, 0.42rem);
+  color: rgba(246, 242, 232, 0.68);
+  font-size: clamp(0.78rem, 0.9vw, 0.96rem);
+}
+
+.story-deck-robotic-video-intelligence.story-visual-video-uiux-highlights .floor-deck-copy p {
+  max-width: 70ch;
+  margin-top: clamp(0.24rem, 0.55vw, 0.45rem);
+  color: rgba(246, 242, 232, 0.68);
+  font-size: clamp(0.78rem, 0.9vw, 0.96rem);
+}
+
+.story-deck-robotic-video-intelligence.story-visual-video-fusion-detection .floor-deck-copy p {
+  max-width: 34ch;
+  margin-top: clamp(0.34rem, 0.75vw, 0.62rem);
+  color: rgba(246, 242, 232, 0.68);
+  font-size: clamp(0.78rem, 0.9vw, 0.96rem);
+}
+
+html[lang="zh-CN"] .story-deck-robotic-video-intelligence.story-visual-video-product-workflow .floor-deck-copy h2 {
+  max-width: 22em;
+  font-size: clamp(1.22rem, 1.7vw, 1.82rem);
+  line-height: 1.1;
+}
+
+html[lang="zh-CN"] .story-deck-robotic-video-intelligence.story-visual-video-uiux-highlights .floor-deck-copy h2 {
+  max-width: 18em;
+  font-size: clamp(1.28rem, 1.8vw, 1.9rem);
+  line-height: 1.1;
+}
+
+html[lang="zh-CN"] .story-deck-robotic-video-intelligence.story-visual-video-fusion-detection .floor-deck-copy h2 {
+  max-width: 10em;
+  font-size: clamp(1.3rem, 1.95vw, 2.08rem);
+  line-height: 1.1;
+}
+
+html[lang="zh-CN"] .story-deck-robotic-video-intelligence.story-visual-video-product-workflow .floor-deck-copy p {
+  max-width: 52em;
+}
+
+html[lang="zh-CN"] .story-deck-robotic-video-intelligence.story-visual-video-uiux-highlights .floor-deck-copy p {
+  max-width: 48em;
+}
+
+html[lang="zh-CN"] .story-deck-robotic-video-intelligence.story-visual-video-fusion-detection .floor-deck-copy p {
+  max-width: 24em;
 }
 
 .story-deck-robotic-video-intelligence.story-visual-video-frontpage .story-cover-asset {
@@ -6779,8 +6931,328 @@ html[lang="zh-CN"] .story-deck-robotic-video-intelligence.story-visual-video-fro
 .story-deck-robotic-video-intelligence.story-visual-video-frontpage .story-media-card,
 .story-deck-robotic-video-intelligence.story-visual-video-frontpage .story-chip-row,
 .story-deck-robotic-video-intelligence.story-visual-video-frontpage .story-signal-grid,
-.story-deck-robotic-video-intelligence.story-visual-video-frontpage .story-layout-geometry {
+.story-deck-robotic-video-intelligence.story-visual-video-frontpage .story-layout-geometry,
+.story-deck-robotic-video-intelligence.story-visual-video-problem .story-deck-stage,
+.story-deck-robotic-video-intelligence.story-visual-video-problem .story-media-card,
+.story-deck-robotic-video-intelligence.story-visual-video-problem .story-chip-row,
+.story-deck-robotic-video-intelligence.story-visual-video-problem .story-signal-grid,
+.story-deck-robotic-video-intelligence.story-visual-video-problem .story-layout-geometry,
+.story-deck-robotic-video-intelligence.story-visual-video-system-architecture .story-deck-stage,
+.story-deck-robotic-video-intelligence.story-visual-video-system-architecture .story-media-card,
+.story-deck-robotic-video-intelligence.story-visual-video-system-architecture .story-chip-row,
+.story-deck-robotic-video-intelligence.story-visual-video-system-architecture .story-signal-grid,
+.story-deck-robotic-video-intelligence.story-visual-video-system-architecture .story-layout-geometry,
+.story-deck-robotic-video-intelligence.story-visual-video-product-workflow .story-deck-stage,
+.story-deck-robotic-video-intelligence.story-visual-video-product-workflow .story-media-card,
+.story-deck-robotic-video-intelligence.story-visual-video-product-workflow .story-chip-row,
+.story-deck-robotic-video-intelligence.story-visual-video-product-workflow .story-signal-grid,
+.story-deck-robotic-video-intelligence.story-visual-video-product-workflow .story-layout-geometry,
+.story-deck-robotic-video-intelligence.story-visual-video-uiux-highlights .story-deck-stage,
+.story-deck-robotic-video-intelligence.story-visual-video-uiux-highlights .story-media-card,
+.story-deck-robotic-video-intelligence.story-visual-video-uiux-highlights .story-chip-row,
+.story-deck-robotic-video-intelligence.story-visual-video-uiux-highlights .story-signal-grid,
+.story-deck-robotic-video-intelligence.story-visual-video-uiux-highlights .story-layout-geometry,
+.story-deck-robotic-video-intelligence.story-visual-video-fusion-detection .story-deck-stage,
+.story-deck-robotic-video-intelligence.story-visual-video-fusion-detection .story-media-card,
+.story-deck-robotic-video-intelligence.story-visual-video-fusion-detection .story-chip-row,
+.story-deck-robotic-video-intelligence.story-visual-video-fusion-detection .story-signal-grid,
+.story-deck-robotic-video-intelligence.story-visual-video-fusion-detection .story-layout-geometry {
   display: none;
+}
+
+.video-problem-visual {
+  align-self: center;
+  justify-self: center;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.85rem, 1.6vw, 1.45rem);
+  width: min(100%, 780px);
+}
+
+.video-problem-visual figure {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: clamp(0.48rem, 0.9vw, 0.72rem);
+  min-width: 0;
+  margin: 0;
+}
+
+.video-problem-visual img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1.36;
+  object-fit: contain;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.video-problem-visual figcaption {
+  margin: 0;
+  color: rgba(246, 242, 232, 0.82);
+  font: 400 clamp(0.7rem, 0.86vw, 0.88rem) / 1.25 var(--display);
+  letter-spacing: normal;
+  text-align: center;
+}
+
+.video-system-architecture-visual {
+  align-self: center;
+  justify-self: center;
+  display: block;
+  width: min(88%, 930px);
+  margin: 0;
+}
+
+.video-system-architecture-visual img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: min(48vh, 390px);
+  object-fit: contain;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.video-product-workflow-visual {
+  align-self: stretch;
+  justify-self: center;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1.05rem, 2vw, 1.75rem);
+  width: min(86%, 1010px);
+  min-height: 0;
+}
+
+.video-product-card {
+  display: grid;
+  grid-template-rows: auto auto auto;
+  gap: clamp(0.38rem, 0.68vw, 0.58rem);
+  justify-self: center;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+}
+
+.video-product-card header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.44rem;
+  min-width: 0;
+}
+
+.video-product-card h3 {
+  margin: 0;
+  color: rgba(246, 242, 232, 0.96);
+  font: 620 clamp(0.82rem, 1.1vw, 1.2rem) / 1 var(--display);
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.video-product-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.24rem;
+}
+
+.video-product-tags span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.05rem;
+  padding: 0.08rem 0.36rem 0.11rem;
+  border-radius: 0.3rem;
+  background: rgba(255, 255, 255, 0.22);
+  color: rgba(246, 242, 232, 0.68);
+  font: 620 clamp(0.54rem, 0.66vw, 0.68rem) / 1 var(--display);
+  letter-spacing: -0.01em;
+}
+
+.video-product-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1166 / 793;
+  object-fit: cover;
+  object-position: center;
+}
+
+.video-product-card figcaption {
+  margin: 0;
+  min-height: 3.2em;
+  color: rgba(246, 242, 232, 0.72);
+  font: 300 clamp(0.72rem, 0.84vw, 0.9rem) / 1.28 var(--display);
+  letter-spacing: normal;
+}
+
+html[lang="zh-CN"] .video-product-card h3 {
+  font-weight: 560;
+  letter-spacing: normal;
+}
+
+html[lang="zh-CN"] .video-product-card figcaption {
+  line-height: 1.42;
+}
+
+.video-uiux-grid {
+  align-self: stretch;
+  justify-self: center;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(0.85rem, 1.5vw, 1.25rem);
+  width: min(88%, 1080px);
+  min-height: 0;
+}
+
+.video-uiux-card {
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: clamp(0.45rem, 0.8vw, 0.68rem);
+  align-self: start;
+  min-width: 0;
+  margin: 0;
+}
+
+.video-uiux-card::before {
+  content: "";
+  display: block;
+  grid-row: 1;
+  grid-column: 1;
+  aspect-ratio: 16 / 9;
+  background: #050505;
+}
+
+.video-uiux-card img {
+  display: block;
+  grid-row: 1;
+  grid-column: 1;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+  object-position: center;
+  border: 0;
+  border-radius: 0;
+  background: #050505;
+  isolation: isolate;
+}
+
+.video-uiux-card figcaption {
+  display: grid;
+  gap: 0.22rem;
+  margin: 0;
+}
+
+.video-uiux-card strong {
+  color: rgba(246, 242, 232, 0.94);
+  font: 560 clamp(0.72rem, 0.9vw, 0.94rem) / 1.08 var(--display);
+  letter-spacing: normal;
+}
+
+.video-uiux-card span {
+  color: rgba(246, 242, 232, 0.66);
+  font: 300 clamp(0.62rem, 0.74vw, 0.78rem) / 1.34 var(--display);
+  letter-spacing: normal;
+}
+
+html[lang="zh-CN"] .video-uiux-card strong {
+  font-weight: 500;
+}
+
+html[lang="zh-CN"] .video-uiux-card span {
+  line-height: 1.45;
+}
+
+.video-fusion-visual {
+  position: relative;
+  align-self: center;
+  justify-self: center;
+  width: min(92%, 760px);
+  aspect-ratio: 16 / 9;
+  max-height: min(66vh, 460px);
+  overflow: visible;
+}
+
+.video-fusion-visual > video {
+  display: block;
+  width: 72%;
+  height: 92%;
+  margin-block: 4%;
+  object-fit: cover;
+  object-position: center;
+  background: #050505;
+}
+
+.video-fusion-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.video-fusion-note {
+  position: absolute;
+  display: block;
+  width: min(47%, 23rem);
+  min-height: clamp(3rem, 6.5vw, 4.8rem);
+  padding:
+    clamp(0.52rem, 0.9vw, 0.78rem)
+    clamp(0.55rem, 0.95vw, 0.82rem)
+    clamp(0.42rem, 0.78vw, 0.68rem)
+    clamp(0.68rem, 1.08vw, 0.98rem);
+  border-radius: 0.72rem;
+  border: 1px solid rgba(246, 242, 232, 0.18);
+  background: linear-gradient(90deg, #343816 0%, #242616 100%);
+  color: rgba(246, 242, 232, 0.96);
+  text-align: left;
+}
+
+.video-fusion-note b {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  width: clamp(1.45rem, 2.45vw, 2.15rem);
+  aspect-ratio: 1;
+  border-radius: 999px;
+  border: 1px solid rgba(246, 242, 232, 0.45);
+  background: rgba(55, 56, 55, 0.96);
+  font: 620 clamp(0.7rem, 1.2vw, 1.05rem) / 1 var(--display);
+}
+
+.video-fusion-note span {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font: 300 clamp(0.68rem, 1.02vw, 0.96rem) / 1.18 var(--display);
+  letter-spacing: normal;
+}
+
+.video-fusion-note-1 {
+  top: 3%;
+  left: 59%;
+}
+
+.video-fusion-note-2 {
+  top: 35%;
+  left: 59%;
+}
+
+.video-fusion-note-3 {
+  top: 67%;
+  left: 59%;
+}
+
+html[lang="zh-CN"] .video-fusion-note span {
+  font-weight: 360;
+  line-height: 1.28;
 }
 
 .story-deck-vision-agent {
@@ -6788,6 +7260,297 @@ html[lang="zh-CN"] .story-deck-robotic-video-intelligence.story-visual-video-fro
     radial-gradient(circle at 74% 18%, color-mix(in srgb, var(--viewer-accent) 30%, transparent), transparent 32%),
     radial-gradient(circle at 20% 78%, color-mix(in srgb, var(--viewer-accent-2) 18%, transparent), transparent 34%),
     linear-gradient(135deg, var(--viewer-bg-1) 0%, var(--viewer-bg-2) 48%, var(--viewer-bg-3) 100%);
+}
+
+.story-deck-vision-agent.story-visual-vision-frontpage {
+  grid-template-columns: minmax(240px, 0.82fr) minmax(360px, 1.18fr);
+  gap: clamp(0.8rem, 2vw, 2rem);
+  padding: clamp(1rem, 2.5vw, 2.2rem);
+  background: #050505;
+}
+
+.story-deck-vision-agent.story-visual-vision-common-sense {
+  grid-template-columns: 1fr;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: clamp(1rem, 2vw, 1.8rem);
+  padding: clamp(1rem, 2.5vw, 2.2rem);
+  background: #050505;
+}
+
+.story-deck-vision-agent.story-visual-vision-feature-dump {
+  grid-template-columns: minmax(190px, 0.68fr) minmax(300px, 1fr) minmax(320px, 1.1fr);
+  gap: clamp(0.85rem, 1.7vw, 1.55rem);
+  padding: clamp(1rem, 2.5vw, 2.2rem);
+  background: #050505;
+}
+
+.story-deck-vision-agent.story-visual-vision-context-engineering {
+  grid-template-columns: 1fr;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: clamp(0.95rem, 1.8vw, 1.65rem);
+  padding: clamp(1.2rem, 2.8vw, 2.35rem);
+  background: #050505;
+}
+
+.story-deck-vision-agent.story-visual-vision-frontpage::after {
+  background: none;
+}
+
+.story-deck-vision-agent.story-visual-vision-common-sense::after {
+  background: none;
+}
+
+.story-deck-vision-agent.story-visual-vision-feature-dump::after {
+  background: none;
+}
+
+.story-deck-vision-agent.story-visual-vision-context-engineering::after {
+  background: none;
+}
+
+.story-deck-vision-agent.story-visual-vision-frontpage .floor-deck-copy {
+  max-width: min(100%, 760px);
+}
+
+.story-deck-vision-agent.story-visual-vision-frontpage .floor-deck-copy h2 {
+  max-width: 15em;
+  font-size: clamp(1.55rem, 2.55vw, 2.85rem);
+  line-height: 1.06;
+  color: rgba(246, 242, 232, 0.96);
+}
+
+.story-deck-vision-agent.story-visual-vision-frontpage .floor-deck-copy p {
+  max-width: 54ch;
+  font-size: clamp(0.78rem, 0.92vw, 0.94rem);
+  color: rgba(246, 242, 232, 0.64);
+}
+
+html[lang="zh-CN"] .story-deck-vision-agent.story-visual-vision-frontpage .floor-deck-copy h2 {
+  max-width: 12em;
+  font-size: clamp(1.42rem, 2.25vw, 2.45rem);
+  line-height: 1.12;
+}
+
+html[lang="zh-CN"] .story-deck-vision-agent.story-visual-vision-frontpage .floor-deck-copy p {
+  max-width: 42ch;
+}
+
+.story-deck-vision-agent.story-visual-vision-frontpage .story-cover-asset {
+  align-self: center;
+  justify-self: center;
+  width: min(86%, 560px);
+  aspect-ratio: 2048 / 1786;
+  overflow: visible;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.story-deck-vision-agent.story-visual-vision-frontpage .story-cover-asset img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+.story-deck-vision-agent.story-visual-vision-common-sense .floor-deck-copy {
+  max-width: none;
+}
+
+.story-deck-vision-agent.story-visual-vision-feature-dump .floor-deck-copy {
+  align-self: center;
+  justify-self: stretch;
+  max-width: min(100%, 440px);
+}
+
+.story-deck-vision-agent.story-visual-vision-context-engineering .floor-deck-copy {
+  max-width: none;
+}
+
+.story-deck-vision-agent.story-visual-vision-common-sense .floor-deck-copy h2 {
+  max-width: none;
+  font-size: clamp(1.45rem, 2.3vw, 2.5rem);
+  line-height: 1.08;
+  color: rgba(246, 242, 232, 0.96);
+}
+
+.story-deck-vision-agent.story-visual-vision-feature-dump .floor-deck-copy h2 {
+  max-width: 10em;
+  font-size: clamp(1.28rem, 2.05vw, 2.24rem);
+  line-height: 1.08;
+  color: rgba(246, 242, 232, 0.96);
+}
+
+.story-deck-vision-agent.story-visual-vision-context-engineering .floor-deck-copy h2 {
+  max-width: none;
+  font-size: clamp(1.36rem, 2.15vw, 2.42rem);
+  line-height: 1.08;
+  color: rgba(246, 242, 232, 0.96);
+}
+
+.story-deck-vision-agent.story-visual-vision-common-sense .floor-deck-copy p {
+  display: none;
+}
+
+.story-deck-vision-agent.story-visual-vision-context-engineering .floor-deck-copy p {
+  display: none;
+}
+
+.story-deck-vision-agent.story-visual-vision-feature-dump .floor-deck-copy p {
+  max-width: 30ch;
+  margin-top: clamp(0.34rem, 0.75vw, 0.62rem);
+  color: rgba(246, 242, 232, 0.64);
+  font-size: clamp(0.72rem, 0.86vw, 0.9rem);
+}
+
+html[lang="zh-CN"] .story-deck-vision-agent.story-visual-vision-common-sense .floor-deck-copy h2 {
+  font-size: clamp(1.34rem, 2.05vw, 2.22rem);
+  line-height: 1.12;
+}
+
+html[lang="zh-CN"] .story-deck-vision-agent.story-visual-vision-feature-dump .floor-deck-copy h2 {
+  max-width: 9em;
+  font-size: clamp(1.18rem, 1.82vw, 1.95rem);
+  line-height: 1.12;
+}
+
+html[lang="zh-CN"] .story-deck-vision-agent.story-visual-vision-context-engineering .floor-deck-copy h2 {
+  font-size: clamp(1.24rem, 1.95vw, 2.12rem);
+  line-height: 1.12;
+}
+
+html[lang="zh-CN"] .story-deck-vision-agent.story-visual-vision-feature-dump .floor-deck-copy p {
+  max-width: 24em;
+}
+
+.story-deck-vision-agent.story-visual-vision-common-sense .story-cover-asset {
+  align-self: center;
+  justify-self: center;
+  width: min(84%, 880px);
+  max-height: min(50vh, 380px);
+  overflow: visible;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.story-deck-vision-agent.story-visual-vision-common-sense .story-cover-asset img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: min(50vh, 380px);
+  object-fit: contain;
+  object-position: top center;
+}
+
+.story-deck-vision-agent.story-visual-vision-frontpage .story-deck-stage,
+.story-deck-vision-agent.story-visual-vision-frontpage .story-media-card,
+.story-deck-vision-agent.story-visual-vision-frontpage .story-chip-row,
+.story-deck-vision-agent.story-visual-vision-frontpage .story-signal-grid,
+.story-deck-vision-agent.story-visual-vision-frontpage .story-layout-geometry,
+.story-deck-vision-agent.story-visual-vision-common-sense .story-deck-stage,
+.story-deck-vision-agent.story-visual-vision-common-sense .story-media-card,
+.story-deck-vision-agent.story-visual-vision-common-sense .story-chip-row,
+.story-deck-vision-agent.story-visual-vision-common-sense .story-signal-grid,
+.story-deck-vision-agent.story-visual-vision-common-sense .story-layout-geometry,
+.story-deck-vision-agent.story-visual-vision-feature-dump .story-deck-stage,
+.story-deck-vision-agent.story-visual-vision-feature-dump .story-media-card,
+.story-deck-vision-agent.story-visual-vision-feature-dump .story-chip-row,
+.story-deck-vision-agent.story-visual-vision-feature-dump .story-signal-grid,
+.story-deck-vision-agent.story-visual-vision-feature-dump .story-layout-geometry,
+.story-deck-vision-agent.story-visual-vision-context-engineering .story-deck-stage,
+.story-deck-vision-agent.story-visual-vision-context-engineering .story-media-card,
+.story-deck-vision-agent.story-visual-vision-context-engineering .story-chip-row,
+.story-deck-vision-agent.story-visual-vision-context-engineering .story-signal-grid,
+.story-deck-vision-agent.story-visual-vision-context-engineering .story-layout-geometry {
+  display: none;
+}
+
+.vision-feature-dump-visual {
+  grid-column: 2 / 4;
+  align-self: center;
+  justify-self: center;
+  display: grid;
+  grid-template-columns: minmax(250px, 0.95fr) minmax(290px, 0.9fr);
+  align-items: start;
+  gap: clamp(0.7rem, 1.25vw, 1.05rem);
+  width: min(100%, 860px);
+  min-width: 0;
+}
+
+.vision-feature-image {
+  margin: 0;
+  min-width: 0;
+}
+
+.vision-feature-image img {
+  display: block;
+  width: 100%;
+  max-height: min(62vh, 520px);
+  object-fit: contain;
+  object-position: center;
+}
+
+.vision-feature-list {
+  display: grid;
+  gap: clamp(0.34rem, 0.62vw, 0.58rem);
+  min-width: 0;
+}
+
+.vision-feature-item {
+  display: grid;
+  gap: clamp(0.16rem, 0.32vw, 0.28rem);
+  min-width: 0;
+}
+
+.vision-feature-item > img {
+  display: block;
+  width: auto;
+  height: clamp(1.22rem, 1.72vw, 1.62rem);
+  max-width: min(52%, 190px);
+  object-fit: contain;
+  object-position: left center;
+}
+
+.vision-feature-item h3 {
+  margin: 0;
+  color: rgba(246, 242, 232, 0.84);
+  font: 600 clamp(0.62rem, 0.82vw, 0.84rem) / 1.08 var(--display);
+  letter-spacing: normal;
+}
+
+.vision-feature-item p {
+  margin: 0;
+  color: rgba(246, 242, 232, 0.48);
+  font: 300 clamp(0.5rem, 0.64vw, 0.66rem) / 1.18 var(--display);
+  letter-spacing: normal;
+  overflow-wrap: anywhere;
+}
+
+html[lang="zh-CN"] .vision-feature-item h3 {
+  font-weight: 520;
+  line-height: 1.24;
+}
+
+html[lang="zh-CN"] .vision-feature-item p {
+  line-height: 1.42;
+}
+
+.vision-context-engineering-visual {
+  align-self: center;
+  justify-self: center;
+  position: relative;
+  width: min(92%, 1080px);
+  margin: 0;
+  overflow: visible;
+}
+
+.vision-context-engineering-visual > img {
+  display: block;
+  width: 100%;
+  max-height: min(56vh, 450px);
+  object-fit: contain;
+  object-position: top center;
 }
 
 .story-visual-lookx-workflow .story-media-card,
