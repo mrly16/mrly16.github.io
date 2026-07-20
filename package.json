@@ -13,10 +13,12 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
     "@astrojs/sitemap": "^3.7.3",
+    "@types/three": "^0.185.1",
     "astro": "^6.4.4",
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@firecms/neat": "^1.0.1"
+    "@firecms/neat": "^1.0.1",
+    "three": "^0.185.1"
   }
 }

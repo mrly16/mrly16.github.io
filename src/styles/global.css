@@ -2393,25 +2393,57 @@ html[lang="zh-CN"] .channel-episode h1 {
     0 6px 16px rgba(0, 0, 0, 0.25);
 }
 
-.flow-pill-channel-thumb::after {
-  display: none;
+.flow-pill-channel-thumb::before {
+  position: absolute;
+  inset: -20%;
+  content: "";
+  background:
+    radial-gradient(circle at 22% 78%, color-mix(in srgb, var(--viewer-accent) 72%, transparent), transparent 38%),
+    radial-gradient(circle at 82% 18%, color-mix(in srgb, var(--viewer-accent) 28%, transparent), transparent 36%),
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--viewer-accent) 16%, #080909),
+      color-mix(in srgb, var(--viewer-accent) 44%, #111513)
+    );
+  background-size: 150% 150%;
+  filter: saturate(0.95) brightness(0.78);
+  transform: translate3d(0, 0, 0);
+  animation: thumbGradientDrift 12s ease-in-out infinite alternate;
 }
 
-.flow-pill-channel-thumb canvas,
-.flow-pill-channel-thumb img {
+.flow-pill-channel-thumb::after {
+  position: absolute;
+  inset: 0;
+  display: block;
+  content: "";
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.22), transparent 38%),
+    radial-gradient(circle at 50% 110%, rgba(0, 0, 0, 0.48), transparent 58%);
+  pointer-events: none;
+}
+
+.flow-pill-channel-thumb [data-viewer-thumbnail] {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  padding: 0;
-  object-fit: cover;
 }
 
-.flow-pill-channel-thumb canvas {
-  display: block;
-  filter: none;
+@keyframes thumbGradientDrift {
+  from {
+    background-position: 0% 42%;
+    transform: translate3d(-3%, 2%, 0) scale(1.02);
+  }
+  to {
+    background-position: 100% 58%;
+    transform: translate3d(3%, -2%, 0) scale(1.06);
+  }
 }
 
-.flow-pill-channel-thumb img {
-  filter: brightness(0.74) saturate(0.92);
+@media (prefers-reduced-motion: reduce) {
+  .flow-pill-channel-thumb::before {
+    animation: none;
+  }
 }
 
 .flow-pill-channel-copy {
@@ -3492,17 +3524,7 @@ html[lang="zh-CN"] .channel-identity > span:last-child {
 }
 
 .screen-topline {
-  position: absolute;
-  z-index: 5;
-  top: 1.1rem;
-  right: 1.25rem;
-  left: 1.25rem;
-  display: flex;
-  justify-content: space-between;
-  color: rgba(20, 24, 21, 0.48);
-  font: 600 0.56rem var(--mono);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  display: none;
 }
 
 .floor-plan-scene,
@@ -4612,10 +4634,6 @@ html[lang="zh-CN"] .floor-deck-copy p {
   color: var(--story-ink);
 }
 
-.story-deck .floor-deck-copy > span {
-  color: color-mix(in srgb, var(--viewer-accent) 78%, rgba(245, 241, 232, 0.54));
-}
-
 .story-deck .floor-deck-copy em {
   display: none;
   max-width: 28ch;
@@ -5191,6 +5209,11 @@ html[lang="zh-CN"] .story-deck-lookx-generative-ai.story-visual-lookx-market-res
   letter-spacing: -0.035em;
 }
 
+.story-deck-lookx-generative-ai.story-visual-lookx-market-result .story-metrics div:last-child dt {
+  font-size: clamp(0.94rem, 1.28vw, 1.3rem);
+  line-height: 1.08;
+}
+
 .story-deck-lookx-generative-ai.story-visual-lookx-market-result .story-metrics dd {
   color: rgba(246, 242, 232, 0.58);
   font-size: clamp(0.42rem, 0.54vw, 0.56rem);
@@ -5652,8 +5675,10 @@ html[lang="zh-CN"] .story-deck-multimodal-asset-search.story-visual-mm-infra .fl
 
 .story-deck-lookx-generative-ai.story-visual-lookx-tech-system {
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: minmax(0, auto) minmax(0, 1fr);
-  gap: clamp(0.56rem, 1vw, 0.9rem);
+  grid-template-rows: minmax(0, 1fr);
+  place-items: center;
+  align-content: center;
+  gap: 0;
   padding: clamp(0.9rem, 2vw, 1.8rem) clamp(0.7rem, 1.6vw, 1.5rem) clamp(0.7rem, 1.6vw, 1.5rem);
   overflow: hidden;
   background: #050505;
@@ -5673,14 +5698,15 @@ html[lang="zh-CN"] .story-deck-multimodal-asset-search.story-visual-mm-infra .fl
 }
 
 .story-deck-lookx-generative-ai.story-visual-lookx-tech-system .floor-deck-copy h2 {
-  max-width: none;
+  max-width: 42em;
   margin: 0;
   color: rgba(246, 242, 232, 0.95);
-  font-size: clamp(1rem, 1.52vw, 1.66rem);
-  font-weight: 520;
-  line-height: 1.08;
-  letter-spacing: normal;
-  white-space: nowrap;
+  font-size: clamp(1rem, 1.42vw, 1.55rem);
+  font-weight: 460;
+  line-height: 1.18;
+  letter-spacing: -0.012em;
+  white-space: normal;
+  text-wrap: balance;
 }
 
 .story-deck-lookx-generative-ai.story-visual-lookx-tech-system .floor-deck-copy p {
@@ -5694,9 +5720,9 @@ html[lang="zh-CN"] .story-deck-multimodal-asset-search.story-visual-mm-infra .fl
   grid-template-columns: minmax(0, 2.22fr) minmax(0, 0.98fr);
   grid-template-rows: minmax(0, 0.7fr) minmax(0, 1.03fr);
   gap: clamp(0.56rem, 1.25vw, 1rem);
-  width: min(88%, 990px);
-  height: min(92%, 460px);
-  margin: 1.7% auto auto;
+  width: min(90%, 1020px);
+  height: min(82%, 480px);
+  margin: auto;
 }
 
 .lookx-tech-panel {
@@ -6057,69 +6083,67 @@ html[lang="zh-CN"] .story-deck-lookx-generative-ai.story-visual-lookx-workflow .
 }
 
 .story-deck-lookx-generative-ai.story-visual-lookx-render-mode {
-  grid-template-rows: minmax(0, auto) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  place-items: center;
+  align-content: center;
   overflow: hidden;
 }
 
 .lookx-pipeline-visual {
   z-index: 2;
   display: grid;
-  gap: clamp(0.34rem, 0.72vw, 0.62rem);
-  width: min(80%, 860px);
+  gap: clamp(1.1rem, 1.8vw, 1.65rem);
+  width: min(84%, 920px);
   margin: 0 auto;
   color: rgba(246, 242, 232, 0.94);
+  align-self: center;
+  justify-self: center;
+  transform: translateY(clamp(0.6rem, 2vh, 1.35rem));
 }
 
 .lookx-pipeline-image {
   display: block;
   width: 100%;
   height: auto;
-  max-height: min(35vh, 320px);
+  max-height: min(44vh, 410px);
   object-fit: contain;
 }
 
-.lookx-pipeline-caption-row {
-  position: relative;
-  width: 100%;
-  min-height: clamp(2.1rem, 3vw, 3rem);
-}
-
-.lookx-pipeline-caption {
-  position: absolute;
-  top: 0;
+.lookx-feature-statement {
+  justify-self: center;
+  width: min(100%, 980px);
   margin: 0;
-  color: rgba(246, 242, 232, 0.92);
-  font: 300 clamp(0.56rem, 0.92vw, 0.92rem) / 1.22 var(--display);
-  letter-spacing: normal;
+  color: rgba(246, 242, 232, 0.9);
+  font: 360 clamp(1rem, 1.45vw, 1.5rem) / 1.34 var(--display);
+  letter-spacing: -0.012em;
   text-align: center;
-  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.45);
-  transform: translateX(-50%);
+  text-wrap: balance;
+  text-shadow: 0 1px 16px rgba(0, 0, 0, 0.48);
 }
 
-.lookx-pipeline-caption-stages {
-  left: calc(536 / 3701 * 100%);
-  width: 31%;
-}
-
-.lookx-pipeline-caption-render {
-  left: calc((3701 - 854) / 3701 * 100%);
-  width: 54%;
+.lookx-feature-lead {
+  color: rgba(255, 255, 255, 0.98);
+  font-weight: 520;
 }
 
 .lookx-lora-visual {
   z-index: 2;
   display: grid;
-  gap: clamp(0.34rem, 0.72vw, 0.62rem);
-  width: min(72%, 780px);
+  gap: clamp(1.1rem, 1.8vw, 1.65rem);
+  width: min(84%, 920px);
   margin: 0 auto;
   color: rgba(246, 242, 232, 0.94);
+  align-self: center;
+  justify-self: center;
+  transform: translateY(clamp(0.6rem, 2vh, 1.35rem));
 }
 
 .lookx-lora-image {
   display: block;
   width: 100%;
   height: auto;
-  max-height: min(30vh, 270px);
+  max-height: min(40vh, 370px);
   object-fit: contain;
 }
 
@@ -6152,6 +6176,10 @@ html[lang="zh-CN"] .story-deck-lookx-generative-ai.story-visual-lookx-workflow .
 }
 
 .story-deck-lookx-generative-ai.story-visual-lookx-lora-training {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  place-items: center;
+  align-content: center;
   overflow: hidden;
 }
 
@@ -6162,18 +6190,29 @@ html[lang="zh-CN"] .story-deck-lookx-generative-ai.story-visual-lookx-workflow .
 .lookx-same-visual {
   z-index: 2;
   display: grid;
-  gap: clamp(0.34rem, 0.72vw, 0.62rem);
-  width: min(76%, 820px);
+  gap: clamp(1.1rem, 1.8vw, 1.65rem);
+  width: min(84%, 920px);
   margin: 0 auto;
   color: rgba(246, 242, 232, 0.94);
+  align-self: center;
+  justify-self: center;
+  transform: translateY(clamp(0.6rem, 2vh, 1.35rem));
 }
 
 .lookx-same-image {
   display: block;
   width: 100%;
   height: auto;
-  max-height: min(31vh, 280px);
+  max-height: min(40vh, 370px);
   object-fit: contain;
+}
+
+.story-deck-lookx-generative-ai.story-visual-lookx-generate-same {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  place-items: center;
+  align-content: center;
+  overflow: hidden;
 }
 
 .lookx-same-caption-row {
@@ -6251,7 +6290,7 @@ html[lang="zh-CN"] .story-deck-lookx-generative-ai.story-visual-lookx-workflow .
 .floor-deck-synthetic-engine.story-deck-floor-plan-reconstruction {
   grid-template-columns: minmax(0, 1fr);
   grid-template-rows: minmax(0, auto) minmax(0, 1fr);
-  gap: clamp(0.9rem, 2vw, 1.65rem);
+  gap: clamp(2rem, 4vw, 3.2rem);
   align-items: start;
   padding: clamp(1rem, 2.6vw, 2.2rem) clamp(1.15rem, 3.2vw, 3.1rem);
   overflow: hidden;
@@ -6444,17 +6483,22 @@ html[lang="zh-CN"] .floor-room-op-card-final figcaption {
 .floor-segment-layout {
   display: grid;
   grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
-  grid-template-rows: minmax(0, auto) minmax(0, auto);
+  grid-template-rows: minmax(0, 1fr) clamp(82px, 14vh, 128px);
   gap: clamp(0.65rem, 1.35vw, 1.15rem) clamp(1rem, 2.3vw, 2rem);
   align-items: start;
   width: min(100%, 1040px);
+  height: 100%;
+  min-height: 0;
   margin: 0 auto;
 }
 
 .floor-segment-panel {
   display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
   gap: clamp(0.42rem, 0.9vw, 0.7rem);
+  height: 100%;
   min-width: 0;
+  min-height: 0;
   margin: 0;
 }
 
@@ -6467,7 +6511,9 @@ html[lang="zh-CN"] .floor-room-op-card-final figcaption {
 }
 
 .floor-segment-panel img {
-  max-height: min(24vh, 220px);
+  height: 100%;
+  min-height: 0;
+  max-height: min(22vh, 205px);
 }
 
 .floor-segment-panel figcaption {
@@ -6481,8 +6527,10 @@ html[lang="zh-CN"] .floor-room-op-card-final figcaption {
 .floor-segment-bottom {
   grid-column: 1 / -1;
   justify-self: center;
+  align-self: stretch;
   max-width: min(100%, 980px);
-  max-height: min(16vh, 150px);
+  height: 100%;
+  max-height: 128px;
 }
 
 .floor-deck-synthetic-engine .floor-deck-copy {
@@ -6521,16 +6569,22 @@ html[lang="zh-CN"] .floor-deck-synthetic-engine .floor-deck-copy p {
 
 .floor-synthetic-pipeline {
   display: grid;
-  grid-template-columns: minmax(180px, 0.82fr) clamp(3rem, 5vw, 4.8rem) minmax(260px, 1.18fr);
-  gap: clamp(0.9rem, 2.2vw, 2rem);
+  grid-template-columns:
+    minmax(150px, 0.72fr)
+    clamp(2.25rem, 3.5vw, 3.5rem)
+    minmax(220px, 1.04fr)
+    clamp(2.25rem, 3.5vw, 3.5rem)
+    minmax(240px, 1.08fr);
+  gap: clamp(0.55rem, 1vw, 0.9rem);
   align-items: center;
-  width: min(100%, 1060px);
+  width: min(100%, 1120px);
   max-height: min(48vh, 430px);
   min-height: 0;
-  margin: 0 auto;
+  margin: clamp(1rem, 1.6vw, 1.45rem) auto 0;
 }
 
 .floor-synthetic-source,
+.floor-synthetic-middle,
 .floor-synthetic-demo {
   min-width: 0;
   margin: 0;
@@ -6538,11 +6592,13 @@ html[lang="zh-CN"] .floor-deck-synthetic-engine .floor-deck-copy p {
 
 .floor-synthetic-source {
   display: grid;
+  grid-template-rows: clamp(190px, 26vh, 235px) auto;
   gap: clamp(0.45rem, 1vw, 0.72rem);
   align-self: center;
 }
 
 .floor-synthetic-source img,
+.floor-synthetic-middle img,
 .floor-synthetic-demo video {
   display: block;
   width: 100%;
@@ -6558,22 +6614,51 @@ html[lang="zh-CN"] .floor-deck-synthetic-engine .floor-deck-copy p {
   object-fit: contain;
 }
 
-.floor-synthetic-source figcaption {
+.floor-synthetic-middle {
+  display: grid;
+  grid-template-rows: clamp(190px, 26vh, 235px) auto;
+  gap: clamp(0.45rem, 1vw, 0.72rem);
+  align-self: center;
+}
+
+.floor-synthetic-middle img {
+  max-height: min(30vh, 270px);
+  object-fit: contain;
+}
+
+.floor-synthetic-source figcaption,
+.floor-synthetic-middle figcaption,
+.floor-synthetic-demo figcaption {
   max-width: 30ch;
   margin: 0 auto;
-  color: rgba(246, 242, 232, 0.48);
-  font: 300 clamp(0.64rem, 0.86vw, 0.86rem) / 1.35 var(--display);
+  color: rgba(246, 242, 232, 0.84);
+  font: 300 clamp(0.95rem, 1.18vw, 1.12rem) / 1.3 var(--display);
   letter-spacing: normal;
   text-align: center;
 }
 
-html[lang="zh-CN"] .floor-synthetic-source figcaption {
+html[lang="zh-CN"] .floor-synthetic-source figcaption,
+html[lang="zh-CN"] .floor-synthetic-middle figcaption,
+html[lang="zh-CN"] .floor-synthetic-demo figcaption {
   max-width: 24em;
   font-family: var(--sans-zh);
 }
 
 .floor-synthetic-demo {
+  display: grid;
+  grid-template-rows: clamp(190px, 26vh, 235px) auto;
+  gap: clamp(0.45rem, 1vw, 0.72rem);
   align-self: center;
+}
+
+.floor-synthetic-source > img,
+.floor-synthetic-middle > img,
+.floor-synthetic-demo > video {
+  align-self: center;
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  object-fit: contain;
 }
 
 .floor-synthetic-demo video {
@@ -7110,7 +7195,7 @@ html[lang="zh-CN"] .video-product-card figcaption {
 
 .video-uiux-card {
   display: grid;
-  grid-template-rows: auto auto;
+  grid-template-rows: max-content max-content;
   gap: clamp(0.45rem, 0.8vw, 0.68rem);
   align-self: start;
   min-width: 0;
@@ -7557,6 +7642,638 @@ html[lang="zh-CN"] .vision-feature-item p {
 .story-visual-mm-embedding .story-media-card,
 .story-visual-video-workflow .story-media-card {
   inset: 4% 10% 14% 4%;
+}
+
+/* Deck design-system pass.
+   Keep the hand-built slide compositions, but normalize the shared grammar:
+   safe area, title scale, captions, media rhythm, cards, and callouts. */
+.viewer-screen {
+  --deck-safe-x: clamp(1.45rem, 3.2vw, 3.1rem);
+  --deck-safe-y: clamp(1.15rem, 2.65vw, 2.45rem);
+  --deck-gap: clamp(0.9rem, 2vw, 1.8rem);
+  --deck-title-hero: clamp(1.55rem, 2.55vw, 2.75rem);
+  --deck-title: clamp(1.24rem, 2.02vw, 2.18rem);
+  --deck-title-compact: clamp(1.08rem, 1.62vw, 1.72rem);
+  --deck-body: clamp(0.86rem, 1vw, 1.04rem);
+  --deck-caption: clamp(0.64rem, 0.78vw, 0.82rem);
+  --deck-label: clamp(0.52rem, 0.66vw, 0.7rem);
+  --deck-media-max-h: min(48vh, 390px);
+  --deck-media-soft: 0 28px 88px rgba(0, 0, 0, 0.38);
+  --deck-ink: rgba(246, 242, 232, 0.96);
+  --deck-muted: rgba(246, 242, 232, 0.74);
+  --deck-faint: rgba(246, 242, 232, 0.5);
+}
+
+html[lang="zh-CN"] .viewer-screen {
+  --deck-title-hero: clamp(1.42rem, 2.28vw, 2.42rem);
+  --deck-title: clamp(1.18rem, 1.82vw, 1.94rem);
+  --deck-title-compact: clamp(1.05rem, 1.55vw, 1.62rem);
+  --deck-body: clamp(0.86rem, 0.98vw, 1.02rem);
+  --deck-caption: clamp(0.66rem, 0.82vw, 0.86rem);
+}
+
+.story-deck,
+.story-deck-floor-plan-reconstruction {
+  background: #050505;
+}
+
+.story-deck::after,
+.story-deck-floor-plan-reconstruction::after {
+  background: none;
+}
+
+.story-deck .floor-deck-copy,
+.story-deck-floor-plan-reconstruction .floor-deck-copy {
+  display: grid;
+  gap: clamp(0.38rem, 0.82vw, 0.72rem);
+}
+
+.story-deck .floor-deck-copy h2,
+.story-deck-floor-plan-reconstruction .floor-deck-copy h2 {
+  margin: 0;
+  color: var(--deck-ink);
+  font-family: var(--display);
+  font-size: var(--deck-title);
+  font-weight: 560;
+  letter-spacing: normal;
+  line-height: 1.08;
+}
+
+html[lang="zh-CN"] .story-deck .floor-deck-copy h2,
+html[lang="zh-CN"] .story-deck-floor-plan-reconstruction .floor-deck-copy h2 {
+  font-size: var(--deck-title);
+  font-weight: 560;
+  letter-spacing: 0;
+  line-height: 1.16;
+}
+
+.story-deck .floor-deck-copy p,
+.story-deck-floor-plan-reconstruction .floor-deck-copy p {
+  margin: 0;
+  color: var(--deck-muted);
+  font-size: var(--deck-body);
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+html[lang="zh-CN"] .story-deck .floor-deck-copy p,
+html[lang="zh-CN"] .story-deck-floor-plan-reconstruction .floor-deck-copy p {
+  line-height: 1.72;
+}
+
+/* Cover/intro slides: LookX is the reference. */
+.story-visual-lookx-context,
+.story-visual-mm-frontpage,
+.story-visual-video-frontpage,
+.story-visual-video-problem,
+.story-visual-vision-frontpage,
+.floor-deck-context.story-deck-floor-plan-reconstruction {
+  grid-template-columns: minmax(230px, 0.82fr) minmax(340px, 1.18fr);
+  gap: clamp(1.1rem, 2.6vw, 2.5rem);
+  align-items: center;
+  padding: var(--deck-safe-y) var(--deck-safe-x);
+}
+
+.story-visual-lookx-context .floor-deck-copy h2,
+.story-visual-mm-frontpage .floor-deck-copy h2,
+.story-visual-video-frontpage .floor-deck-copy h2,
+.story-visual-video-problem .floor-deck-copy h2,
+.story-visual-vision-frontpage .floor-deck-copy h2,
+.floor-deck-context.story-deck-floor-plan-reconstruction .floor-deck-copy h2 {
+  max-width: 13em;
+  font-size: var(--deck-title-hero);
+  line-height: 1.08;
+}
+
+html[lang="zh-CN"] .story-visual-lookx-context .floor-deck-copy h2,
+html[lang="zh-CN"] .story-visual-mm-frontpage .floor-deck-copy h2,
+html[lang="zh-CN"] .story-visual-video-frontpage .floor-deck-copy h2,
+html[lang="zh-CN"] .story-visual-video-problem .floor-deck-copy h2,
+html[lang="zh-CN"] .story-visual-vision-frontpage .floor-deck-copy h2,
+html[lang="zh-CN"] .floor-deck-context.story-deck-floor-plan-reconstruction .floor-deck-copy h2 {
+  max-width: 11.5em;
+  font-size: var(--deck-title-hero);
+  line-height: 1.14;
+}
+
+.story-visual-lookx-context .floor-deck-copy p,
+.story-visual-mm-frontpage .floor-deck-copy p,
+.story-visual-video-frontpage .floor-deck-copy p,
+.story-visual-video-problem .floor-deck-copy p,
+.story-visual-vision-frontpage .floor-deck-copy p,
+.floor-deck-context.story-deck-floor-plan-reconstruction .floor-deck-copy p {
+  max-width: 48ch;
+}
+
+/* Title + one visual / diagram slides. */
+.story-visual-video-system-architecture,
+.story-visual-video-uiux-highlights,
+.story-visual-vision-common-sense,
+.story-visual-vision-context-engineering,
+.story-visual-mm-real-demo,
+.floor-deck-segmentation.story-deck-floor-plan-reconstruction,
+.floor-deck-room-optimization.story-deck-floor-plan-reconstruction,
+.floor-deck-wallcenter-optimization.story-deck-floor-plan-reconstruction {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: var(--deck-gap);
+  align-items: start;
+  padding: var(--deck-safe-y) var(--deck-safe-x);
+}
+
+.story-visual-video-system-architecture .floor-deck-copy,
+.story-visual-video-uiux-highlights .floor-deck-copy,
+.story-visual-vision-common-sense .floor-deck-copy,
+.story-visual-vision-context-engineering .floor-deck-copy,
+.story-visual-mm-real-demo .floor-deck-copy,
+.floor-deck-segmentation .floor-deck-copy,
+.floor-deck-room-optimization .floor-deck-copy,
+.floor-deck-wallcenter-optimization .floor-deck-copy {
+  width: min(100%, 1080px);
+  max-width: min(100%, 1080px);
+  justify-self: center;
+}
+
+html[lang="zh-CN"] .floor-deck-segmentation .floor-deck-copy {
+  max-width: min(100%, 1080px);
+}
+
+.story-visual-video-system-architecture .floor-deck-copy h2,
+.story-visual-video-product-workflow .floor-deck-copy h2,
+.story-visual-video-uiux-highlights .floor-deck-copy h2,
+.story-visual-vision-common-sense .floor-deck-copy h2,
+.story-visual-vision-context-engineering .floor-deck-copy h2,
+.story-visual-mm-real-demo .floor-deck-copy h2,
+.floor-deck-segmentation .floor-deck-copy h2,
+.floor-deck-room-optimization .floor-deck-copy h2,
+.floor-deck-wallcenter-optimization .floor-deck-copy h2 {
+  max-width: 22em;
+  font-size: var(--deck-title);
+  white-space: normal;
+}
+
+.floor-deck-segmentation .floor-deck-copy h2 {
+  max-width: none;
+  white-space: nowrap;
+}
+
+.floor-deck-room-optimization.story-deck-floor-plan-reconstruction,
+.floor-deck-wallcenter-optimization.story-deck-floor-plan-reconstruction {
+  grid-template-rows: minmax(0, 1fr);
+  place-items: center;
+}
+
+.floor-optimization-visual {
+  display: grid;
+  grid-template-rows: minmax(0, auto) auto;
+  gap: clamp(1rem, 1.8vw, 1.5rem);
+  align-self: center;
+  justify-self: center;
+  width: min(100%, 1080px);
+  min-height: 0;
+}
+
+.floor-optimization-visual .floor-room-op-layout {
+  width: 100%;
+}
+
+.floor-optimization-visual .floor-room-op-card figcaption {
+  color: rgba(246, 242, 232, 0.88);
+  font-size: clamp(1.18rem, 1.5vw, 1.34rem);
+  font-weight: 360;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+.floor-optimization-statement {
+  width: min(100%, 1020px);
+}
+
+.story-visual-video-product-workflow .floor-deck-copy h2 {
+  font-size: var(--deck-title-compact);
+}
+
+/* Product-highlight slides: keep the long image layout, standardize type and breathing room. */
+.story-visual-lookx-render-mode,
+.story-visual-lookx-lora-training,
+.story-visual-lookx-generate-same,
+.floor-deck-synthetic-engine.story-deck-floor-plan-reconstruction {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: clamp(0.9rem, 1.9vw, 1.55rem);
+  padding: var(--deck-safe-y) var(--deck-safe-x);
+}
+
+.story-visual-lookx-render-mode .floor-deck-copy,
+.story-visual-lookx-lora-training .floor-deck-copy,
+.story-visual-lookx-generate-same .floor-deck-copy,
+.floor-deck-synthetic-engine .floor-deck-copy {
+  width: min(100%, 1080px);
+  max-width: min(100%, 1080px);
+  justify-self: center;
+}
+
+.story-visual-lookx-render-mode .floor-deck-copy h2,
+.story-visual-lookx-lora-training .floor-deck-copy h2,
+.story-visual-lookx-generate-same .floor-deck-copy h2,
+.floor-deck-synthetic-engine .floor-deck-copy h2 {
+  max-width: none;
+  font-size: var(--deck-title-compact);
+  line-height: 1.1;
+  white-space: normal;
+}
+
+.story-visual-lookx-render-mode .floor-deck-copy p,
+.story-visual-lookx-lora-training .floor-deck-copy p,
+.story-visual-lookx-generate-same .floor-deck-copy p,
+.floor-deck-synthetic-engine .floor-deck-copy p {
+  max-width: 78ch;
+}
+
+.lookx-pipeline-visual,
+.lookx-lora-visual,
+.lookx-same-visual {
+  width: min(72%, 780px);
+  max-height: min(52vh, 420px);
+  align-self: start;
+}
+
+.lookx-pipeline-image,
+.lookx-lora-image,
+.lookx-same-image {
+  max-height: min(33vh, 280px);
+}
+
+.lookx-lora-caption,
+.lookx-same-caption {
+  color: rgba(246, 242, 232, 0.84);
+  font-size: var(--deck-caption);
+  font-weight: 300;
+  line-height: 1.24;
+}
+
+/* Media and proof image rules. */
+.story-cover-asset,
+.video-system-architecture-visual,
+.vision-context-engineering-visual,
+.mm-metadata-visual,
+.mm-infra-visual,
+.floor-synthetic-pipeline,
+.floor-segment-layout,
+.floor-room-op-layout,
+.video-product-workflow-visual,
+.video-uiux-grid {
+  justify-self: center;
+}
+
+.story-cover-asset img,
+.story-cover-asset video,
+.video-system-architecture-visual img,
+.vision-context-engineering-visual > img,
+.mm-metadata-image,
+.mm-infra-image,
+.floor-segment-panel img,
+.floor-room-op-card > img,
+.floor-room-op-final-media > img:first-child {
+  max-height: var(--deck-media-max-h);
+}
+
+.story-visual-video-system-architecture .video-system-architecture-visual {
+  width: min(82%, 860px);
+}
+
+.story-visual-vision-context-engineering .vision-context-engineering-visual {
+  width: min(86%, 980px);
+}
+
+.story-visual-mm-real-demo .story-cover-asset {
+  width: min(76%, 820px);
+}
+
+.story-visual-mm-metadata .mm-metadata-visual,
+.story-visual-mm-infra .mm-infra-visual {
+  width: min(92%, 700px);
+}
+
+.story-visual-mm-metadata .mm-metadata-image,
+.story-visual-mm-infra .mm-infra-image {
+  max-height: min(42vh, 360px);
+}
+
+.story-visual-video-product-workflow {
+  gap: clamp(0.75rem, 1.35vw, 1.15rem);
+}
+
+.video-product-workflow-visual {
+  width: min(82%, 940px);
+  gap: clamp(1.2rem, 2.25vw, 2rem);
+}
+
+.video-product-card h3 {
+  font-size: clamp(0.74rem, 0.92vw, 1rem);
+  font-weight: 560;
+}
+
+.video-product-tags span {
+  font-size: clamp(0.48rem, 0.58vw, 0.62rem);
+  font-weight: 560;
+}
+
+.video-product-card figcaption,
+.floor-room-op-card figcaption,
+.floor-segment-panel figcaption,
+.video-problem-visual figcaption {
+  color: rgba(246, 242, 232, 0.76);
+  font-size: var(--deck-caption);
+  font-weight: 300;
+  line-height: 1.36;
+}
+
+.floor-segment-panel figcaption {
+  font-size: clamp(0.78rem, 1vw, 0.96rem);
+}
+
+html[lang="zh-CN"] .video-product-card figcaption,
+html[lang="zh-CN"] .floor-room-op-card figcaption,
+html[lang="zh-CN"] .floor-segment-panel figcaption,
+html[lang="zh-CN"] .video-problem-visual figcaption {
+  font-weight: 320;
+  line-height: 1.5;
+}
+
+.video-uiux-grid {
+  width: min(84%, 980px);
+  gap: clamp(0.9rem, 1.65vw, 1.35rem);
+}
+
+.video-uiux-card strong {
+  font-size: clamp(0.66rem, 0.78vw, 0.82rem);
+  font-weight: 520;
+}
+
+.video-uiux-card span {
+  font-size: clamp(0.56rem, 0.66vw, 0.7rem);
+  line-height: 1.4;
+}
+
+.story-visual-video-fusion-detection {
+  grid-template-columns: minmax(220px, 0.58fr) minmax(420px, 1.42fr);
+  padding: var(--deck-safe-y) var(--deck-safe-x);
+}
+
+.video-fusion-visual {
+  width: min(88%, 720px);
+  max-height: min(58vh, 420px);
+}
+
+.video-fusion-note {
+  width: min(44%, 20rem);
+  min-height: clamp(2.8rem, 5.4vw, 4.1rem);
+}
+
+.video-fusion-note span {
+  font-size: clamp(0.62rem, 0.86vw, 0.84rem);
+  font-weight: 300;
+}
+
+.video-fusion-note b {
+  width: clamp(1.25rem, 2.05vw, 1.85rem);
+  font-size: clamp(0.62rem, 1vw, 0.9rem);
+}
+
+/* Vision Agent feature dump stays information-dense; reduce intimidation with smaller panels. */
+.story-visual-vision-feature-dump {
+  grid-template-columns: minmax(180px, 0.62fr) minmax(520px, 1.38fr);
+  gap: clamp(1rem, 2vw, 1.8rem);
+  padding: var(--deck-safe-y) var(--deck-safe-x);
+}
+
+.story-visual-vision-feature-dump .floor-deck-copy {
+  max-width: 20rem;
+}
+
+.story-visual-vision-feature-dump .floor-deck-copy h2 {
+  max-width: 10.5em;
+  font-size: var(--deck-title);
+}
+
+.story-visual-vision-feature-dump .floor-deck-copy p {
+  max-width: 26ch;
+}
+
+.vision-feature-dump-visual {
+  grid-column: auto;
+  width: min(100%, 760px);
+  grid-template-columns: minmax(250px, 0.95fr) minmax(250px, 0.82fr);
+  gap: clamp(0.75rem, 1.4vw, 1.15rem);
+}
+
+.vision-feature-image img {
+  max-height: min(52vh, 430px);
+}
+
+.vision-feature-item > img {
+  height: clamp(1.05rem, 1.38vw, 1.34rem);
+}
+
+.vision-feature-item h3 {
+  font-size: clamp(0.58rem, 0.72vw, 0.76rem);
+  font-weight: 540;
+}
+
+.vision-feature-item p {
+  font-size: clamp(0.46rem, 0.56vw, 0.6rem);
+  line-height: 1.28;
+}
+
+/* Floorplan process pages: same technical rhythm, less crowded. */
+.floor-synthetic-pipeline {
+  width: min(96%, 1120px);
+  grid-template-columns:
+    minmax(150px, 0.72fr)
+    clamp(2.25rem, 3.5vw, 3.5rem)
+    minmax(220px, 1.04fr)
+    clamp(2.25rem, 3.5vw, 3.5rem)
+    minmax(240px, 1.08fr);
+}
+
+.floor-synthetic-source img,
+.floor-synthetic-demo video {
+  max-height: min(34vh, 300px);
+}
+
+.floor-segment-layout {
+  width: min(88%, 920px);
+}
+
+.floor-room-op-layout {
+  width: min(88%, 940px);
+  gap: clamp(1rem, 1.8vw, 1.55rem);
+}
+
+.floor-room-op-card > img,
+.floor-room-op-final-media > img:first-child {
+  width: min(82%, 100%);
+  max-height: min(30vh, 270px);
+}
+
+.floor-room-op-gif {
+  width: min(11%, 52px);
+}
+
+.floor-wallcenter-op-gif {
+  width: min(16%, 78px);
+}
+
+/* Anchor optimization GIFs to the rendered base image, not the full card. */
+.floor-room-op-final-media {
+  --floor-op-gif-shift-x: 2.9778vw; /* 80 / 2880 canvas shift, plus 0.2vw right. */
+  width: min(82%, 100%);
+  margin-inline: auto;
+}
+
+.floor-room-op-final-media > img:first-child {
+  width: 100%;
+}
+
+.floor-room-op-gif {
+  left: 6.1%;
+  width: min(12.1%, 47px);
+  transform: translate(calc(-50% + var(--floor-op-gif-shift-x)), -50%);
+}
+
+.floor-room-op-gif.floor-wallcenter-op-gif {
+  left: 7.1%;
+  width: min(19.5%, 78px);
+}
+
+/* Result/metric pages should feel premium, not loud. */
+.story-visual-lookx-market-result {
+  padding: var(--deck-safe-y) var(--deck-safe-x);
+}
+
+.story-visual-lookx-market-result .floor-deck-copy h2 {
+  font-size: var(--deck-title);
+  line-height: 1.1;
+}
+
+.story-visual-lookx-market-result .story-cover-asset {
+  max-width: 620px;
+}
+
+.story-visual-lookx-market-result .story-metrics {
+  width: min(78%, 400px);
+}
+
+.story-visual-lookx-market-result .story-metrics dt {
+  font-size: clamp(1rem, 1.35vw, 1.42rem);
+}
+
+@media (max-width: 900px) {
+  .viewer-screen {
+    --deck-safe-x: 1.25rem;
+    --deck-safe-y: 1.2rem;
+    --deck-title-hero: clamp(1.35rem, 5vw, 2.15rem);
+    --deck-title: clamp(1.16rem, 4.4vw, 1.75rem);
+    --deck-title-compact: clamp(1.04rem, 4vw, 1.5rem);
+  }
+
+  .story-visual-lookx-context,
+  .story-visual-mm-frontpage,
+  .story-visual-video-frontpage,
+  .story-visual-video-problem,
+  .story-visual-vision-frontpage,
+  .story-visual-video-fusion-detection,
+  .story-visual-vision-feature-dump,
+  .floor-deck-context.story-deck-floor-plan-reconstruction {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .story-deck .floor-deck-copy p,
+  .story-deck-floor-plan-reconstruction .floor-deck-copy p {
+    display: none;
+  }
+
+  .story-cover-asset,
+  .video-problem-visual,
+  .video-fusion-visual,
+  .vision-feature-dump-visual {
+    width: min(100%, 720px);
+  }
+
+  .video-product-workflow-visual,
+  .video-uiux-grid,
+  .floor-room-op-layout {
+    width: 100%;
+  }
+}
+
+/* Vision Agent: live system recording */
+.story-deck-vision-agent.story-visual-vision-live-demo {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: clamp(0.7rem, 1.25vw, 1.05rem);
+  padding: var(--deck-safe-y) var(--deck-safe-x);
+  background: #050505;
+}
+
+.story-deck-vision-agent.story-visual-vision-live-demo .floor-deck-copy {
+  grid-column: 1;
+  grid-row: 1;
+  width: min(90%, 1080px);
+  margin-inline: auto;
+}
+
+.story-deck-vision-agent.story-visual-vision-live-demo .floor-deck-copy h2 {
+  max-width: none;
+  font-size: var(--deck-title);
+}
+
+.story-deck-vision-agent.story-visual-vision-live-demo .floor-deck-copy p {
+  display: none;
+}
+
+.story-deck-vision-agent.story-visual-vision-live-demo .story-cover-asset {
+  grid-column: 1;
+  grid-row: 2;
+  align-self: center;
+  justify-self: center;
+  width: min(80%, 940px);
+  max-width: none;
+  height: auto;
+  aspect-ratio: 94 / 45;
+  overflow: hidden;
+  border: 1px solid rgba(239, 237, 226, 0.16);
+  border-radius: 8px;
+  background: #050505;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
+}
+
+.story-deck-vision-agent.story-visual-vision-live-demo .story-cover-asset video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.story-deck-vision-agent.story-visual-vision-live-demo .story-deck-stage,
+.story-deck-vision-agent.story-visual-vision-live-demo .story-media-card,
+.story-deck-vision-agent.story-visual-vision-live-demo .story-chip-row,
+.story-deck-vision-agent.story-visual-vision-live-demo .story-signal-grid,
+.story-deck-vision-agent.story-visual-vision-live-demo .story-layout-geometry {
+  display: none;
+}
+
+@media (max-height: 780px) and (min-width: 901px) {
+  .story-deck-vision-agent.story-visual-vision-live-demo {
+    gap: 0.55rem;
+    padding-block: 0.85rem;
+  }
+
+  .story-deck-vision-agent.story-visual-vision-live-demo .story-cover-asset {
+    width: min(76%, 840px);
+  }
 }
 
 .story-visual-lookx-workflow .story-abstract,
@@ -8010,5 +8727,701 @@ html[lang="zh-CN"] .vision-feature-item p {
   .remote-episode-dots {
     justify-self: end;
     margin: 0;
+  }
+}
+
+/* Final deck-system guard.
+   Legacy responsive slide rules live above this point; keep shared deck
+   typography and spacing token-driven so reloads and viewport changes do not
+   cause old per-slide styles to become the active source of truth. */
+@media (max-height: 780px) {
+  .story-deck .floor-deck-copy h2,
+  .story-deck-floor-plan-reconstruction .floor-deck-copy h2 {
+    font-size: var(--deck-title);
+    line-height: 1.1;
+  }
+
+  .story-visual-lookx-context .floor-deck-copy h2,
+  .story-visual-mm-frontpage .floor-deck-copy h2,
+  .story-visual-video-frontpage .floor-deck-copy h2,
+  .story-visual-video-problem .floor-deck-copy h2,
+  .story-visual-vision-frontpage .floor-deck-copy h2,
+  .floor-deck-context.story-deck-floor-plan-reconstruction .floor-deck-copy h2 {
+    font-size: var(--deck-title-hero);
+  }
+
+  .story-deck .floor-deck-copy p,
+  .story-deck-floor-plan-reconstruction .floor-deck-copy p {
+    font-size: var(--deck-body);
+    line-height: 1.58;
+  }
+}
+
+@media (max-width: 800px) {
+  .story-deck .floor-deck-copy h2,
+  html[lang="zh-CN"] .story-deck .floor-deck-copy h2,
+  .story-deck-floor-plan-reconstruction .floor-deck-copy h2,
+  html[lang="zh-CN"] .story-deck-floor-plan-reconstruction .floor-deck-copy h2 {
+    font-size: var(--deck-title);
+    line-height: 1.12;
+  }
+
+  .story-visual-lookx-context .floor-deck-copy h2,
+  .story-visual-mm-frontpage .floor-deck-copy h2,
+  .story-visual-video-frontpage .floor-deck-copy h2,
+  .story-visual-video-problem .floor-deck-copy h2,
+  .story-visual-vision-frontpage .floor-deck-copy h2,
+  .floor-deck-context.story-deck-floor-plan-reconstruction .floor-deck-copy h2 {
+    font-size: var(--deck-title-hero);
+  }
+}
+
+.story-deck-robotic-video-intelligence.story-visual-video-product-workflow .floor-deck-copy h2 {
+  font-size: var(--deck-title-compact);
+}
+
+/* Stage sizing and audited slide preservation.
+   The deck should read as the primary object on desktop and large screens.
+   Keep LookX close to the hand-tuned composition instead of letting the generic
+   deck system flatten the hierarchy. */
+.viewer-stage {
+  width: min(82vw, 1280px);
+  max-height: calc(100svh - 215px);
+}
+
+.work-viewer {
+  gap: clamp(0.65rem, 1.35vh, 1.05rem);
+  padding-top: clamp(62px, 7.8vh, 78px);
+  padding-bottom: clamp(0.8rem, 1.8vh, 1.35rem);
+}
+
+@media (min-width: 1680px) {
+  .work-viewer {
+    padding-right: clamp(1.2rem, 2.4vw, 3rem);
+    padding-left: clamp(1.2rem, 2.4vw, 3rem);
+  }
+
+  .viewer-stage {
+    width: min(78vw, 1420px);
+    max-height: calc(100svh - 220px);
+  }
+
+  .story-deck-lookx-generative-ai.story-visual-lookx-context .story-cover-asset,
+  .story-visual-mm-frontpage .story-cover-asset,
+  .story-visual-video-frontpage .story-cover-asset,
+  .story-visual-vision-frontpage .story-cover-asset,
+  .floor-deck-context.story-deck-floor-plan-reconstruction .story-cover-asset {
+    max-width: min(48vw, 780px);
+  }
+
+  .story-deck-lookx-generative-ai.story-visual-lookx-context .floor-deck-copy p,
+  .story-visual-mm-frontpage .floor-deck-copy p,
+  .story-visual-video-frontpage .floor-deck-copy p,
+  .story-visual-vision-frontpage .floor-deck-copy p,
+  .floor-deck-context.story-deck-floor-plan-reconstruction .floor-deck-copy p {
+    font-size: clamp(0.82rem, 0.9vw, 1rem);
+  }
+
+  .lookx-pipeline-visual {
+    width: min(78%, 980px);
+  }
+
+  .lookx-pipeline-image {
+    max-height: min(38vh, 400px);
+  }
+
+  .lookx-lora-visual {
+    width: min(70%, 900px);
+  }
+
+  .lookx-lora-image {
+    max-height: min(34vh, 350px);
+  }
+
+  .lookx-same-visual {
+    width: min(74%, 940px);
+  }
+
+  .lookx-same-image {
+    max-height: min(34vh, 360px);
+  }
+}
+
+.story-deck-lookx-generative-ai.story-visual-lookx-context {
+  grid-template-columns: minmax(240px, 0.82fr) minmax(360px, 1.18fr);
+  gap: clamp(0.8rem, 2vw, 2rem);
+  padding: clamp(1rem, 2.5vw, 2.2rem);
+  background: #050505;
+}
+
+.story-deck-lookx-generative-ai.story-visual-lookx-context .floor-deck-copy {
+  max-width: min(100%, 760px);
+}
+
+.story-deck-lookx-generative-ai.story-visual-lookx-context .floor-deck-copy h2 {
+  max-width: 14em;
+  font-size: clamp(1.7rem, 2.8vw, 3.1rem);
+  line-height: 1.06;
+}
+
+.story-deck-lookx-generative-ai.story-visual-lookx-context .floor-deck-copy p {
+  max-width: 48ch;
+  font-size: clamp(0.78rem, 0.92vw, 0.94rem);
+}
+
+html[lang="zh-CN"] .story-deck-lookx-generative-ai.story-visual-lookx-context .floor-deck-copy h2 {
+  max-width: 10em;
+  font-size: clamp(1.55rem, 2.5vw, 2.75rem);
+  line-height: 1.12;
+}
+
+html[lang="zh-CN"] .story-deck-lookx-generative-ai.story-visual-lookx-context .floor-deck-copy p {
+  max-width: 44ch;
+}
+
+.story-deck-lookx-generative-ai.story-visual-lookx-context .story-cover-asset {
+  align-self: center;
+  justify-self: center;
+  width: min(94%, 660px);
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 24px;
+  box-shadow: 0 36px 110px rgba(0, 0, 0, 0.46);
+}
+
+.story-deck-lookx-generative-ai.story-visual-lookx-context .story-cover-asset img,
+.story-deck-vision-agent.story-visual-vision-frontpage .story-cover-asset img {
+  max-height: none;
+}
+
+.story-deck-lookx-generative-ai.story-visual-lookx-render-mode,
+.story-deck-lookx-generative-ai.story-visual-lookx-lora-training,
+.story-deck-lookx-generative-ai.story-visual-lookx-generate-same {
+  gap: clamp(0.8rem, 1.8vw, 1.45rem);
+  padding: clamp(1rem, 2.6vw, 2.2rem) clamp(1.15rem, 3.2vw, 3.1rem);
+}
+
+.story-deck-lookx-generative-ai.story-visual-lookx-render-mode .floor-deck-copy,
+.story-deck-lookx-generative-ai.story-visual-lookx-lora-training .floor-deck-copy,
+.story-deck-lookx-generative-ai.story-visual-lookx-generate-same .floor-deck-copy {
+  width: 100%;
+  max-width: min(100%, 1120px);
+  gap: clamp(0.28rem, 0.7vw, 0.54rem);
+}
+
+.story-deck-lookx-generative-ai.story-visual-lookx-render-mode .floor-deck-copy h2,
+.story-deck-lookx-generative-ai.story-visual-lookx-lora-training .floor-deck-copy h2,
+.story-deck-lookx-generative-ai.story-visual-lookx-generate-same .floor-deck-copy h2 {
+  font-size: clamp(1.08rem, 1.62vw, 1.78rem);
+  line-height: 1.06;
+  letter-spacing: normal;
+}
+
+.story-deck-lookx-generative-ai.story-visual-lookx-render-mode .floor-deck-copy p,
+.story-deck-lookx-generative-ai.story-visual-lookx-lora-training .floor-deck-copy p,
+.story-deck-lookx-generative-ai.story-visual-lookx-generate-same .floor-deck-copy p {
+  max-width: none;
+  color: rgba(246, 242, 232, 0.64);
+  font-size: clamp(0.68rem, 0.82vw, 0.84rem);
+}
+
+.lookx-pipeline-visual {
+  width: min(84%, 920px);
+  max-height: none;
+}
+
+.lookx-pipeline-image {
+  max-height: min(44vh, 410px);
+}
+
+.lookx-lora-visual {
+  width: min(84%, 920px);
+  max-height: none;
+}
+
+.lookx-lora-image {
+  max-height: min(40vh, 370px);
+}
+
+.lookx-same-visual {
+  width: min(84%, 920px);
+  max-height: none;
+}
+
+.lookx-same-image {
+  max-height: min(40vh, 370px);
+}
+
+.lookx-lora-caption,
+.lookx-same-caption {
+  font: 300 clamp(0.64rem, 1vw, 1rem) / 1.2 var(--display);
+  letter-spacing: normal;
+}
+
+.story-deck-lookx-generative-ai.story-visual-lookx-render-mode {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  place-items: center;
+  align-content: center;
+}
+
+.story-deck-lookx-generative-ai.story-visual-lookx-render-mode .lookx-pipeline-visual {
+  align-self: center;
+  justify-self: center;
+}
+
+.story-deck-lookx-generative-ai.story-visual-lookx-lora-training .lookx-lora-visual {
+  align-self: center;
+  justify-self: center;
+}
+
+.story-deck-lookx-generative-ai.story-visual-lookx-generate-same .lookx-same-visual {
+  align-self: center;
+  justify-self: center;
+}
+
+.story-deck-lookx-generative-ai.story-visual-lookx-market-result {
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+  row-gap: clamp(0.78rem, 1.35vw, 1.05rem);
+  align-content: center;
+  align-items: center;
+  padding: clamp(1.15rem, 3vw, 2.8rem);
+}
+
+.story-deck-lookx-generative-ai.story-visual-lookx-market-result .story-cover-asset {
+  width: 100%;
+  max-width: none;
+  aspect-ratio: 2.35 / 1;
+  border-radius: 16px;
+}
+
+.story-deck-lookx-generative-ai.story-visual-lookx-market-result .story-metrics {
+  width: min(86%, 440px);
+}
+
+@media (min-width: 901px) {
+  .story-deck-lookx-generative-ai.story-visual-lookx-market-result {
+    grid-template-columns: minmax(280px, 0.78fr) minmax(500px, 1.22fr);
+    grid-template-rows: auto auto;
+    column-gap: clamp(2rem, 4vw, 4.5rem);
+    row-gap: clamp(0.9rem, 1.5vw, 1.35rem);
+    align-content: center;
+    padding: var(--deck-safe-y) var(--deck-safe-x);
+    background: #050505;
+  }
+
+  .story-deck-lookx-generative-ai.story-visual-lookx-market-result .floor-deck-copy {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    max-width: 36ch;
+    gap: clamp(0.7rem, 1.15vw, 1rem);
+  }
+
+  .story-deck-lookx-generative-ai.story-visual-lookx-market-result .floor-deck-copy h2 {
+    max-width: 13em;
+    font-size: var(--deck-title-hero);
+    line-height: 1.08;
+  }
+
+  html[lang="zh-CN"] .story-deck-lookx-generative-ai.story-visual-lookx-market-result .floor-deck-copy h2 {
+    line-height: 1.14;
+  }
+
+  .story-deck-lookx-generative-ai.story-visual-lookx-market-result .floor-deck-copy p {
+    display: block;
+    max-width: 34ch;
+    font-size: var(--deck-body);
+    color: var(--deck-muted);
+  }
+
+  .story-deck-lookx-generative-ai.story-visual-lookx-market-result .story-cover-asset {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: center;
+    width: min(100%, 760px);
+    aspect-ratio: 2.35 / 1;
+  }
+
+  .story-deck-lookx-generative-ai.story-visual-lookx-market-result .story-deck-stage {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: center;
+    width: min(100%, 760px);
+  }
+
+  .story-deck-lookx-generative-ai.story-visual-lookx-market-result .story-metrics {
+    width: min(100%, 540px);
+    gap: clamp(0.55rem, 0.9vw, 0.85rem);
+  }
+}
+
+@media (min-width: 1680px) {
+  .story-deck-lookx-generative-ai.story-visual-lookx-context .story-cover-asset {
+    width: min(94%, 720px);
+  }
+}
+
+/* Floor-plan IFC viewer: a quiet inspection surface, not another dashboard. */
+.floor-deck-ifc-viewer.story-deck-floor-plan-reconstruction {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: clamp(0.8rem, 1.45vw, 1.2rem);
+  padding: clamp(1rem, 2.35vw, 2rem) var(--deck-safe-x);
+  background: #050505;
+}
+
+.floor-deck-ifc-viewer .floor-deck-copy {
+  width: min(92%, 1040px);
+  max-width: none;
+  margin-inline: auto;
+  gap: clamp(0.28rem, 0.55vw, 0.48rem);
+}
+
+.floor-deck-ifc-viewer .floor-deck-copy h2 {
+  max-width: none;
+  font-size: var(--deck-title);
+  line-height: 1.08;
+}
+
+html[lang="zh-CN"] .floor-deck-ifc-viewer.story-deck-floor-plan-reconstruction .floor-deck-copy h2 {
+  max-width: none;
+}
+
+.floor-ifc-viewer {
+  position: relative;
+  align-self: center;
+  justify-self: center;
+  width: min(92%, 1040px);
+  height: min(90%, 520px);
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid rgba(239, 237, 226, 0.2);
+  border-radius: 12px;
+  background: #080909;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.34);
+}
+
+.floor-ifc-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  outline: none;
+  cursor: grab;
+  touch-action: none;
+}
+
+.floor-ifc-canvas:active {
+  cursor: grabbing;
+}
+
+.floor-ifc-toolbar {
+  position: absolute;
+  z-index: 2;
+  top: clamp(0.55rem, 1vw, 0.8rem);
+  right: clamp(0.55rem, 1vw, 0.8rem);
+  display: flex;
+  align-items: center;
+  gap: 0.22rem;
+  padding: 0.22rem;
+  border: 1px solid rgba(239, 237, 226, 0.14);
+  border-radius: 999px;
+  background: rgba(10, 12, 11, 0.76);
+  backdrop-filter: blur(14px);
+}
+
+.floor-ifc-toolbar button {
+  min-height: 28px;
+  padding: 0.32rem 0.62rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(246, 242, 232, 0.64);
+  font: 500 var(--deck-label) / 1 var(--body);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 160ms ease, background-color 160ms ease;
+}
+
+.floor-ifc-toolbar button:hover,
+.floor-ifc-toolbar button.is-active {
+  background: rgba(246, 242, 232, 0.1);
+  color: rgba(246, 242, 232, 0.96);
+}
+
+.floor-ifc-status,
+.floor-ifc-help {
+  position: absolute;
+  z-index: 2;
+  bottom: clamp(0.55rem, 1vw, 0.8rem);
+  margin: 0;
+  color: rgba(246, 242, 232, 0.5);
+  font: 450 var(--deck-label) / 1.2 var(--body);
+  pointer-events: none;
+}
+
+.floor-ifc-status {
+  left: clamp(0.65rem, 1.15vw, 0.9rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.floor-ifc-help {
+  right: clamp(0.65rem, 1.15vw, 0.9rem);
+}
+
+.floor-ifc-viewer:not(.is-ready) .floor-ifc-help {
+  opacity: 0;
+}
+
+.floor-ifc-viewer.has-error {
+  border-color: rgba(255, 105, 97, 0.45);
+}
+
+@media (max-height: 780px) and (min-width: 901px) {
+  .floor-deck-ifc-viewer.story-deck-floor-plan-reconstruction {
+    gap: 0.58rem;
+    padding-block: 0.85rem;
+  }
+
+  .floor-ifc-toolbar button {
+    min-height: 25px;
+    padding: 0.27rem 0.52rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .floor-ifc-viewer,
+  .floor-deck-ifc-viewer .floor-deck-copy {
+    width: 100%;
+  }
+
+  .floor-ifc-help {
+    display: none;
+  }
+}
+
+.story-deck .floor-deck-copy p,
+.story-deck-floor-plan-reconstruction .floor-deck-copy p,
+.story-deck-lookx-generative-ai.story-visual-lookx-context .floor-deck-copy p,
+.story-deck-multimodal-asset-search.story-visual-mm-frontpage .floor-deck-copy p,
+.story-deck-robotic-video-intelligence.story-visual-video-frontpage .floor-deck-copy p,
+.story-deck-robotic-video-intelligence.story-visual-video-problem .floor-deck-copy p,
+.story-deck-vision-agent.story-visual-vision-frontpage .floor-deck-copy p,
+.floor-deck-context.story-deck-floor-plan-reconstruction .floor-deck-copy p {
+  color: var(--deck-muted);
+  font-size: var(--deck-body);
+}
+
+.story-deck-lookx-generative-ai.story-visual-lookx-context .floor-deck-copy {
+  transform: translateX(clamp(0.6rem, 2.2vw, 1.8rem));
+}
+
+html[lang="zh-CN"] .story-deck-lookx-generative-ai.story-visual-lookx-context .floor-deck-copy {
+  transform: translateX(clamp(1.8rem, 5vw, 4.2rem));
+}
+
+/* Floorplan cover follows the LookX cover hierarchy, with a taller process visual. */
+.floor-deck-context.story-deck-floor-plan-reconstruction {
+  grid-template-columns: minmax(280px, 340px) minmax(0, 620px);
+  justify-content: center;
+  column-gap: clamp(1.4rem, 2.2vw, 2.4rem);
+}
+
+.floor-deck-context.story-deck-floor-plan-reconstruction .floor-deck-copy {
+  width: min(100%, 35ch);
+  transform: translateX(clamp(1.8rem, 3.6vw, 3.4rem));
+}
+
+html[lang="zh-CN"] .floor-deck-context.story-deck-floor-plan-reconstruction .floor-deck-copy {
+  transform: translateX(clamp(2.6rem, 5vw, 4.5rem));
+}
+
+.floor-deck-context.story-deck-floor-plan-reconstruction .floor-hero-visual {
+  width: auto;
+  height: min(58vh, 500px);
+  max-width: 100%;
+  max-height: 100%;
+  transform: none;
+}
+
+/* LookX result slide: final override to neutralize older metric/card rules. */
+.story-deck-lookx-generative-ai.story-visual-lookx-market-result {
+  --lookx-result-card: rgba(246, 242, 232, 0.055);
+  --lookx-result-line: rgba(246, 242, 232, 0.14);
+  grid-template-columns: minmax(280px, 330px) minmax(0, 720px);
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "copy proof"
+    "copy metrics";
+  justify-content: center;
+  column-gap: clamp(2rem, 3vw, 2.6rem);
+  row-gap: clamp(1.1rem, 1.8vw, 1.55rem);
+  align-content: center;
+  align-items: center;
+  padding: clamp(1.35rem, 3vw, 2.7rem) clamp(1.5rem, 2.8vw, 2.5rem);
+  background:
+    radial-gradient(circle at 78% 18%, rgba(246, 242, 232, 0.06), transparent 34%),
+    #050505;
+}
+
+.story-deck-lookx-generative-ai.story-visual-lookx-market-result .floor-deck-copy {
+  grid-area: copy;
+  align-self: center;
+  width: min(100%, 34ch);
+  max-width: 34ch;
+  gap: clamp(0.75rem, 1.2vw, 1.05rem);
+}
+
+.story-deck-lookx-generative-ai.story-visual-lookx-market-result .floor-deck-copy h2 {
+  max-width: 11em;
+  color: rgba(246, 242, 232, 0.96);
+  font-size: clamp(1.5rem, 2.42vw, 2.55rem);
+  font-weight: 560;
+  letter-spacing: normal;
+  line-height: 1.08;
+}
+
+html[lang="zh-CN"] .story-deck-lookx-generative-ai.story-visual-lookx-market-result .floor-deck-copy h2 {
+  max-width: 9.5em;
+  font-size: clamp(1.46rem, 2.28vw, 2.42rem);
+  line-height: 1.15;
+}
+
+.story-deck-lookx-generative-ai.story-visual-lookx-market-result .floor-deck-copy p {
+  max-width: 32ch;
+  color: rgba(246, 242, 232, 0.7);
+  font-size: clamp(0.84rem, 1.04vw, 1.06rem);
+  font-weight: 360;
+  line-height: 1.58;
+}
+
+html[lang="zh-CN"] .story-deck-lookx-generative-ai.story-visual-lookx-market-result .floor-deck-copy p {
+  line-height: 1.72;
+}
+
+.story-deck-lookx-generative-ai.story-visual-lookx-market-result .story-cover-asset {
+  grid-area: proof;
+  justify-self: stretch;
+  align-self: center;
+  width: 100%;
+  max-width: none;
+  height: auto;
+  aspect-ratio: 2360 / 912;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  box-shadow: 0 24px 76px rgba(0, 0, 0, 0.32);
+}
+
+.story-deck-lookx-generative-ai.story-visual-lookx-market-result .story-cover-asset img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  object-fit: contain;
+  object-position: center;
+  background: #050505;
+}
+
+.story-deck-lookx-generative-ai.story-visual-lookx-market-result .story-deck-stage {
+  grid-area: metrics;
+  justify-self: stretch;
+  align-self: start;
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+}
+
+.story-deck-lookx-generative-ai.story-visual-lookx-market-result .story-metrics {
+  position: static;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: 100%;
+  height: auto;
+  margin: 0;
+  gap: clamp(0.55rem, 0.9vw, 0.82rem);
+  border: 0;
+}
+
+.story-deck-lookx-generative-ai.story-visual-lookx-market-result .story-metrics div {
+  display: flex;
+  min-width: 0;
+  min-height: clamp(2.8rem, 4.2vw, 3.35rem);
+  padding: clamp(0.4rem, 0.62vw, 0.56rem) clamp(0.68rem, 1vw, 0.9rem);
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.42rem, 0.58vw, 0.62rem);
+  border: 0.5px solid rgba(196, 196, 192, 0.36);
+  border-radius: clamp(0.55rem, 0.8vw, 0.72rem);
+  background: linear-gradient(145deg, rgba(48, 48, 44, 0.94), rgba(22, 22, 20, 0.98));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035), 0 10px 24px rgba(0, 0, 0, 0.16);
+}
+
+.story-deck-lookx-generative-ai.story-visual-lookx-market-result .story-metrics div:first-child {
+  padding-left: clamp(0.68rem, 1vw, 0.9rem);
+}
+
+.story-deck-lookx-generative-ai.story-visual-lookx-market-result .story-metrics dt {
+  color: rgba(246, 242, 232, 0.98);
+  font-size: clamp(1.18rem, 1.62vw, 1.68rem);
+  font-weight: 520;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.story-deck-lookx-generative-ai.story-visual-lookx-market-result .story-metrics dd {
+  margin-top: 0;
+  color: rgba(246, 242, 232, 0.74);
+  font-size: clamp(0.72rem, 0.86vw, 0.9rem);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 1;
+}
+
+.story-deck-lookx-generative-ai.story-visual-lookx-market-result .story-media-card,
+.story-deck-lookx-generative-ai.story-visual-lookx-market-result .story-signal-grid,
+.story-deck-lookx-generative-ai.story-visual-lookx-market-result .story-layout-geometry,
+.story-deck-lookx-generative-ai.story-visual-lookx-market-result .story-chip-row,
+.story-deck-lookx-generative-ai.story-visual-lookx-market-result .story-callout {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .story-deck-lookx-generative-ai.story-visual-lookx-market-result {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+    grid-template-areas:
+      "copy"
+      "proof"
+      "metrics";
+    gap: 0.85rem;
+  }
+
+  .story-deck-lookx-generative-ai.story-visual-lookx-market-result .floor-deck-copy,
+  .story-deck-lookx-generative-ai.story-visual-lookx-market-result .story-cover-asset,
+  .story-deck-lookx-generative-ai.story-visual-lookx-market-result .story-deck-stage {
+    grid-column: 1;
+    grid-row: auto;
+    width: 100%;
+    max-width: none;
+  }
+
+  .story-deck-lookx-generative-ai.story-visual-lookx-market-result .story-cover-asset {
+    height: auto;
+  }
+
+  .story-deck-lookx-generative-ai.story-visual-lookx-market-result .story-metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .story-deck-lookx-generative-ai.story-visual-lookx-market-result .story-metrics div {
+    display: block;
   }
 }

@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import type { Locale } from "../lib/i18n";
+import FloorplanIfcViewer from "./FloorplanIfcViewer.astro";
 import FlowControlPill from "./FlowControlPill.astro";
 import ViewerIcon from "./ViewerIcon.astro";
 
@@ -46,19 +47,19 @@ const floorPlanDeck =
   locale === "zh"
     ? {
         context: {
-          title: "户型图能被读懂，却不能被计算",
-          summary: "设计师能从图纸中理解空间关系，但产品系统无法直接统计面积、生成变体、做结构分析或复用空间数据。",
+          title: "户型图矢量化重建",
+          summary: "从栅格图像识别建筑要素，经矢量重建与几何计算生成 BIM 数据，支持后续应用。",
         },
         bottleneck: {
           title: "缺少中间层，应用只能重画",
           summary: "如果图像不能变成墙、门窗、房间和拓扑关系，后续的计量、检索、BIM 导出和业务应用都会停在人工环节。",
         },
         synthetic: {
-          title: "用前端渲染生成可训练的户型图",
-          summary: "我把 Xkool 既有矢量户型重新渲染成户型图图像，再用几何计算同步生成分割、房间和边界标注，绕开高成本人工标注。",
+          title: "把前端渲染变成自动标注引擎",
+          summary: "",
         },
         graph: {
-          title: "再把分割结果优化成墙体中心线图",
+          title: "获得 7 万张像素级分割标注",
           summary: "从 segmentation 得到房间轮廓后，通过多边形简化和两轮图优化，把噪声边界收敛为可编辑的空间骨架。",
         },
         roomOptimization: {
@@ -69,6 +70,10 @@ const floorPlanDeck =
           title: "墙体中心线把房间多边形合并为空间骨架",
           summary: "通过尺度估计、墙宽计算和图优化，把房间边界收敛为表达墙段、房间和构件关系的中心线图。",
         },
+        ifcViewer: {
+          title: "让重建结果进入可交互的建筑模型",
+          summary: "墙体中心线、房间、门窗和楼板被导出为 IFC，并在浏览器中直接检查空间关系与三维几何。",
+        },
         result: {
           title: "最终得到的是可复用的空间数据",
           summary: "系统生成 5 万+ 矢量户型数据，覆盖中国主流住宅户型，并在 Xkool 多个产品和业务场景中复用。",
@@ -76,19 +81,19 @@ const floorPlanDeck =
       }
     : {
         context: {
-          title: "Floor plans are readable, but not computable",
-          summary: "Designers can read spatial intent from drawings, but product systems cannot directly measure, vary, analyze, or reuse that space.",
+          title: "Floor Plan Vectorization & Reconstruction",
+          summary: "Extracting building elements from raster images, then reconstructing them as BIM data for downstream applications.",
         },
         bottleneck: {
           title: "Without structure, every application redraws",
           summary: "If an image cannot become walls, openings, rooms, and topology, measurement, retrieval, BIM export, and business workflows stay manual.",
         },
         synthetic: {
-          title: "Frontend rendering made floor-plan data trainable",
-          summary: "I rendered existing Xkool vector layouts back into floor-plan images, then used geometry calculation to generate segmentation, room, and boundary annotations without manual labeling.",
+          title: "Turning Frontend Rendering into an Annotation Engine",
+          summary: "",
         },
         graph: {
-          title: "Geometry optimization turns masks into wall centerlines",
+          title: "70K Pixel-Level Segmentation Annotations",
           summary: "Segmentation gives room contours; polygon simplification and two graph-optimization rounds turn noisy boundaries into editable spatial skeletons.",
         },
         roomOptimization: {
@@ -98,6 +103,10 @@ const floorPlanDeck =
         wallCenterOptimization: {
           title: "Wall centerlines turn room polygons into a spatial skeleton",
           summary: "Scale estimation, wall-width calculation, and graph optimization turn room boundaries into wall segments that organize rooms and components.",
+        },
+        ifcViewer: {
+          title: "The reconstruction becomes an interactive building model",
+          summary: "Wall centerlines, rooms, openings, and slabs are exported as IFC, then inspected directly in the browser as spatial geometry.",
         },
         result: {
           title: "The output is reusable spatial data",
@@ -181,9 +190,9 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
         ],
         "lookx-generative-ai": [
           {
-            kicker: "WHY",
-            title: "AI 产品应该尊重它服务的人",
-            summary: "对建筑师来说，AI 应该保留设计意图，交付可控而精确的渲染，并让早期设计叙事比反复试错更低成本。",
+            kicker: "LookX · 建筑 AI SaaS",
+            title: "为建筑师做的 AI 产品",
+            summary: "建筑师需要渲染结果保留输入图里的结构，也需要少一点抽卡、试错和调参。",
             visual: "lookx-context",
             layout: "statement",
             media: {
@@ -194,36 +203,36 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
           },
           {
             kicker: "RENDER MODE",
-            title: "用户带来的不是同一种图片",
-            summary: "有人上传草图寻找灵感，有人用体块图快速表达方案，也有人拿专业模型截图要求精确渲染。我把这些入口整理成三类输入，并用意图匹配与 ComfyUI workflow handler 接到不同生成管线。",
+            title: "",
+            summary: "",
             visual: "lookx-render-mode",
             layout: "split",
           },
           {
             kicker: "AUTO TRAINING",
-            title: "把模型训练藏进一个自然动作",
-            summary: "LoRA 训练需要处理学习率、network dimension、alpha 等细节，它们会影响风格表达、泛化能力和 GPU 成本。我把这些参数决策收进自动训练管线，让用户只需要上传参考图。",
+            title: "",
+            summary: "",
             visual: "lookx-lora-training",
             layout: "split",
           },
           {
             kicker: "GENERATE SAME",
-            title: "好结果不该只能被猜出来",
-            summary: "生成图本身比 prompt 透露更多信息。Generate Same 让用户复用广场作品背后的 prompt、参考图、模型和 LoRA 组合，也让自己的历史结果成为下一次创作的锚点。",
+            title: "",
+            summary: "",
             visual: "lookx-generate-same",
             layout: "split",
           },
           {
             kicker: "TECH",
-            title: "深入技术，让工具真正专业可用",
+            title: "",
             summary: "",
             visual: "lookx-tech-system",
             layout: "board",
           },
           {
             kicker: "RESULT",
-            title: "产品增长来自真实的建筑师使用",
-            summary: "LookX 成为全球市场上表现最好的建筑 AI SaaS 产品之一。AI 热潮带来了自然流量，但真正留下用户的是可控渲染、低门槛工作流和社区传播。",
+            title: "建筑师的真实使用，推动了产品增长",
+            summary: "AI 热潮带来了关注，但持续增长来自可控的渲染结果、低门槛的工作流，以及用户自发分享形成的社区传播。",
             visual: "lookx-market-result",
             layout: "metrics",
             media: {
@@ -233,14 +242,14 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
             },
             metrics: [
               { value: "$30K", label: "MRR" },
-              { value: "600K", label: "Registered users" },
-              { value: "$0", label: "Marketing budget" },
+              { value: "600K", label: "注册用户" },
+              { value: "零营销预算", label: "" },
             ],
           },
         ],
         "robotic-video-intelligence": [
           {
-            kicker: "WHY",
+            kicker: "LookX · Architectural AI SaaS",
             title: "视觉模型的难题常发生在部署后",
             summary: "模型在实验室里看似稳定，到了客户现场却会遇到新场景、新链路和缺少证据的问题，导致“为什么没检测出来”很难回答。",
             visual: "video-frontpage",
@@ -313,12 +322,16 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
             },
           },
           {
-            kicker: "CORE",
-            title: "分层知识库提供现场判断依据",
-            summary: "知识库不是存档，而是现场决策的事实来源：它帮助系统处理 out-of-scope 事件、减少误报，并保留渐进式理解。",
-            visual: "vision-system",
-            layout: "split",
-            chips: ["Knowledge store", "Context window", "Tool calls"],
+            kicker: "LIVE SYSTEM",
+            title: "视觉智能体在实时视频流中持续判断",
+            summary: "",
+            visual: "vision-live-demo",
+            layout: "statement",
+            media: {
+              type: "video",
+              src: "/case-studies/vision-agent/vision-agent-live-demo.mp4",
+              alt: "视觉智能体在实时视频流中进行分析与判断的界面录屏",
+            },
           },
           {
             kicker: "MEMORY",
@@ -382,8 +395,8 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
         "lookx-generative-ai": [
           {
             kicker: "WHY",
-            title: "AI Products Should Respect the People They Serve",
-            summary: "For architects, AI should preserve design intent, deliver precise renderings, and make early design narration cheaper than endless trial-and-error.",
+            title: "An AI Product Built for Architects",
+            summary: "Architects need renderings that keep the structure of the input image, with less dice rolling, fewer failed attempts, and less parameter tuning.",
             visual: "lookx-context",
             layout: "statement",
             media: {
@@ -394,36 +407,36 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
           },
           {
             kicker: "RENDER MODE",
-            title: "Users Did Not Bring the Same Kind of Image",
-            summary: "Some uploaded sketches for inspiration, some used massing images to narrate an idea, and others brought detailed model snapshots for precise rendering. I organized these cases into input types, then used intent matching and ComfyUI workflow handlers to route each one to the right pipeline.",
+            title: "",
+            summary: "",
             visual: "lookx-render-mode",
             layout: "split",
           },
           {
             kicker: "AUTO TRAINING",
-            title: "Model Training Became One Natural Action",
-            summary: "LoRA training depends on parameters like learning rate, network dimension, and alpha, which shape style strength, generalization, and GPU cost. I moved those decisions into an automated pipeline so users could train from reference images without touching model terms.",
+            title: "",
+            summary: "",
             visual: "lookx-lora-training",
             layout: "split",
           },
           {
             kicker: "GENERATE SAME",
-            title: "Strong Results Became Reusable Starting Points",
-            summary: "A generated image carries more information than its prompt. Generate Same let users reuse the prompt, references, models, and LoRA combination behind shared plaza works, while also anchoring future exploration from their own previous results.",
+            title: "",
+            summary: "",
             visual: "lookx-generate-same",
             layout: "split",
           },
           {
             kicker: "TECH",
-            title: "Technical Depth Made the Tools Useful for Architects",
+            title: "",
             summary: "",
             visual: "lookx-tech-system",
             layout: "board",
           },
           {
             kicker: "RESULT",
-            title: "Growth Came From Architects Actually Using It",
-            summary: "LookX became one of the strongest architectural AI SaaS products in the global market. The AI wave created organic attention, but retention came from controlled rendering, low-friction workflows, and users sharing their results publicly.",
+            title: "Real Adoption by Architects Drove the Growth",
+            summary: "The AI wave brought attention, but sustained growth came from controllable rendering, accessible workflows, and users sharing their work organically.",
             visual: "lookx-market-result",
             layout: "metrics",
             media: {
@@ -434,7 +447,7 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
             metrics: [
               { value: "$30K", label: "MRR" },
               { value: "600K", label: "Registered users" },
-              { value: "$0", label: "Marketing budget" },
+              { value: "Zero marketing spend", label: "" },
             ],
           },
         ],
@@ -513,12 +526,16 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
             },
           },
           {
-            kicker: "CORE",
-            title: "A layered knowledge store supports field decisions",
-            summary: "The knowledge store is not an archive. It supports field decisions, handles out-of-scope events, reduces false alarms, and preserves progressive understanding.",
-            visual: "vision-system",
-            layout: "split",
-            chips: ["Knowledge store", "Context window", "Tool calls"],
+            kicker: "LIVE SYSTEM",
+            title: "A Vision Agent Reasoning Over a Live Video Stream",
+            summary: "",
+            visual: "vision-live-demo",
+            layout: "statement",
+            media: {
+              type: "video",
+              src: "/case-studies/vision-agent/vision-agent-live-demo.mp4",
+              alt: "Vision agent interface reasoning over a live video stream",
+            },
           },
           {
             kicker: "MEMORY",
@@ -669,7 +686,6 @@ const copy =
                     <div class="floor-deck floor-deck-synthetic-engine story-deck story-deck-floor-plan-reconstruction">
                       <div class="floor-deck-copy">
                         <h2>{floorPlanDeck.synthetic.title}</h2>
-                        <p>{floorPlanDeck.synthetic.summary}</p>
                       </div>
                       <div class="floor-synthetic-pipeline">
                         <figure class="floor-synthetic-source">
@@ -681,7 +697,24 @@ const copy =
                           <figcaption>
                             {locale === "zh"
                               ? "Xkool ABC 格式矢量数据"
-                              : "Vectorized data in Xkool ABC format"}
+                              : "Proprietary Vectorized Data"}
+                          </figcaption>
+                        </figure>
+                        <img
+                          class="floor-synthetic-arrow"
+                          src="/case-studies/floor-plan/synthetic-arrow.png"
+                          alt=""
+                          aria-hidden="true"
+                          decoding="async"
+                        />
+                        <figure class="floor-synthetic-middle">
+                          <img
+                            src="/case-studies/floor-plan/synthetic-middle.png"
+                            alt={locale === "zh" ? "户型矢量数据与前端几何结构的对应关系" : "Mapping between vectorized floor-plan data and frontend geometry"}
+                            decoding="async"
+                          />
+                          <figcaption>
+                            {locale === "zh" ? "前端属性改写" : "Frontend Attribute Editing"}
                           </figcaption>
                         </figure>
                         <img
@@ -700,6 +733,9 @@ const copy =
                             playsinline
                             preload="metadata"
                           ></video>
+                          <figcaption>
+                            {locale === "zh" ? "几何计算生成标注" : "Geometry-Derived Annotations"}
+                          </figcaption>
                         </figure>
                       </div>
                     </div>
@@ -720,7 +756,7 @@ const copy =
                       <div class="floor-segment-layout" aria-hidden="true">
                         <figure class="floor-segment-panel floor-segment-panel-left">
                           <img src="/case-studies/floor-plan/segment-left.png" alt="" decoding="async" />
-                          <figcaption>{locale === "zh" ? "7 万张像素级精确标注" : "70k pixel-perfect annotations"}</figcaption>
+                          <figcaption>{locale === "zh" ? "矢量户型与像素标注成对生成" : "Paired layout and pixel-level label"}</figcaption>
                         </figure>
                         <figure class="floor-segment-panel floor-segment-panel-right">
                           <img src="/case-studies/floor-plan/segment-right.png" alt="" decoding="async" />
@@ -745,30 +781,38 @@ const copy =
                     inert
                   >
                     <div class="floor-deck floor-deck-room-optimization story-deck story-deck-floor-plan-reconstruction">
-                      <div class="floor-deck-copy">
-                        <h2>{floorPlanDeck.roomOptimization.title}</h2>
-                      </div>
-                      <div class="floor-room-op-layout" aria-hidden="true">
-                        <figure class="floor-room-op-card">
-                          <img src="/case-studies/floor-plan/room-op-1.png" alt="" decoding="async" />
-                          <figcaption>{locale === "zh" ? "分割是像素级预测，缺少空间结构信息" : "Segmentation is pixel-level prediction without spatial information."}</figcaption>
-                        </figure>
-                        <figure class="floor-room-op-card">
-                          <img src="/case-studies/floor-plan/room-op-2.png" alt="" decoding="async" />
-                          <figcaption>{locale === "zh" ? "锯齿轮廓会让房间多边形变得复杂" : "Zigzag contours make room polygons unnecessarily complex."}</figcaption>
-                        </figure>
-                        <figure class="floor-room-op-card floor-room-op-card-final">
-                          <span class="floor-room-op-final-media">
-                            <img src="/case-studies/floor-plan/room-op-3.png" alt="" decoding="async" />
-                            <img
-                              class="floor-room-op-gif"
-                              src="/case-studies/floor-plan/room-boundary-optimization.gif"
-                              alt=""
-                              loading="eager"
-                            />
+                      <div class="floor-optimization-visual">
+                        <div class="floor-room-op-layout" aria-hidden="true">
+                          <figure class="floor-room-op-card">
+                            <img src="/case-studies/floor-plan/room-op-1.png" alt="" decoding="async" />
+                            <figcaption>{locale === "zh" ? "锯齿轮廓" : "Zigzag Contours"}</figcaption>
+                          </figure>
+                          <figure class="floor-room-op-card">
+                            <img src="/case-studies/floor-plan/room-op-2.png" alt="" decoding="async" />
+                            <figcaption>{locale === "zh" ? "真实房间几何仍不清晰" : "Design Geometry Still Unclear"}</figcaption>
+                          </figure>
+                          <figure class="floor-room-op-card floor-room-op-card-final">
+                            <span class="floor-room-op-final-media">
+                              <img src="/case-studies/floor-plan/room-op-3.png" alt="" decoding="async" />
+                              <img
+                                class="floor-room-op-gif"
+                                src="/case-studies/floor-plan/room-boundary-optimization.gif"
+                                alt=""
+                                loading="eager"
+                              />
+                            </span>
+                            <figcaption>{locale === "zh" ? "干净稳定的房间多边形" : "Clean, Stable Room Polygons"}</figcaption>
+                          </figure>
+                        </div>
+                        <p class="lookx-feature-statement floor-optimization-statement">
+                          <span class="lookx-feature-lead">
+                            {locale === "zh" ? "房间几何优化" : "Room geometry optimization"}
                           </span>
-                          <figcaption>{locale === "zh" ? "通过删除与合并顶点，让图结构收敛为稳定房间多边形" : "Remove and merge vertices until the room polygon graph stabilizes."}</figcaption>
-                        </figure>
+                          <span aria-hidden="true"> — </span>
+                          {locale === "zh"
+                            ? "简化轮廓、稳定顶点、正交化边界。"
+                            : "Simplify contours, stabilize vertices, and orthogonalize boundaries."}
+                        </p>
                       </div>
                     </div>
                   </section>
@@ -782,31 +826,55 @@ const copy =
                     inert
                   >
                     <div class="floor-deck floor-deck-wallcenter-optimization story-deck story-deck-floor-plan-reconstruction">
-                      <div class="floor-deck-copy">
-                        <h2>{floorPlanDeck.wallCenterOptimization.title}</h2>
-                      </div>
-                      <div class="floor-room-op-layout floor-wallcenter-op-layout" aria-hidden="true">
-                        <figure class="floor-room-op-card">
-                          <img src="/case-studies/floor-plan/wallcenter-op-1.png" alt="" decoding="async" />
-                          <figcaption>{locale === "zh" ? "墙体不应停留为不规则填充多边形" : "Walls should become centerlines, not irregular filled polygons."}</figcaption>
-                        </figure>
-                        <figure class="floor-room-op-card">
-                          <img src="/case-studies/floor-plan/wallcenter-op-2.png" alt="" decoding="async" />
-                          <figcaption>{locale === "zh" ? "矢量户型以墙段组织房间并挂接构件" : "Vector layouts use wall segments to bound rooms and anchor components."}</figcaption>
-                        </figure>
-                        <figure class="floor-room-op-card floor-room-op-card-final floor-wallcenter-op-card-final">
-                          <span class="floor-room-op-final-media">
-                            <img src="/case-studies/floor-plan/wallcenter-op-3.png" alt="" decoding="async" />
-                            <img
-                              class="floor-room-op-gif floor-wallcenter-op-gif"
-                              src="/case-studies/floor-plan/full-layout-optimization-transparent.gif"
-                              alt=""
-                              loading="eager"
-                            />
+                      <div class="floor-optimization-visual">
+                        <div class="floor-room-op-layout floor-wallcenter-op-layout" aria-hidden="true">
+                          <figure class="floor-room-op-card">
+                            <img src="/case-studies/floor-plan/wallcenter-op-1.png" alt="" decoding="async" />
+                            <figcaption>{locale === "zh" ? "提取墙体中心线" : "Extract Wall Centerlines"}</figcaption>
+                          </figure>
+                          <figure class="floor-room-op-card">
+                            <img src="/case-studies/floor-plan/wallcenter-op-2.png" alt="" decoding="async" />
+                            <figcaption>{locale === "zh" ? "从图结构到虚拟空间" : "From Graph to Virtual Space"}</figcaption>
+                          </figure>
+                          <figure class="floor-room-op-card floor-room-op-card-final floor-wallcenter-op-card-final">
+                            <span class="floor-room-op-final-media">
+                              <img src="/case-studies/floor-plan/wallcenter-op-3.png" alt="" decoding="async" />
+                              <img
+                                class="floor-room-op-gif floor-wallcenter-op-gif"
+                                src="/case-studies/floor-plan/full-layout-optimization-transparent.gif"
+                                alt=""
+                                loading="eager"
+                              />
+                            </span>
+                            <figcaption>{locale === "zh" ? "门窗构件完成重建" : "Doors and Windows Reconstructed"}</figcaption>
+                          </figure>
+                        </div>
+                        <p class="lookx-feature-statement floor-optimization-statement">
+                          <span class="lookx-feature-lead">
+                            {locale === "zh" ? "空间骨架提取" : "Spatial skeleton extraction"}
                           </span>
-                          <figcaption>{locale === "zh" ? "结合比例与墙宽计算，图像才能变成完整设计数据" : "Scale and wall-width estimation turn the layout image into design data."}</figcaption>
-                        </figure>
+                          <span aria-hidden="true"> — </span>
+                          {locale === "zh"
+                            ? "移动、精简并合并图结构，得到墙体中心线。"
+                            : "Move, reduce, and merge graph elements into wall centerlines."}
+                        </p>
                       </div>
+                    </div>
+                  </section>
+
+                  <section
+                    class="viewer-episode"
+                    data-viewer-episode
+                    data-episode-title={locale === "zh" ? "IFC 交互模型" : "Interactive IFC"}
+                    data-episode-summary={floorPlanDeck.ifcViewer.summary}
+                    aria-hidden="true"
+                    inert
+                  >
+                    <div class="floor-deck floor-deck-ifc-viewer story-deck story-deck-floor-plan-reconstruction">
+                      <div class="floor-deck-copy">
+                        <h2>{floorPlanDeck.ifcViewer.title}</h2>
+                      </div>
+                      <FloorplanIfcViewer locale={locale} />
                     </div>
                   </section>
 
@@ -825,17 +893,19 @@ const copy =
                       <div
                         class={`floor-deck story-deck story-deck-${project.data.slug} story-visual-${slide.visual} story-layout-${resolveStoryLayout(slide, slideIndex)}`}
                       >
-                        <div class="floor-deck-copy">
-                          <h2>{slide.title}</h2>
-                          <p>{slide.summary}</p>
-                          {slide.points ? (
-                            <ul class="story-points">
-                              {slide.points.map((point) => (
-                                <li>{point}</li>
-                              ))}
-                            </ul>
-                          ) : null}
-                        </div>
+                        {slide.title || slide.summary || slide.points ? (
+                          <div class="floor-deck-copy">
+                            {slide.title ? <h2>{slide.title}</h2> : null}
+                            {slide.summary ? <p>{slide.summary}</p> : null}
+                            {slide.points ? (
+                              <ul class="story-points">
+                                {slide.points.map((point) => (
+                                  <li>{point}</li>
+                                ))}
+                              </ul>
+                            ) : null}
+                          </div>
+                        ) : null}
                         {slide.visual === "lookx-tech-system" ? (
                           <figure class="lookx-tech-visual" aria-label="LookX model training, workflow development, and prompt routing system">
                             <div class="lookx-tech-panel lookx-tech-base">
@@ -915,25 +985,18 @@ const copy =
                           <figure class="lookx-pipeline-visual" aria-label="Three architectural design stages routed into tailored generation pipelines">
                             <img
                               class="lookx-pipeline-image"
-                              src="/case-studies/lookx/lookx-rendering-v3.png"
+                              src="/case-studies/lookx/lookx-rendering-v4.png"
                               alt=""
                               decoding="async"
                             />
-                            <figcaption class="lookx-pipeline-caption-row">
-                              <p class="lookx-pipeline-caption lookx-pipeline-caption-stages">
-                                {locale === "zh" ? (
-                                  <>建筑设计流程的<br />三个核心阶段</>
-                                ) : (
-                                  <>3 core stages of<br />architectural design process</>
-                                )}
-                              </p>
-                              <p class="lookx-pipeline-caption lookx-pipeline-caption-render">
-                                {locale === "zh" ? (
-                                  <>3 条定制生成管线<br />确保生产级建筑渲染质量</>
-                                ) : (
-                                  <>3 tailored generation pipelines<br />Ensuring production-quality architectural rendering</>
-                                )}
-                              </p>
+                            <figcaption class="lookx-feature-statement">
+                              <span class="lookx-feature-lead">
+                                {locale === "zh" ? "一键渲染" : "One-click rendering"}
+                              </span>
+                              <span aria-hidden="true"> — </span>
+                              {locale === "zh"
+                                ? "让 AI 适应建筑设计的每个阶段。"
+                                : "AI that adapts to each stage of architectural design."}
                             </figcaption>
                           </figure>
                         ) : null}
@@ -945,21 +1008,14 @@ const copy =
                               alt=""
                               decoding="async"
                             />
-                            <figcaption class="lookx-lora-caption-row">
-                              <p class="lookx-lora-caption lookx-lora-caption-setup">
-                                {locale === "zh" ? (
-                                  <>上传图片，命名 LoRA<br />选择底模，即可训练</>
-                                ) : (
-                                  <>Upload images, name the LoRA<br />choose a base, and train</>
-                                )}
-                              </p>
-                              <p class="lookx-lora-caption lookx-lora-caption-quality">
-                                {locale === "zh" ? (
-                                  <>可迁移、有表达力、易融合的 LoRA<br />为建筑图像定制</>
-                                ) : (
-                                  <>Transferable, expressive, easy-fusion LoRAs<br />tailored for architectural images</>
-                                )}
-                              </p>
+                            <figcaption class="lookx-feature-statement">
+                              <span class="lookx-feature-lead">
+                                {locale === "zh" ? "一键训练" : "One-click training"}
+                              </span>
+                              <span aria-hidden="true"> — </span>
+                              {locale === "zh"
+                                ? "上传参考图，LoRA 配置与训练交给 LookX。"
+                                : "Upload reference images. LookX handles LoRA setup and training."}
                             </figcaption>
                           </figure>
                         ) : null}
@@ -971,21 +1027,14 @@ const copy =
                               alt=""
                               decoding="async"
                             />
-                            <figcaption class="lookx-same-caption-row">
-                              <p class="lookx-same-caption lookx-same-caption-recreate">
-                                {locale === "zh" ? (
-                                  <>生成同款可以<br />精确复刻一张作品</>
-                                ) : (
-                                  <>Generate-the-same feature allows<br />user to precisely recreate a work</>
-                                )}
-                              </p>
-                              <p class="lookx-same-caption lookx-same-caption-community">
-                                {locale === "zh" ? (
-                                  <>创作广场的共享参数包<br />让社区成为可复用工作流来源</>
-                                ) : (
-                                  <>Shared parameter bundles in Creation Plaza turn the community into a<br />living source of reusable workflows</>
-                                )}
-                              </p>
+                            <figcaption class="lookx-feature-statement">
+                              <span class="lookx-feature-lead">
+                                {locale === "zh" ? "一键复刻" : "One-click recreation"}
+                              </span>
+                              <span aria-hidden="true"> — </span>
+                              {locale === "zh"
+                                ? "从一张成品出发，直接复用背后的整套生成参数。"
+                                : "Start from a finished work and reuse the complete generation setup behind it."}
                             </figcaption>
                           </figure>
                         ) : null}
@@ -1508,10 +1557,8 @@ const copy =
         editionCompany.textContent = project.timelineCompanyName;
         editionCompany.href = project.timelineCompanyHref;
       }
-      if (thumbnail instanceof HTMLCanvasElement) {
+      if (thumbnail instanceof HTMLElement) {
         thumbnail.dataset.viewerThumbnailSlug = project.slug;
-      } else if (thumbnail instanceof HTMLImageElement) {
-        thumbnail.src = project.pillThumb;
       }
       viewer.className = viewer.className.replace(/\baccent-\S+/g, "").replace(/\bproject-\S+/g, "");
       viewer.classList.add(`accent-${project.accent}`, `project-${project.slug}`);

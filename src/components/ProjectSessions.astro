@@ -30,14 +30,14 @@ const titleLinesBySlug: Record<string, string[]> =
   locale === "zh"
     ? {
         "floor-plan-reconstruction": ["户型图", "矢量重建"],
-        "robotic-video-intelligence": ["实时直播流", "视觉分析"],
+        "robotic-video-intelligence": ["机器人视觉", "分析平台"],
         "lookx-generative-ai": ["建筑模型", "AI渲染"],
         "multimodal-asset-search": ["多模态", "图片检索"],
         "vision-agent": ["实时视觉", "Agent"],
       }
     : {
         "floor-plan-reconstruction": ["Raster-to-Vector", "Floor Plans"],
-        "robotic-video-intelligence": ["Robotic Video", "Intelligence"],
+        "robotic-video-intelligence": ["Video Intelligence", "Platform"],
         "lookx-generative-ai": ["Architectural", "AI Rendering"],
         "multimodal-asset-search": ["Multimodal", "Image Search"],
         "vision-agent": ["Realtime", "Visual Agent"],
@@ -56,6 +56,12 @@ const copy =
         next: "Next project",
         watch: "Watch the story",
       };
+
+const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
+  const lines = titleLinesBySlug[project.data.slug];
+  if (!lines) return project.data.sessionTitle;
+  return locale === "zh" ? lines.join("") : lines.join(" ");
+};
 ---
 
 <div class="sessions-view is-hydrating" data-sessions-view tabindex="0" aria-label={copy.title}>
@@ -126,7 +132,7 @@ const copy =
             aria-hidden={index === 0 ? "false" : "true"}
             inert={index === 0 ? undefined : true}
           >
-            <h1 aria-label={project.data.sessionTitle}>
+            <h1 aria-label={sessionTitleLabel(project)}>
               {(titleLinesBySlug[project.data.slug] ?? [project.data.sessionTitle]).map((line) => (
                 <span>{line}</span>
               ))}
