@@ -249,9 +249,9 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
         ],
         "robotic-video-intelligence": [
           {
-            kicker: "LookX · Architectural AI SaaS",
-            title: "视觉模型的难题常发生在部署后",
-            summary: "模型在实验室里看似稳定，到了客户现场却会遇到新场景、新链路和缺少证据的问题，导致“为什么没检测出来”很难回答。",
+            kicker: "Video Intelligence Platform",
+            title: "面向视觉 AI 团队的统一平台",
+            summary: "产品、算法、测试与现场团队围绕同一份视频证据协作，更快定位问题，缩小实验室结果与现场部署之间的差距。",
             visual: "video-frontpage",
             layout: "statement",
             media: {
@@ -262,14 +262,14 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
           },
           {
             kicker: "PROBLEM",
-            title: "同一个模型，现场结果可能完全不同",
-            summary: "机器人视觉项目里，实验室效果和客户现场效果之间常有落差。光照、视角、设备、数据链路和场景背景都会改变模型真正面对的问题。",
+            title: "实验室表现，不等于现场表现",
+            summary: "",
             visual: "video-problem",
             layout: "statement",
           },
           {
             kicker: "SYSTEM",
-            title: "视频分析引擎背后的系统架构",
+            title: "",
             summary: "",
             visual: "video-system-architecture",
             layout: "statement",
@@ -299,8 +299,8 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
         "vision-agent": [
           {
             kicker: "WHY",
-            title: "用 VLM 为传统 CV 任务补上上下文",
-            summary: "这是一个面向视觉任务的 Agent harness：让检测模型不只输出框，而能结合记忆、工具和任务规范理解现场发生了什么。",
+            title: "面向视觉巡检的智能体系统",
+            summary: "传统 CV 很快，但能力边界固定：它无法识别预设类别之外的事件，也难以判断误报。VLM 驱动的智能体补上了这层上下文。",
             visual: "vision-frontpage",
             layout: "statement",
             media: {
@@ -311,19 +311,19 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
           },
           {
             kicker: "CHOICE",
-            title: "系统需要常识推理，也需要记住事情",
+            title: "VLM 提供常识，记忆系统补充历史上下文",
             summary: "",
             visual: "vision-common-sense",
             layout: "statement",
             media: {
               type: "image",
-              src: "/case-studies/vision-agent/common-sense-memory.gif",
+              src: "/case-studies/vision-agent/vlm-memory-static.png",
               alt: "视觉智能体常识推理与记忆示意",
             },
           },
           {
             kicker: "LIVE SYSTEM",
-            title: "视觉智能体在实时视频流中持续判断",
+            title: "系统实时演示",
             summary: "",
             visual: "vision-live-demo",
             layout: "statement",
@@ -335,8 +335,8 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
           },
           {
             kicker: "MEMORY",
-            title: "Feature dump 为长期记忆收集结构化事实",
-            summary: "不是所有视觉信息都值得昂贵地持久化。系统需要先收集便宜、稳定、可检索的结构化线索，再决定哪些事实进入长期记忆。",
+            title: "系统先把低成本视觉信号整理成结构化事实，再写入长期记忆",
+            summary: "",
             visual: "vision-feature-dump",
             layout: "statement",
           },
@@ -454,8 +454,8 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
         "robotic-video-intelligence": [
           {
             kicker: "WHY",
-            title: "Vision model failures often appear after deployment",
-            summary: "A model can look stable in the lab and still fail at a customer site because scenes, pipelines, and evidence workflows all change.",
+            title: "A Shared Platform for Vision AI Teams",
+            summary: "Product, algorithm, QA, and field teams work from the same video evidence to diagnose issues faster and close the gap between lab results and deployment.",
             visual: "video-frontpage",
             layout: "statement",
             media: {
@@ -466,14 +466,14 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
           },
           {
             kicker: "PROBLEM",
-            title: "The same model can behave differently in the field",
-            summary: "Robotics vision often breaks between lab tests and customer sites. Lighting, viewpoint, hardware, data pipelines, and scene context all change what the model actually sees.",
+            title: "Lab Results Do Not Equal Field Results",
+            summary: "",
             visual: "video-problem",
             layout: "statement",
           },
           {
             kicker: "SYSTEM",
-            title: "The system architecture behind the video analysis engine",
+            title: "",
             summary: "",
             visual: "video-system-architecture",
             layout: "statement",
@@ -503,8 +503,8 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
         "vision-agent": [
           {
             kicker: "WHY",
-            title: "A harness system that complements CV tasks with VLM reasoning",
-            summary: "This project explores a visual-agent harness: detection models still do the perception work, while VLM reasoning, memory, tools, and task specs add context around what the system sees.",
+            title: "Vision Agent System for Inspection",
+            summary: "Traditional CV is fast but rigid: it cannot recognize events beyond predefined classes or reason about false alarms. A VLM-powered agent supplies the missing context.",
             visual: "vision-frontpage",
             layout: "statement",
             media: {
@@ -515,19 +515,19 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
           },
           {
             kicker: "CHOICE",
-            title: "The system needs common-sense reasoning and memory",
+            title: "VLM for Common Sense. Memory for Historical Context.",
             summary: "",
             visual: "vision-common-sense",
             layout: "statement",
             media: {
               type: "image",
-              src: "/case-studies/vision-agent/common-sense-memory.gif",
+              src: "/case-studies/vision-agent/vlm-memory-static.png",
               alt: "Vision agent common-sense reasoning and memory concept",
             },
           },
           {
             kicker: "LIVE SYSTEM",
-            title: "A Vision Agent Reasoning Over a Live Video Stream",
+            title: "System Live Demo",
             summary: "",
             visual: "vision-live-demo",
             layout: "statement",
@@ -539,8 +539,8 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
           },
           {
             kicker: "MEMORY",
-            title: "Feature dumps collect cheap structure for long-term memory",
-            summary: "Not every visual signal should be persisted expensively. The system first gathers cheap, stable, searchable facts, then decides what deserves long-term memory.",
+            title: "The system structures low-cost visual signals before committing them to long-term memory",
+            summary: "",
             visual: "vision-feature-dump",
             layout: "statement",
           },
@@ -985,7 +985,11 @@ const copy =
                           <figure class="lookx-pipeline-visual" aria-label="Three architectural design stages routed into tailored generation pipelines">
                             <img
                               class="lookx-pipeline-image"
-                              src="/case-studies/lookx/lookx-rendering-v4.png"
+                              src={
+                                locale === "zh"
+                                  ? "/case-studies/lookx/lookx-rendering-cn.png"
+                                  : "/case-studies/lookx/lookx-rendering-v4.png"
+                              }
                               alt=""
                               decoding="async"
                             />
@@ -1042,17 +1046,31 @@ const copy =
                           <div class="video-problem-visual" aria-label="Comparison between lab and field model inference results">
                             <figure>
                               <img src="/case-studies/video-intelligence/problem-left.png" alt="" decoding="async" />
-                              <figcaption>{locale === "zh" ? "室内结果" : "Result at home"}</figcaption>
+                              <figcaption>{locale === "zh" ? "实验室结果" : "Lab Result"}</figcaption>
                             </figure>
                             <figure>
                               <img src="/case-studies/video-intelligence/problem-right.png" alt="" decoding="async" />
-                              <figcaption>{locale === "zh" ? "现场结果" : "Result in field"}</figcaption>
+                              <figcaption>{locale === "zh" ? "现场结果" : "Field Result"}</figcaption>
                             </figure>
                           </div>
                         ) : null}
                         {slide.visual === "video-system-architecture" ? (
                           <figure class="video-system-architecture-visual" aria-label={locale === "zh" ? "视频分析引擎系统架构图" : "System architecture diagram for the video analysis engine"}>
                             <img src="/case-studies/video-intelligence/system-architecture.png" alt="" decoding="async" />
+                            <figcaption class="video-system-proof">
+                              <p class="video-system-statement">
+                                <span>{locale === "zh" ? "视频分析引擎" : "Video analysis engine"}</span>
+                                <span aria-hidden="true"> — </span>
+                                {locale === "zh"
+                                  ? "实时流保持响应，离线任务跑满推理吞吐。"
+                                  : "Live streams stay responsive while offline jobs run at full inference throughput."}
+                              </p>
+                              <div class="video-system-highlights">
+                                <div><strong>5 → 40 FPS</strong><span>{locale === "zh" ? "单 GPU 查询吞吐" : "Single-GPU query throughput"}</span></div>
+                                <div><strong>Non-blocking</strong><span>{locale === "zh" ? "具备背压控制的实时管线" : "Backpressure-safe realtime pipeline"}</span></div>
+                                <div><strong>120 FPS</strong><span>{locale === "zh" ? "离线推理与检测日志回放" : "Offline inference and detection-log replay"}</span></div>
+                              </div>
+                            </figcaption>
                           </figure>
                         ) : null}
                         {slide.visual === "video-product-workflow" ? (
@@ -1184,67 +1202,12 @@ const copy =
                         ) : null}
                         {slide.visual === "vision-feature-dump" ? (
                           <div class="vision-feature-dump-visual" aria-label={locale === "zh" ? "Feature dump memory structure" : "Feature dump memory structure"}>
-                            <figure class="vision-feature-image">
-                              <img src="/case-studies/vision-agent/feature-dump.png" alt="" decoding="async" />
+                            <figure class="vision-feature-image vision-feature-image-stream">
+                              <img src="/case-studies/vision-agent/feature-dump-stream.png" alt="" decoding="async" />
                             </figure>
-                            <div class="vision-feature-list">
-                              {[
-                                {
-                                  label: "Events",
-                                  image: "/case-studies/vision-agent/feature-line-1.png",
-                                  text:
-                                    locale === "zh"
-                                      ? "用户关心的领域事件"
-                                      : "Domain-meaningful occurrences user cares about",
-                                  sub:
-                                    locale === "zh"
-                                      ? "e.g. 00:03–00:05 之间发现违停车辆"
-                                      : "e.g. illegal parking vehicle found between 00:03 ~ 00:05 seconds",
-                                },
-                                {
-                                  label: "Detections",
-                                  image: "/case-studies/vision-agent/feature-line-2.png",
-                                  text:
-                                    locale === "zh"
-                                      ? "来自 CV 模型的逐帧 bbox 快照"
-                                      : "Raw per-frame bbox snapshots from CV models",
-                                  sub:
-                                    locale === "zh"
-                                      ? 'e.g. [{"x1":643.125, "y1":529.5, "class_name":"car", "conf":0.9404, "track_id":52}, ...]'
-                                      : 'e.g. [{"x1":643.125, "y1":529.5, "class_name":"car", "conf":0.9404, "track_id":52}, ...]',
-                                },
-                                {
-                                  label: "Memory",
-                                  image: "/case-studies/vision-agent/feature-line-3.png",
-                                  text:
-                                    locale === "zh"
-                                      ? "主动 VLM/LMM 操作产生的行动事实"
-                                      : "Active VLM/LMM operation action facts",
-                                  sub:
-                                    locale === "zh"
-                                      ? '{"summary_id":"sum_27_t300", "t_start":2.0, "content":"Highway section G2km34–35..."}'
-                                      : '{"summary_id":"sum_27_t300", "t_start":2.0, "content":"Highway section G2km34–35..."}',
-                                },
-                                {
-                                  label: "History",
-                                  image: "/case-studies/vision-agent/feature-line-4.png",
-                                  text:
-                                    locale === "zh"
-                                      ? "历史判断原因与任务相关事实"
-                                      : "History verdict reasons and task-specific facts",
-                                  sub:
-                                    locale === "zh"
-                                      ? 'e.g. record_id="a3f7c912", reason="low-angle morning sun shadow"'
-                                      : 'e.g. record_id="a3f7c912", reason="shadow cast by overpass girder during low-angle morning sun"',
-                                },
-                              ].map((item, index) => (
-                                <section class="vision-feature-item">
-                                  <img src={item.image} alt={item.label} decoding="async" />
-                                  <h3>{item.text}</h3>
-                                  <p>{item.sub}</p>
-                                </section>
-                              ))}
-                            </div>
+                            <figure class="vision-feature-image vision-feature-image-memory">
+                              <img src="/case-studies/vision-agent/feature-dump-memory.png" alt="" decoding="async" />
+                            </figure>
                           </div>
                         ) : null}
                         {slide.visual === "vision-context-engineering" ? (

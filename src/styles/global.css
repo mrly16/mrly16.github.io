@@ -6432,7 +6432,7 @@ html[lang="zh-CN"] .floor-deck-wallcenter-optimization .floor-deck-copy h2 {
 }
 
 html[lang="zh-CN"] .floor-deck-synthetic-engine .floor-deck-copy {
-  max-width: min(100%, 900px);
+  max-width: min(100%, 1080px);
 }
 
 html[lang="zh-CN"] .floor-deck-synthetic-engine .floor-deck-copy h2 {
@@ -6528,7 +6528,8 @@ html[lang="zh-CN"] .floor-room-op-card-final figcaption {
   grid-column: 1 / -1;
   justify-self: center;
   align-self: stretch;
-  max-width: min(100%, 980px);
+  width: min(112%, 1040px);
+  max-width: none;
   height: 100%;
   max-height: 128px;
 }
@@ -7363,8 +7364,9 @@ html[lang="zh-CN"] .video-fusion-note span {
 }
 
 .story-deck-vision-agent.story-visual-vision-feature-dump {
-  grid-template-columns: minmax(190px, 0.68fr) minmax(300px, 1fr) minmax(320px, 1.1fr);
-  gap: clamp(0.85rem, 1.7vw, 1.55rem);
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: min-content minmax(0, 1fr);
+  gap: clamp(0.9rem, 1.8vw, 1.5rem);
   padding: clamp(1rem, 2.5vw, 2.2rem);
   background: #050505;
 }
@@ -7443,9 +7445,10 @@ html[lang="zh-CN"] .story-deck-vision-agent.story-visual-vision-frontpage .floor
 }
 
 .story-deck-vision-agent.story-visual-vision-feature-dump .floor-deck-copy {
-  align-self: center;
-  justify-self: stretch;
-  max-width: min(100%, 440px);
+  align-self: start;
+  justify-self: center;
+  width: min(88%, 980px);
+  max-width: none;
 }
 
 .story-deck-vision-agent.story-visual-vision-context-engineering .floor-deck-copy {
@@ -7460,8 +7463,8 @@ html[lang="zh-CN"] .story-deck-vision-agent.story-visual-vision-frontpage .floor
 }
 
 .story-deck-vision-agent.story-visual-vision-feature-dump .floor-deck-copy h2 {
-  max-width: 10em;
-  font-size: clamp(1.28rem, 2.05vw, 2.24rem);
+  max-width: none;
+  font-size: var(--deck-title-compact);
   line-height: 1.08;
   color: rgba(246, 242, 232, 0.96);
 }
@@ -7482,10 +7485,7 @@ html[lang="zh-CN"] .story-deck-vision-agent.story-visual-vision-frontpage .floor
 }
 
 .story-deck-vision-agent.story-visual-vision-feature-dump .floor-deck-copy p {
-  max-width: 30ch;
-  margin-top: clamp(0.34rem, 0.75vw, 0.62rem);
-  color: rgba(246, 242, 232, 0.64);
-  font-size: clamp(0.72rem, 0.86vw, 0.9rem);
+  display: none;
 }
 
 html[lang="zh-CN"] .story-deck-vision-agent.story-visual-vision-common-sense .floor-deck-copy h2 {
@@ -7494,8 +7494,8 @@ html[lang="zh-CN"] .story-deck-vision-agent.story-visual-vision-common-sense .fl
 }
 
 html[lang="zh-CN"] .story-deck-vision-agent.story-visual-vision-feature-dump .floor-deck-copy h2 {
-  max-width: 9em;
-  font-size: clamp(1.18rem, 1.82vw, 1.95rem);
+  max-width: none;
+  font-size: var(--deck-title-compact);
   line-height: 1.12;
 }
 
@@ -7511,8 +7511,8 @@ html[lang="zh-CN"] .story-deck-vision-agent.story-visual-vision-feature-dump .fl
 .story-deck-vision-agent.story-visual-vision-common-sense .story-cover-asset {
   align-self: center;
   justify-self: center;
-  width: min(84%, 880px);
-  max-height: min(50vh, 380px);
+  width: min(78%, 820px);
+  max-height: min(46vh, 350px);
   overflow: visible;
   border-radius: 0;
   background: transparent;
@@ -7523,9 +7523,9 @@ html[lang="zh-CN"] .story-deck-vision-agent.story-visual-vision-feature-dump .fl
   display: block;
   width: 100%;
   height: auto;
-  max-height: min(50vh, 380px);
+  max-height: min(46vh, 350px);
   object-fit: contain;
-  object-position: top center;
+  object-position: center;
 }
 
 .story-deck-vision-agent.story-visual-vision-frontpage .story-deck-stage,
@@ -7552,73 +7552,41 @@ html[lang="zh-CN"] .story-deck-vision-agent.story-visual-vision-feature-dump .fl
 }
 
 .vision-feature-dump-visual {
-  grid-column: 2 / 4;
+  grid-column: 1;
+  grid-row: 2;
   align-self: center;
   justify-self: center;
   display: grid;
-  grid-template-columns: minmax(250px, 0.95fr) minmax(290px, 0.9fr);
-  align-items: start;
-  gap: clamp(0.7rem, 1.25vw, 1.05rem);
-  width: min(100%, 860px);
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.08fr);
+  align-items: stretch;
+  gap: clamp(0.8rem, 1.5vw, 1.25rem);
+  width: min(88%, 980px);
+  height: min(52vh, 390px);
   min-width: 0;
 }
 
 .vision-feature-image {
+  position: relative;
   margin: 0;
   min-width: 0;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .vision-feature-image img {
   display: block;
   width: 100%;
-  max-height: min(62vh, 520px);
+  height: 100%;
+  max-height: none;
   object-fit: contain;
-  object-position: center;
 }
 
-.vision-feature-list {
-  display: grid;
-  gap: clamp(0.34rem, 0.62vw, 0.58rem);
-  min-width: 0;
-}
-
-.vision-feature-item {
-  display: grid;
-  gap: clamp(0.16rem, 0.32vw, 0.28rem);
-  min-width: 0;
-}
-
-.vision-feature-item > img {
-  display: block;
-  width: auto;
-  height: clamp(1.22rem, 1.72vw, 1.62rem);
-  max-width: min(52%, 190px);
-  object-fit: contain;
+.vision-feature-image-stream img {
   object-position: left center;
 }
 
-.vision-feature-item h3 {
-  margin: 0;
-  color: rgba(246, 242, 232, 0.84);
-  font: 600 clamp(0.62rem, 0.82vw, 0.84rem) / 1.08 var(--display);
-  letter-spacing: normal;
-}
-
-.vision-feature-item p {
-  margin: 0;
-  color: rgba(246, 242, 232, 0.48);
-  font: 300 clamp(0.5rem, 0.64vw, 0.66rem) / 1.18 var(--display);
-  letter-spacing: normal;
-  overflow-wrap: anywhere;
-}
-
-html[lang="zh-CN"] .vision-feature-item h3 {
-  font-weight: 520;
-  line-height: 1.24;
-}
-
-html[lang="zh-CN"] .vision-feature-item p {
-  line-height: 1.42;
+.vision-feature-image-memory img {
+  object-position: right center;
 }
 
 .vision-context-engineering-visual {
@@ -8041,49 +8009,36 @@ html[lang="zh-CN"] .video-problem-visual figcaption {
   font-size: clamp(0.62rem, 1vw, 0.9rem);
 }
 
-/* Vision Agent feature dump stays information-dense; reduce intimidation with smaller panels. */
+/* Vision Agent feature dump: one statement, then stream and memory as equal visual evidence. */
 .story-visual-vision-feature-dump {
-  grid-template-columns: minmax(180px, 0.62fr) minmax(520px, 1.38fr);
-  gap: clamp(1rem, 2vw, 1.8rem);
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: min-content minmax(0, 1fr);
+  gap: clamp(0.9rem, 1.8vw, 1.5rem);
   padding: var(--deck-safe-y) var(--deck-safe-x);
 }
 
 .story-visual-vision-feature-dump .floor-deck-copy {
-  max-width: 20rem;
+  width: min(88%, 980px);
+  max-width: none;
 }
 
 .story-visual-vision-feature-dump .floor-deck-copy h2 {
-  max-width: 10.5em;
-  font-size: var(--deck-title);
+  max-width: none;
+  font-size: var(--deck-title-compact);
 }
 
 .story-visual-vision-feature-dump .floor-deck-copy p {
-  max-width: 26ch;
+  display: none;
 }
 
 .vision-feature-dump-visual {
-  grid-column: auto;
-  width: min(100%, 760px);
-  grid-template-columns: minmax(250px, 0.95fr) minmax(250px, 0.82fr);
-  gap: clamp(0.75rem, 1.4vw, 1.15rem);
+  width: min(88%, 980px);
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.08fr);
+  gap: clamp(0.8rem, 1.5vw, 1.25rem);
 }
 
 .vision-feature-image img {
-  max-height: min(52vh, 430px);
-}
-
-.vision-feature-item > img {
-  height: clamp(1.05rem, 1.38vw, 1.34rem);
-}
-
-.vision-feature-item h3 {
-  font-size: clamp(0.58rem, 0.72vw, 0.76rem);
-  font-weight: 540;
-}
-
-.vision-feature-item p {
-  font-size: clamp(0.46rem, 0.56vw, 0.6rem);
-  line-height: 1.28;
+  max-height: none;
 }
 
 /* Floorplan process pages: same technical rhythm, less crowded. */
@@ -8212,8 +8167,8 @@ html[lang="zh-CN"] .video-problem-visual figcaption {
 /* Vision Agent: live system recording */
 .story-deck-vision-agent.story-visual-vision-live-demo {
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto minmax(0, 1fr);
-  gap: clamp(0.7rem, 1.25vw, 1.05rem);
+  grid-template-rows: min-content minmax(0, 1fr);
+  gap: clamp(1rem, 1.7vw, 1.4rem);
   padding: var(--deck-safe-y) var(--deck-safe-x);
   background: #050505;
 }
@@ -8221,13 +8176,14 @@ html[lang="zh-CN"] .video-problem-visual figcaption {
 .story-deck-vision-agent.story-visual-vision-live-demo .floor-deck-copy {
   grid-column: 1;
   grid-row: 1;
-  width: min(90%, 1080px);
+  width: min(86%, 960px);
   margin-inline: auto;
 }
 
 .story-deck-vision-agent.story-visual-vision-live-demo .floor-deck-copy h2 {
   max-width: none;
   font-size: var(--deck-title);
+  white-space: nowrap;
 }
 
 .story-deck-vision-agent.story-visual-vision-live-demo .floor-deck-copy p {
@@ -8239,9 +8195,10 @@ html[lang="zh-CN"] .video-problem-visual figcaption {
   grid-row: 2;
   align-self: center;
   justify-self: center;
-  width: min(80%, 940px);
+  position: relative;
+  width: min(86%, 960px);
   max-width: none;
-  height: auto;
+  max-height: 100%;
   aspect-ratio: 94 / 45;
   overflow: hidden;
   border: 1px solid rgba(239, 237, 226, 0.16);
@@ -8251,9 +8208,12 @@ html[lang="zh-CN"] .video-problem-visual figcaption {
 }
 
 .story-deck-vision-agent.story-visual-vision-live-demo .story-cover-asset video {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
+  max-height: none;
   object-fit: contain;
 }
 
@@ -8267,12 +8227,16 @@ html[lang="zh-CN"] .video-problem-visual figcaption {
 
 @media (max-height: 780px) and (min-width: 901px) {
   .story-deck-vision-agent.story-visual-vision-live-demo {
-    gap: 0.55rem;
+    gap: 0.75rem;
     padding-block: 0.85rem;
   }
 
   .story-deck-vision-agent.story-visual-vision-live-demo .story-cover-asset {
-    width: min(76%, 840px);
+    width: min(88%, 880px);
+  }
+
+  .story-deck-vision-agent.story-visual-vision-live-demo .floor-deck-copy {
+    width: min(88%, 880px);
   }
 }
 
@@ -9246,6 +9210,58 @@ html[lang="zh-CN"] .floor-deck-context.story-deck-floor-plan-reconstruction .flo
   transform: none;
 }
 
+/* Vision Agent cover follows the same compact narrative hierarchy. */
+.story-deck-vision-agent.story-visual-vision-frontpage {
+  grid-template-columns: minmax(280px, 350px) minmax(0, 570px);
+  justify-content: center;
+  column-gap: clamp(1.5rem, 2.4vw, 2.5rem);
+  align-items: center;
+  padding: var(--deck-safe-y) var(--deck-safe-x);
+}
+
+.story-deck-vision-agent.story-visual-vision-frontpage .floor-deck-copy {
+  width: min(100%, 34ch);
+  max-width: 34ch;
+}
+
+.story-deck-vision-agent.story-visual-vision-frontpage .floor-deck-copy h2,
+html[lang="zh-CN"] .story-deck-vision-agent.story-visual-vision-frontpage .floor-deck-copy h2 {
+  max-width: none;
+  color: var(--deck-ink);
+  font-size: var(--deck-title-hero);
+  font-weight: 560;
+  letter-spacing: normal;
+  line-height: 1.1;
+}
+
+.story-deck-vision-agent.story-visual-vision-frontpage .floor-deck-copy p,
+html[lang="zh-CN"] .story-deck-vision-agent.story-visual-vision-frontpage .floor-deck-copy p {
+  max-width: 42ch;
+  color: var(--deck-muted);
+  font-size: var(--deck-body);
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.story-deck-vision-agent.story-visual-vision-frontpage .story-cover-asset {
+  width: min(86%, 540px);
+}
+
+.story-deck-vision-agent.story-visual-vision-common-sense .floor-deck-copy {
+  width: min(100%, 1080px);
+  max-width: min(100%, 1080px);
+  justify-self: center;
+}
+
+.story-deck-vision-agent.story-visual-vision-common-sense .floor-deck-copy h2,
+html[lang="zh-CN"] .story-deck-vision-agent.story-visual-vision-common-sense .floor-deck-copy h2 {
+  max-width: none;
+  font-size: var(--deck-title);
+  letter-spacing: normal;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
 /* LookX result slide: final override to neutralize older metric/card rules. */
 .story-deck-lookx-generative-ai.story-visual-lookx-market-result {
   --lookx-result-card: rgba(246, 242, 232, 0.055);
@@ -9423,5 +9439,147 @@ html[lang="zh-CN"] .story-deck-lookx-generative-ai.story-visual-lookx-market-res
 
   .story-deck-lookx-generative-ai.story-visual-lookx-market-result .story-metrics div {
     display: block;
+  }
+}
+
+/* Video Intelligence: the lab/field contrast should read before any explanation. */
+.story-deck-robotic-video-intelligence.story-visual-video-problem {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: min-content minmax(0, 1fr);
+  gap: clamp(0.85rem, 1.45vw, 1.2rem);
+  padding: var(--deck-safe-y) var(--deck-safe-x);
+  background: #050505;
+}
+
+.story-deck-robotic-video-intelligence.story-visual-video-problem .floor-deck-copy {
+  grid-column: 1;
+  grid-row: 1;
+  width: min(84%, 900px);
+  max-width: none;
+  justify-self: center;
+}
+
+.story-deck-robotic-video-intelligence.story-visual-video-problem .floor-deck-copy h2,
+html[lang="zh-CN"] .story-deck-robotic-video-intelligence.story-visual-video-problem .floor-deck-copy h2 {
+  max-width: none;
+  margin: 0;
+  font-size: var(--deck-title);
+  line-height: var(--deck-title-line);
+  white-space: nowrap;
+}
+
+.story-deck-robotic-video-intelligence.story-visual-video-problem .floor-deck-copy p {
+  display: none;
+}
+
+.story-deck-robotic-video-intelligence.story-visual-video-problem .video-problem-visual {
+  grid-column: 1;
+  grid-row: 2;
+  align-self: center;
+  justify-self: center;
+  width: min(84%, 900px);
+  gap: clamp(1.1rem, 2vw, 1.8rem);
+}
+
+.story-deck-robotic-video-intelligence.story-visual-video-problem .video-problem-visual figure {
+  gap: clamp(0.58rem, 0.9vw, 0.78rem);
+}
+
+.story-deck-robotic-video-intelligence.story-visual-video-problem .video-problem-visual figcaption,
+html[lang="zh-CN"] .story-deck-robotic-video-intelligence.story-visual-video-problem .video-problem-visual figcaption {
+  color: rgba(246, 242, 232, 0.92);
+  font-size: clamp(0.88rem, 1.08vw, 1.04rem);
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+/* Video Intelligence: architecture first, with one claim and three proof points. */
+.story-deck-robotic-video-intelligence.story-visual-video-system-architecture {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  place-items: center;
+  padding: var(--deck-safe-y) var(--deck-safe-x);
+  background: #050505;
+}
+
+.story-deck-robotic-video-intelligence.story-visual-video-system-architecture .floor-deck-copy {
+  display: none;
+}
+
+.story-deck-robotic-video-intelligence.story-visual-video-system-architecture .video-system-architecture-visual {
+  align-self: center;
+  justify-self: center;
+  display: grid;
+  gap: clamp(0.8rem, 1.3vw, 1.1rem);
+  width: min(92%, 980px);
+  margin: 0;
+}
+
+.story-deck-robotic-video-intelligence.story-visual-video-system-architecture .video-system-architecture-visual > img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: min(48vh, 330px);
+  object-fit: contain;
+}
+
+.video-system-proof {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.86fr) minmax(430px, 1.14fr);
+  align-items: center;
+  gap: clamp(0.9rem, 1.7vw, 1.5rem);
+  width: 100%;
+}
+
+.video-system-statement {
+  margin: 0;
+  color: rgba(246, 242, 232, 0.84);
+  font: 350 clamp(0.76rem, 1vw, 0.96rem) / 1.4 var(--display);
+  letter-spacing: normal;
+}
+
+.video-system-statement > span:first-child {
+  color: rgba(246, 242, 232, 0.98);
+  font-weight: 540;
+}
+
+.video-system-highlights {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(0.44rem, 0.72vw, 0.65rem);
+  min-width: 0;
+}
+
+.video-system-highlights > div {
+  display: grid;
+  align-content: center;
+  gap: 0.2rem;
+  min-width: 0;
+  min-height: clamp(3.35rem, 4.6vw, 3.9rem);
+  padding: clamp(0.46rem, 0.68vw, 0.62rem);
+  border: 0.5px solid rgba(210, 210, 204, 0.24);
+  border-radius: clamp(0.5rem, 0.7vw, 0.64rem);
+  background: linear-gradient(145deg, rgba(35, 36, 33, 0.92), rgba(16, 17, 15, 0.98));
+}
+
+.video-system-highlights strong,
+.video-system-highlights span {
+  margin: 0;
+  letter-spacing: normal;
+}
+
+.video-system-highlights strong {
+  color: color-mix(in srgb, var(--viewer-accent) 70%, #f6f2e8);
+  font: 540 clamp(0.8rem, 0.96vw, 0.94rem) / 1.05 var(--display);
+}
+
+.video-system-highlights span {
+  color: rgba(246, 242, 232, 0.66);
+  font: 320 clamp(0.6rem, 0.7vw, 0.7rem) / 1.28 var(--display);
+}
+
+@media (max-width: 900px) {
+  .video-system-proof {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
