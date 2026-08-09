@@ -32,9 +32,9 @@ framework: 计算机视觉
 frameworkSummary: 只有把像素感知与几何、拓扑和产品约束结合，视觉结果才能成为可用数据。
 sessionTitle: 户型图矢量重建
 sessionHeadline: 从视觉到结构
-sessionDescription: 通过全流程算法管线，将栅格户型图从难以管理和计量的图像媒介，转换为可编辑、结构化的建筑数据。
+sessionDescription: 通过构建全流程的算法工作流，将户型设计图从难以管理的图像数据转换为可编辑、结构化的建筑数据。
 sessionVisual: /case-studies/floor-plan/source-to-segmentation.webp
-sessionVideo: /case-studies/floor-plan/floorplan-hero-gradient-textured.mp4
+sessionVideo: /case-studies/floor-plan/fp-hero-v3.mp4
 sessionPoster: /case-studies/floor-plan/floorplan-hero-gradient-textured-poster.jpg
 sessionMetric:
   value: 7万

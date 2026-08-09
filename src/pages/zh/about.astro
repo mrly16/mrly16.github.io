@@ -8,53 +8,94 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
   locale="zh"
   className="identity-page"
 >
-  <header class="page-intro identity-intro">
-    <div>
-      <p class="eyebrow">关于</p>
-      <h1>我擅长面对尚未被完整定义的问题。</h1>
-    </div>
-    <p class="page-intro-copy">
-      近七年工作横跨 AI 算法、系统架构、产品决策、团队管理与客户交付。
-    </p>
-  </header>
+  <section class="identity-hero-page">
+    <header class="page-intro identity-intro">
+      <div class="identity-hero-copy">
+        <h1>自 2019 年起，我的工作经验覆盖了从 AI 算法研发到工程实现与产品交付的各个阶段；在实际项目中，我也常常承担产品设计、系统设计与项目管理等多个职能，推动 AI 应用落地并发挥实际价值。</h1>
+        <a class="identity-email-cta" href="mailto:markmoyung131@gmail.com">邮件联系</a>
+      </div>
+      <div class="identity-career-strip" aria-label="职业时间线概览">
+        <div class="identity-career-node">
+          <b aria-hidden="true"></b>
+          <span>2019</span>
+          <strong>云真信科技</strong>
+        </div>
+        <div class="identity-career-node">
+          <b aria-hidden="true"></b>
+          <span>2020</span>
+          <strong>小库科技</strong>
+        </div>
+        <div class="identity-career-node">
+          <b aria-hidden="true"></b>
+          <span>2025</span>
+          <strong>道和通泰</strong>
+        </div>
+        <div class="identity-career-node">
+          <b aria-hidden="true"></b>
+          <span>现在</span>
+        </div>
+      </div>
+    </header>
 
-  <section class="about-grid identity-panel">
-    <div class="about-story">
-      <p>我从建筑设计出发，进入信息科学与机器学习，最终围绕“让感知转化为有用行动”构建自己的职业路径。</p>
-      <p>这段经历塑造了我的工程方式：先理解领域，再选择模型；在需要确定性的地方使用结构化方法；最终以真实工作流是否得到改善来衡量系统。</p>
-      <p>我管理过团队、训练过模型、设计过数据与云基础设施、构建过完整产品，也曾与机器人、无人机、设计师、产品团队和客户共同在现场解决问题。</p>
-    </div>
-    <div class="identity-track">
-      <p class="eyebrow">工作经历</p>
-      <dl class="timeline">
-        <div><dt>Avant Robotics · 道通集团</dt><dd>系统工程师 / 高级 AI 工程师 · 2025–至今</dd></div>
-        <div><dt>深圳小库科技</dt><dd>Lead R&amp;D Scientist / AI 数据中心负责人 · 2020–2025</dd></div>
-        <div><dt>北京云真信科技</dt><dd>机器学习工程师 · 2019–2020</dd></div>
-      </dl>
+    <aside class="about-grid identity-panel" aria-label="工作经历和教育背景">
+      <div class="timeline-group">
+        <p class="eyebrow">教育背景</p>
+        <dl class="timeline">
+          <div>
+            <dt>密歇根大学</dt>
+            <dd>信息科学硕士 · 班级排名 1/65</dd>
+          </div>
+          <div>
+            <dt>华南理工大学</dt>
+            <dd>建筑设计学士</dd>
+          </div>
+        </dl>
+      </div>
 
-      <p class="eyebrow" style="margin-top: 3rem">教育背景</p>
-      <dl class="timeline">
-        <div><dt>密歇根大学</dt><dd>信息科学硕士 · 班级排名 1/65</dd></div>
-        <div><dt>华南理工大学</dt><dd>建筑设计学士</dd></div>
-      </dl>
-    </div>
+      <div class="timeline-group">
+        <p class="eyebrow">工作经历</p>
+        <dl class="timeline">
+          <div>
+            <dt>道和通泰机器人有限公司</dt>
+            <dd>
+              系统工程师 / 高级 AI 工程师 · 2025–至今<br />
+              机器人巡检、视频智能和智能体系统。
+            </dd>
+          </div>
+          <div>
+            <dt>深圳小库科技有限公司</dt>
+            <dd>
+              研发负责人 · 2020–2025<br />
+              算法、生成式 AI 和 AI 原生产品。
+            </dd>
+          </div>
+          <div>
+            <dt>北京云真信科技有限公司</dt>
+            <dd>
+              机器学习工程师 · 2019–2020<br />
+              大数据、欺诈检测和机器学习。
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </aside>
   </section>
 
-  <section class="identity-signal-grid" aria-label="工作原则">
-    <article>
-      <span>01</span>
-      <h2>先理解领域，再选择模型</h2>
-      <p>先看真实工作流、失败模式和决策闭环，再决定系统应该长什么样。</p>
-    </article>
-    <article>
-      <span>02</span>
-      <h2>该结构化的地方不要赌模型</h2>
-      <p>当纯模型输出不够可靠时，用几何、约束、系统边界和可验证流程补上确定性。</p>
-    </article>
-    <article>
-      <span>03</span>
-      <h2>现场结果比演示更重要</h2>
-      <p>把工程目标对准部署、客户证据和可衡量的工作流改善。</p>
-    </article>
-  </section>
+  <script is:inline>
+    const validAboutProjectSlugs = new Set([
+      "vision-agent",
+      "robotic-video-intelligence",
+      "multimodal-asset-search",
+      "lookx-generative-ai",
+      "floor-plan-reconstruction",
+    ]);
+    try {
+      const lastProjectSlug = window.localStorage.getItem("portfolio:lastProjectSlug");
+      if (lastProjectSlug && validAboutProjectSlugs.has(lastProjectSlug)) {
+        document.body.dataset.lastProject = lastProjectSlug;
+      }
+    } catch {
+      // Keep the default about gradient when storage is unavailable.
+    }
+  </script>
 </BaseLayout>

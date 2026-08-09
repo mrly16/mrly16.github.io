@@ -30,10 +30,10 @@ framework: Agent Harness
 frameworkSummary: A knowledge system that enhances traditional CV with multi-source features and memory.
 sessionTitle: Realtime Visual Agent
 sessionHeadline: Vision that acts with intent
-sessionDescription: A vision agent engineering harness enabling inspection robots to apply multi-source features and historical memory for enhanced near-real-time judgment.
-sessionVisual: /case-studies/vision-agent/vision-agent-hero-poster.jpg
-sessionVideo: /case-studies/vision-agent/vision-agent-hero.mp4
-sessionPoster: /case-studies/vision-agent/vision-agent-hero-poster.jpg
+sessionDescription: A vision agent harness designed to use multi-source features and historical memory for near-real-time visual decisions.
+sessionVisual: /case-studies/vision-agent/vision-agent-chat-focus-poster.jpg
+sessionVideo: /case-studies/vision-agent/vision-agent-chat-focus.mp4
+sessionPoster: /case-studies/vision-agent/vision-agent-chat-focus-poster.jpg
 sessionMetric:
   value: "2026"
   label: active project

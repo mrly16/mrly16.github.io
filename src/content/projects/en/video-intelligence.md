@@ -34,11 +34,11 @@ diagram: /diagrams/video-platform.svg
 diagramAlt: Diagram showing video sources entering live and batch task modes, a GPU inference and event layer, and an evidence workspace for replay and comparison.
 framework: Agent Systems
 frameworkSummary: An agent-ready operating layer that connects live perception, repeatable tasks, evidence, and human decisions.
-sessionTitle: Robotic Video Intelligence
-sessionHeadline: Live perception, operationalized
-sessionDescription: A shared video-intelligence platform that connects live analysis, algorithm testing, event evidence, and customer demonstrations.
+sessionTitle: Field Video Intelligence
+sessionHeadline: FDE tooling for deployment validation
+sessionDescription: A lightweight FDE tool for R&D and deployment teams to compare, validate, and reconcile vision-model results between lab and field conditions.
 sessionVisual: /case-studies/video-intelligence/wanxiang-hero-poster.jpg
-sessionVideo: /case-studies/video-intelligence/wanxiang-hero.mp4
+sessionVideo: /case-studies/video-intelligence/vi-hero-media-v2.mp4
 sessionPoster: /case-studies/video-intelligence/wanxiang-hero-poster.jpg
 sessionMetric:
   value: 8 × 30 FPS

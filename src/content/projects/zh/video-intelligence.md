@@ -34,11 +34,11 @@ diagram: /diagrams/video-platform.svg
 diagramAlt: 视频源进入实时与批量任务模式，经过 GPU 推理和事件层，最终形成可回放与对比的证据工作区。
 framework: Agent 系统
 frameworkSummary: 连接实时感知、可重复任务、证据与人工决策的 Agent-ready 运行层。
-sessionTitle: 机器人视频智能
-sessionHeadline: 让实时感知可被使用
-sessionDescription: 一个面向多角色协作的视频智能平台，统一实时分析、算法测试、事件证据和客户演示路径。
+sessionTitle: 现场视频智能
+sessionHeadline: 面向部署验证的 FDE 工具
+sessionDescription: 这是一个轻量化 FDE 工具，帮助产研与部署团队高效对齐视觉模型效果，缩小实验室与现场应用之间的差距。
 sessionVisual: /case-studies/video-intelligence/wanxiang-hero-poster.jpg
-sessionVideo: /case-studies/video-intelligence/wanxiang-hero.mp4
+sessionVideo: /case-studies/video-intelligence/vi-hero-media-v2.mp4
 sessionPoster: /case-studies/video-intelligence/wanxiang-hero-poster.jpg
 sessionMetric:
   value: 8 × 30 FPS

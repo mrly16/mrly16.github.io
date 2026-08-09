@@ -33,9 +33,9 @@ framework: AI Systems / Cloud
 frameworkSummary: GPU batch processing, vector infrastructure, metadata, and serverless delivery form one discoverable image system.
 sessionTitle: Multimodal Image Search
 sessionHeadline: One million images, searchable
-sessionDescription: A Google Cloud asset platform using CLIP, BigQuery, and Vertex AI to search million-scale robotic task images.
+sessionDescription: To better organize and use vision data, the cloud-based system combines Google Cloud Storage, CLIP, BigQuery, and Vertex AI to provide a unified interface for vision-model development.
 sessionVisual: /diagrams/multimodal-search.svg
-sessionVideo: /case-studies/multimodal-search/mmsearch-hero-gradient.mp4
+sessionVideo: /case-studies/multimodal-search/mmsearch-hero-v2.mp4
 sessionPoster: /case-studies/multimodal-search/mmsearch-hero-gradient-poster.jpg
 sessionMetric:
   value: 1M

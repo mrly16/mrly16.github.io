@@ -10,18 +10,21 @@ interface Props {
 }
 
 const { projects, locale } = Astro.props;
+const lowTrafficMode =
+  import.meta.env.PUBLIC_LOW_TRAFFIC_MODE === "true" ||
+  (import.meta.env.PUBLIC_LOW_TRAFFIC_MODE !== "false" && import.meta.env.DEV);
 const frameworkLinesBySlug: Record<string, string[]> =
   locale === "zh"
     ? {
         "floor-plan-reconstruction": ["计算机", "视觉"],
-        "robotic-video-intelligence": ["产品/系统", "设计"],
+        "robotic-video-intelligence": ["FDE", "工具"],
         "lookx-generative-ai": ["生成式", "模型"],
         "multimodal-asset-search": ["云原生", "架构"],
         "vision-agent": ["智能体", "架构"],
       }
     : {
         "floor-plan-reconstruction": ["Computer", "Vision"],
-        "robotic-video-intelligence": ["System", "Design"],
+        "robotic-video-intelligence": ["FDE", "Tooling"],
         "lookx-generative-ai": ["Generative", "Models"],
         "multimodal-asset-search": ["Cloud", "Architecture"],
         "vision-agent": ["Agent", "Harness"],
@@ -30,15 +33,15 @@ const titleLinesBySlug: Record<string, string[]> =
   locale === "zh"
     ? {
         "floor-plan-reconstruction": ["户型图", "矢量重建"],
-        "robotic-video-intelligence": ["机器人视觉", "分析平台"],
-        "lookx-generative-ai": ["建筑模型", "AI渲染"],
+        "robotic-video-intelligence": ["AI 算法", "实地部署验证"],
+        "lookx-generative-ai": ["建筑领域", "AI 产品"],
         "multimodal-asset-search": ["多模态", "图片检索"],
         "vision-agent": ["实时视觉", "Agent"],
       }
     : {
         "floor-plan-reconstruction": ["Raster-to-Vector", "Floor Plans"],
-        "robotic-video-intelligence": ["Video Intelligence", "Platform"],
-        "lookx-generative-ai": ["Architectural", "AI Rendering"],
+        "robotic-video-intelligence": ["Vision AI", "Validation"],
+        "lookx-generative-ai": ["AI Product", "for Architecture"],
         "multimodal-asset-search": ["Multimodal", "Image Search"],
         "vision-agent": ["Realtime", "Visual Agent"],
       };
@@ -103,14 +106,15 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
           <div class="session-visual-frame">
             {project.data.sessionVideo ? (
               <video
-                src={project.data.sessionVideo}
+                src={lowTrafficMode ? undefined : project.data.sessionVideo}
+                data-heavy-src={lowTrafficMode ? project.data.sessionVideo : undefined}
                 poster={project.data.sessionPoster ?? project.data.sessionVisual}
                 aria-label={project.data.diagramAlt}
-                autoplay
+                autoplay={lowTrafficMode ? undefined : true}
                 muted
                 loop
                 playsinline
-                preload="auto"
+                preload={lowTrafficMode ? "none" : "auto"}
               ></video>
             ) : project.data.slug === "floor-plan-reconstruction" ? (
               <FloorPlanProcess alt={project.data.diagramAlt} />
@@ -157,7 +161,10 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
   </div>
 </div>
 
-<script is:inline define:vars={{ projectSlugs: projects.map((project) => project.data.slug) }}>
+<script is:inline define:vars={{
+  projectSlugs: projects.map((project) => project.data.slug),
+  lowTrafficMode,
+}}>
   const sessionsView = document.querySelector("[data-sessions-view]");
 
   if (sessionsView instanceof HTMLElement) {
@@ -169,6 +176,27 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
     let activeIndex = 0;
     let wheelLocked = false;
 
+    const playVideo = (video) => {
+      if (lowTrafficMode && !video.getAttribute("src") && video.dataset.heavySrc) {
+        video.src = video.dataset.heavySrc;
+        video.load();
+      }
+      video.play().catch(() => {});
+    };
+
+    const syncVideos = () => {
+      const viewIsActive = document.documentElement.dataset.portfolioView === "sessions";
+      sessionsView.querySelectorAll("video").forEach((video) => {
+        const owner = video.closest("[data-session-visual]");
+        const ownerIndex = visuals.indexOf(owner);
+        if (viewIsActive && ownerIndex === activeIndex && !reducedMotion) {
+          playVideo(video);
+          return;
+        }
+        video.pause();
+      });
+    };
+
     const circularDistance = (index, center) => {
       const count = projectSlugs.length;
       let distance = (index - center) % count;
@@ -179,6 +207,12 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
 
     const showProject = (nextIndex, announce = true) => {
       activeIndex = (nextIndex + projectSlugs.length) % projectSlugs.length;
+      const activeSlug = projectSlugs[activeIndex];
+      try {
+        window.localStorage.setItem("portfolio:lastProjectSlug", activeSlug);
+      } catch {
+        // Ignore storage failures; the carousel should keep working without persistence.
+      }
       const collections = [indexItems, visuals, details, backgrounds];
 
       collections.forEach((nodes) => {
@@ -199,17 +233,7 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
         });
       });
 
-      sessionsView.querySelectorAll("video").forEach((video) => {
-        const owner = video.closest("[data-session-visual], [data-session-background]");
-        const ownerIndex = owner?.matches("[data-session-visual]")
-          ? visuals.indexOf(owner)
-          : backgrounds.indexOf(owner);
-        if (ownerIndex === activeIndex && !reducedMotion) {
-          video.play().catch(() => {});
-          return;
-        }
-        video.pause();
-      });
+      syncVideos();
 
       if (window.matchMedia("(max-width: 760px)").matches) {
         indexItems[activeIndex]?.scrollIntoView({
@@ -222,7 +246,7 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
       if (announce) {
         window.dispatchEvent(
           new CustomEvent("portfolio:project-change", {
-            detail: { slug: projectSlugs[activeIndex], source: "sessions" },
+            detail: { slug: activeSlug, source: "sessions" },
           }),
         );
       }
@@ -282,8 +306,18 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
       const index = projectSlugs.indexOf(event.detail?.slug);
       if (index >= 0) showProject(index, false);
     });
+    window.addEventListener("portfolio:view-change", syncVideos);
 
-    const initialSlug = decodeURIComponent(window.location.hash.slice(1));
+    const storedProjectSlug = () => {
+      try {
+        const slug = window.localStorage.getItem("portfolio:lastProjectSlug");
+        return projectSlugs.includes(slug) ? slug : "";
+      } catch {
+        return "";
+      }
+    };
+
+    const initialSlug = decodeURIComponent(window.location.hash.slice(1)) || storedProjectSlug();
     const initialIndex = projectSlugs.indexOf(initialSlug);
     showProject(initialIndex >= 0 ? initialIndex : 0, false);
     requestAnimationFrame(() => {
@@ -300,11 +334,11 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
   const gradientCanvas = document.querySelector("[data-sessions-neat-gradient]");
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const neatPalettes: Record<string, string[]> = {
-    "vision-agent": ["#846AFF", "#001129", "#0F0025", "#06100D", "#50FFB9"],
-    "robotic-video-intelligence": ["#50FFB9", "#04120D", "#0A1C12", "#112506", "#ABEE6A"],
+    "vision-agent": ["#D95656", "#180707", "#210F12", "#100604", "#F9C571"],
+    "robotic-video-intelligence": ["#F9C571", "#04120D", "#0A1C12", "#112506", "#ABEE6A"],
     "multimodal-asset-search": ["#ABEE6A", "#001129", "#06142B", "#003381", "#2C95FF"],
-    "lookx-generative-ai": ["#2C95FF", "#14080A", "#1D1207", "#4F2100", "#FFB22D"],
-    "floor-plan-reconstruction": ["#FFB22D", "#14080A", "#21100A", "#381007", "#846AFF"],
+    "lookx-generative-ai": ["#2C95FF", "#14080A", "#1D1024", "#2C1152", "#B56DFF"],
+    "floor-plan-reconstruction": ["#B56DFF", "#14080A", "#21100A", "#381007", "#D95656"],
   };
 
   const toNeatColors = (colors: string[]) => colors.map((color: string) => ({ color, enabled: true }));
@@ -423,7 +457,7 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
     grid-template-columns: minmax(18rem, 0.72fr) minmax(42rem, 1.72fr);
     column-gap: clamp(1.5rem, 3vw, 3.75rem);
     align-items: center;
-    min-height: calc(100svh - 5.4rem);
+    min-height: 100svh;
     padding: clamp(5.5rem, 9vh, 8rem) clamp(2rem, 3.4vw, 4.25rem) clamp(3rem, 6vh, 5rem);
     overflow: hidden;
     color: var(--session-ink);
@@ -494,19 +528,19 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
   }
 
   .sessions-background.project-vision-agent {
-    --session-base-1: #0a1230;
-    --session-base-2: #030506;
-    --session-corner-tr: rgba(132, 106, 255, 0.46);
-    --session-corner-bl: rgba(80, 255, 185, 0.28);
-    --session-glow-mid: rgba(92, 174, 255, 0.12);
+    --session-base-1: #21100f;
+    --session-base-2: #050403;
+    --session-corner-tr: rgba(217, 86, 86, 0.42);
+    --session-corner-bl: rgba(249, 197, 113, 0.46);
+    --session-glow-mid: rgba(249, 197, 113, 0.08);
   }
 
   .sessions-background.project-robotic-video-intelligence {
     --session-base-1: #0b1812;
     --session-base-2: #030605;
-    --session-corner-tr: rgba(80, 255, 185, 0.28);
+    --session-corner-tr: rgba(249, 197, 113, 0.42);
     --session-corner-bl: rgba(171, 238, 106, 0.38);
-    --session-glow-mid: rgba(255, 216, 112, 0.1);
+    --session-glow-mid: rgba(249, 197, 113, 0.1);
   }
 
   .sessions-background.project-multimodal-asset-search {
@@ -521,16 +555,16 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
     --session-base-1: #1d1207;
     --session-base-2: #060403;
     --session-corner-tr: rgba(44, 149, 255, 0.28);
-    --session-corner-bl: rgba(255, 178, 45, 0.48);
+    --session-corner-bl: rgba(181, 109, 255, 0.44);
     --session-glow-mid: rgba(255, 89, 120, 0.1);
   }
 
   .sessions-background.project-floor-plan-reconstruction {
     --session-base-1: #21100a;
     --session-base-2: #070504;
-    --session-corner-tr: rgba(255, 178, 45, 0.3);
-    --session-corner-bl: rgba(132, 106, 255, 0.46);
-    --session-glow-mid: rgba(255, 231, 155, 0.12);
+    --session-corner-tr: rgba(181, 109, 255, 0.32);
+    --session-corner-bl: rgba(217, 86, 86, 0.42);
+    --session-glow-mid: rgba(217, 86, 86, 0.1);
   }
 
   .sessions-background::before,
@@ -774,6 +808,7 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
   }
 
   .session-detail {
+    --session-watch-tint: #f2eee5;
     position: absolute;
     inset: 0;
     display: flex;
@@ -788,6 +823,26 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
       opacity 220ms ease,
       filter 320ms ease,
       transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .session-detail[data-slug="vision-agent"] {
+    --session-watch-tint: #e89163;
+  }
+
+  .session-detail[data-slug="robotic-video-intelligence"] {
+    --session-watch-tint: #d7de65;
+  }
+
+  .session-detail[data-slug="multimodal-asset-search"] {
+    --session-watch-tint: #68c7b5;
+  }
+
+  .session-detail[data-slug="lookx-generative-ai"] {
+    --session-watch-tint: #7e7bff;
+  }
+
+  .session-detail[data-slug="floor-plan-reconstruction"] {
+    --session-watch-tint: #c565a4;
   }
 
   .session-detail.is-active {
@@ -820,28 +875,36 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
     font: 200 clamp(1rem, 1.35vw, 1.25rem)/1.52 var(--sans);
   }
 
+  @media (min-width: 761px) {
+    .session-summary {
+      margin-bottom: 0.45rem;
+    }
+  }
+
   .session-watch {
     display: inline-flex;
+    align-self: flex-start;
     align-items: center;
+    width: fit-content;
     margin-top: 1.35rem;
     padding: 0;
     border: 0;
-    color: rgba(255, 255, 255, 0.74);
+    color: color-mix(in srgb, rgba(255, 255, 255, 0.74) 90%, var(--session-watch-tint));
     background: transparent;
     font: 700 clamp(1rem, 1.15vw, 1.2rem)/1.35 var(--text);
     line-height: 1.3;
     letter-spacing: 0.01em;
     text-decoration: underline;
     text-decoration-thickness: 1px;
-    text-decoration-color: rgba(255, 255, 255, 0.36);
+    text-decoration-color: color-mix(in srgb, rgba(255, 255, 255, 0.36) 88%, var(--session-watch-tint));
     text-underline-offset: 0.28em;
     cursor: pointer;
   }
 
   .session-watch:hover,
   .session-watch:focus-visible {
-    color: rgba(255, 250, 240, 0.94);
-    text-decoration-color: rgba(255, 250, 240, 0.68);
+    color: color-mix(in srgb, rgba(255, 250, 240, 0.94) 88%, var(--session-watch-tint));
+    text-decoration-color: color-mix(in srgb, rgba(255, 250, 240, 0.68) 80%, var(--session-watch-tint));
   }
 
   .session-watch:focus-visible {
@@ -915,7 +978,7 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
       display: grid;
       grid-template: "visual" minmax(14rem, 32vh) "detail" auto / 1fr;
       align-content: start;
-      min-height: calc(100svh - 4.5rem);
+      min-height: 100svh;
       padding: 7.3rem 1rem 6.2rem;
     }
 

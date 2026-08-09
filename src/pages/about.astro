@@ -8,81 +8,94 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   locale="en"
   className="identity-page"
 >
-  <header class="page-intro identity-intro">
-    <div>
-      <p class="eyebrow">About</p>
-      <h1>I work where the problem is not fully specified.</h1>
-    </div>
-    <p class="page-intro-copy">
-      Nearly seven years across AI algorithms, system architecture, product
-      decisions, team leadership, and customer deployment.
-    </p>
-  </header>
+  <section class="identity-hero-page">
+    <header class="page-intro identity-intro">
+      <div class="identity-hero-copy">
+        <h1>Since 2019, I have worked across AI algorithm development, engineering, and product delivery, while also taking on product design, system design, and project management to deliver practical AI applications.</h1>
+        <a class="identity-email-cta" href="mailto:markmoyung131@gmail.com">Email me</a>
+      </div>
+      <div class="identity-career-strip" aria-label="Career timeline summary">
+        <div class="identity-career-node">
+          <b aria-hidden="true"></b>
+          <span>2019</span>
+          <strong>Yun Zhenxin</strong>
+        </div>
+        <div class="identity-career-node">
+          <b aria-hidden="true"></b>
+          <span>2020</span>
+          <strong>Xkool</strong>
+        </div>
+        <div class="identity-career-node">
+          <b aria-hidden="true"></b>
+          <span>2025</span>
+          <strong>Avant Robotics</strong>
+        </div>
+        <div class="identity-career-node">
+          <b aria-hidden="true"></b>
+          <span>now</span>
+        </div>
+      </div>
+    </header>
 
-  <section class="about-grid identity-panel">
-    <div class="about-story">
-      <p>
-        I started in architecture, moved through information science and
-        machine learning, and built a career around systems that connect
-        perception with useful action.
-      </p>
-      <p>
-        That path shaped how I engineer: understand the domain before choosing
-        the model, use deterministic structure where it matters, and measure
-        whether the system improves a real workflow.
-      </p>
-      <p>
-        I have led teams, trained models, designed data and cloud
-        infrastructure, built full product surfaces, and worked in the field
-        with robots, drones, designers, product teams, and customers.
-      </p>
-    </div>
-    <div class="identity-track">
-      <p class="eyebrow">Experience</p>
-      <dl class="timeline">
-        <div>
-          <dt>Avant Robotics · Autel Group</dt>
-          <dd>Systems Engineer / Senior AI Engineer · 2025–present</dd>
-        </div>
-        <div>
-          <dt>XKool Technology</dt>
-          <dd>Lead R&amp;D Scientist / Head of AI Data Center · 2020–2025</dd>
-        </div>
-        <div>
-          <dt>Beijing Yun Zhenxin Technology</dt>
-          <dd>Machine Learning Engineer · 2019–2020</dd>
-        </div>
-      </dl>
+    <aside class="about-grid identity-panel" aria-label="Experience and education">
+      <div class="timeline-group">
+        <p class="eyebrow">Education</p>
+        <dl class="timeline">
+          <div>
+            <dt>University of Michigan</dt>
+            <dd>Master of Information Science</dd>
+          </div>
+          <div>
+            <dt>South China University of Technology</dt>
+            <dd>Bachelor of Architectural Design</dd>
+          </div>
+        </dl>
+      </div>
 
-      <p class="eyebrow" style="margin-top: 3rem">Education</p>
-      <dl class="timeline">
-        <div>
-          <dt>University of Michigan</dt>
-          <dd>Master of Information Science · ranked 1st of 65</dd>
-        </div>
-        <div>
-          <dt>South China University of Technology</dt>
-          <dd>Bachelor of Architectural Design</dd>
-        </div>
-      </dl>
-    </div>
+      <div class="timeline-group">
+        <p class="eyebrow">Experience</p>
+        <dl class="timeline">
+          <div>
+            <dt>Avant Robotics · Autel Group</dt>
+            <dd>
+              Systems Engineer / Senior AI Engineer · 2025–present<br />
+              Robotic inspection, video intelligence, and agent.
+            </dd>
+          </div>
+          <div>
+            <dt>XKool Technology</dt>
+            <dd>
+              Lead R&amp;D Scientist · 2020–2025<br />
+              Algorithms, generative AI, and AI native products.
+            </dd>
+          </div>
+          <div>
+            <dt>Yun Zhenxin Technology</dt>
+            <dd>
+              Machine Learning Engineer · 2019–2020<br />
+              Big data, fraud detection, machine learning.
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </aside>
   </section>
 
-  <section class="identity-signal-grid" aria-label="Working principles">
-    <article>
-      <span>01</span>
-      <h2>Domain before model</h2>
-      <p>Understand the workflow, failure mode, and decision loop before choosing the technical shape.</p>
-    </article>
-    <article>
-      <span>02</span>
-      <h2>Structure where it matters</h2>
-      <p>Use geometry, systems, and constraints when pure model output is not reliable enough.</p>
-    </article>
-    <article>
-      <span>03</span>
-      <h2>Field reality over demos</h2>
-      <p>Build toward deployed usage, customer evidence, and measurable workflow improvement.</p>
-    </article>
-  </section>
+  <script is:inline>
+    const validAboutProjectSlugs = new Set([
+      "vision-agent",
+      "robotic-video-intelligence",
+      "multimodal-asset-search",
+      "lookx-generative-ai",
+      "floor-plan-reconstruction",
+    ]);
+    try {
+      const lastProjectSlug = window.localStorage.getItem("portfolio:lastProjectSlug");
+      if (lastProjectSlug && validAboutProjectSlugs.has(lastProjectSlug)) {
+        document.body.dataset.lastProject = lastProjectSlug;
+      }
+    } catch {
+      // Keep the default about gradient when storage is unavailable.
+    }
+  </script>
 </BaseLayout>

@@ -30,10 +30,10 @@ framework: 智能体架构
 frameworkSummary: 一个利用多源特征和历史记忆增强传统CV的工程架构。
 sessionTitle: 实时视觉Agent
 sessionHeadline: 有意图的视觉
-sessionDescription: 一个视觉智能体工程架构，使巡检机器体能高效应用多源特征和历史记忆，增强准实时判断能力。
-sessionVisual: /case-studies/vision-agent/vision-agent-hero-poster.jpg
-sessionVideo: /case-studies/vision-agent/vision-agent-hero.mp4
-sessionPoster: /case-studies/vision-agent/vision-agent-hero-poster.jpg
+sessionDescription: 参考已广泛应用的智能体架构，设计针对视觉大模型的智能体系统，使巡检本体能高效应用多源特征和历史记忆，增强准实时判断能力。
+sessionVisual: /case-studies/vision-agent/vision-agent-chat-focus-poster.jpg
+sessionVideo: /case-studies/vision-agent/vision-agent-chat-focus.mp4
+sessionPoster: /case-studies/vision-agent/vision-agent-chat-focus-poster.jpg
 sessionMetric:
   value: "2026"
   label: 进行中项目

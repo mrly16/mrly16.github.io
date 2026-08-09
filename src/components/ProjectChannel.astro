@@ -11,6 +11,9 @@ interface Props {
 }
 
 const { projects, locale } = Astro.props;
+const lowTrafficMode =
+  import.meta.env.PUBLIC_LOW_TRAFFIC_MODE === "true" ||
+  (import.meta.env.PUBLIC_LOW_TRAFFIC_MODE !== "false" && import.meta.env.DEV);
 const companyLinks = {
   avant: {
     name: "Avant Robotics",
@@ -28,18 +31,19 @@ const timelineMeta: Record<string, { date: string; company: keyof typeof company
   "lookx-generative-ai": { date: "2023.09 - 2024.09", company: "xkool" },
   "floor-plan-reconstruction": { date: "2022.03 - 2023.01", company: "xkool" },
 };
-const pillTitles: Record<string, { en: [string, string]; zh: [string, string] }> = {
-  "vision-agent": { en: ["Eyes with", "intent"], zh: ["有意图的", "眼睛"] },
-  "robotic-video-intelligence": { en: ["Cameras become", "memory"], zh: ["镜头成为", "记忆"] },
-  "multimodal-asset-search": { en: ["Search by", "feeling"], zh: ["以感觉", "搜寻"] },
-  "lookx-generative-ai": { en: ["Images learn", "to dream"], zh: ["图像开始", "做梦"] },
-  "floor-plan-reconstruction": { en: ["Pixels become", "rooms"], zh: ["像素长成", "房间"] },
+const pillTitles: Record<string, { en: string[]; zh: string[] }> = {
+  "vision-agent": { en: ["Agent"], zh: ["智能体工程"] },
+  "robotic-video-intelligence": { en: ["FDE Tool"], zh: ["FDE 工具"] },
+  "multimodal-asset-search": { en: ["Cloud Infra"], zh: ["云基础设施"] },
+  "lookx-generative-ai": { en: ["AI Product"], zh: ["AI 产品"] },
+  "floor-plan-reconstruction": { en: ["Algorithm"], zh: ["算法研发"] },
 };
 const pillThumbs: Record<string, string> = {
-  "robotic-video-intelligence": "/case-studies/pill-thumbs/videointelligence.png",
-  "floor-plan-reconstruction": "/case-studies/pill-thumbs/floorplan.png",
-  "lookx-generative-ai": "/case-studies/pill-thumbs/lookx.png",
-  "multimodal-asset-search": "/case-studies/pill-thumbs/mmsearch.png",
+  "vision-agent": "/case-studies/pill-thumbs/vision-agent-motion.png",
+  "robotic-video-intelligence": "/case-studies/pill-thumbs/video-intelligence-motion.png",
+  "floor-plan-reconstruction": "/case-studies/pill-thumbs/floorplan-motion.png",
+  "lookx-generative-ai": "/case-studies/pill-thumbs/lookx-motion.png",
+  "multimodal-asset-search": "/case-studies/pill-thumbs/mmsearch-motion.png",
 };
 const firstTimeline = projects[0] ? timelineMeta[projects[0].data.slug] : undefined;
 const firstCompany = firstTimeline ? companyLinks[firstTimeline.company] : undefined;
@@ -48,18 +52,18 @@ const floorPlanDeck =
     ? {
         context: {
           title: "户型图矢量化重建",
-          summary: "从栅格图像识别建筑要素，经矢量重建与几何计算生成 BIM 数据，支持后续应用。",
+          summary: "系统结合像素级分割、约束优化与几何计算，将栅格户型图转换为可供后续应用使用的结构化 BIM 数据。",
         },
         bottleneck: {
           title: "缺少中间层，应用只能重画",
           summary: "如果图像不能变成墙、门窗、房间和拓扑关系，后续的计量、检索、BIM 导出和业务应用都会停在人工环节。",
         },
         synthetic: {
-          title: "把前端渲染变成自动标注引擎",
-          summary: "",
+          title: "基于前端工程的训练数据合成",
+          summary: "这套流程复用专有前端渲染器，通过自动改写 CSS 样式批量生成分割数据，替代高成本的人工标注。",
         },
         graph: {
-          title: "获得 7 万张像素级分割标注",
+          title: "数据产出：7 万张带分割标注的户型图",
           summary: "从 segmentation 得到房间轮廓后，通过多边形简化和两轮图优化，把噪声边界收敛为可编辑的空间骨架。",
         },
         roomOptimization: {
@@ -82,18 +86,18 @@ const floorPlanDeck =
     : {
         context: {
           title: "Floor Plan Vectorization & Reconstruction",
-          summary: "Extracting building elements from raster images, then reconstructing them as BIM data for downstream applications.",
+          summary: "The pipeline uses segmentation, constraint optimization, and computational geometry to convert raster floor plans into structured BIM data.",
         },
         bottleneck: {
           title: "Without structure, every application redraws",
           summary: "If an image cannot become walls, openings, rooms, and topology, measurement, retrieval, BIM export, and business workflows stay manual.",
         },
         synthetic: {
-          title: "Turning Frontend Rendering into an Annotation Engine",
-          summary: "",
+          title: "Frontend Engineering for Synthetic Training Data",
+          summary: "The workflow reuses the proprietary frontend renderer and automates CSS overrides to generate segmentation masks, replacing costly manual annotation.",
         },
         graph: {
-          title: "70K Pixel-Level Segmentation Annotations",
+          title: "Pipeline Output: 70K Floor Plans with Segmentation Labels",
           summary: "Segmentation gives room contours; polygon simplification and two graph-optimization rounds turn noisy boundaries into editable spatial skeletons.",
         },
         roomOptimization: {
@@ -116,6 +120,7 @@ const floorPlanDeck =
 type StoryDeckSlide = {
   kicker: string;
   title: string;
+  titleLines?: string[];
   summary: string;
   visual: string;
   layout?: "statement" | "split" | "board" | "process" | "metrics";
@@ -134,6 +139,7 @@ type StoryDeckSlide = {
   };
   chips?: string[];
   metrics?: { value: string; label: string }[];
+  implementationMetrics?: { label: string; value: string }[];
 };
 const resolveStoryLayout = (slide: StoryDeckSlide, index: number): NonNullable<StoryDeckSlide["layout"]> => {
   if (slide.layout) return slide.layout;
@@ -149,31 +155,43 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
         "multimodal-asset-search": [
           {
             kicker: "视觉数据",
-            title: "视觉数据难以存储、组织、管理和检索",
-            summary: "丰富的元数据——来自模型预测、人工标注、传感器日志和运维上下文——让图像可被发现，但前提是它们被结构化并可搜索。",
+            title: "视觉数据管理与检索系统",
+            titleLines: ["视觉数据管理与", "检索系统"],
+            summary: "将图像元数据、特征向量、模型预测和人工标注统一组织为可查询的数据架构，支持图像搜索与定位。",
             visual: "mm-frontpage",
             layout: "statement",
             media: {
               type: "image",
               src: "/case-studies/multimodal-search/frontpage-hero.png",
               alt: "多模态检索系统界面",
-              caption: "Annotated Stuffing Box of a pumpjack in drone-shot images",
+              caption: "无人机拍摄的磕头机盘根盒图像",
             },
           },
           {
             kicker: "元数据层",
-            title: "一张图像需要被多种线索理解",
+            title: "结构化元数据、检测结果、文本描述、标签和特征向量为图像检索提供多种查询依据。",
             summary: "文本、图像 embedding、caption、annotation、tag、description 和业务 metadata 都是检索入口。它们让用户能从不同工作流切入同一批视觉资产。",
             visual: "mm-metadata",
             layout: "board",
           },
           {
+            kicker: "平台能力",
+            title: "零样本检测、合成数据生成与标注工具",
+            summary: "四组操作演示涵盖平台的部分功能：零样本检测、模板化生成、图像拼接与编辑，以及标签与标注管理。",
+            visual: "mm-operations",
+            layout: "board",
+          },
+          {
             kicker: "系统架构",
-            title: "成本、吞吐和检索体验需要一起设计",
-            summary: "我选择自托管 CLIP 承接高吞吐 embedding，用 Vertex AI 做相似度检索，并用 BigQuery 作为连接 GCS 与 Web 应用的主特征表。",
+            title: "基于 CLIP、Vertex AI 与 BigQuery 的百万级图像检索架构",
+            summary: "实现指标",
             visual: "mm-infra",
             layout: "board",
-            points: ["100 万图像入库", "120 images/s CLIP embedding", "< 1s 查询响应时间"],
+            implementationMetrics: [
+              { label: "数据集规模", value: "100 万张图像" },
+              { label: "CLIP 向量生成吞吐量", value: "120 张图像/秒" },
+              { label: "查询延迟", value: "< 1 秒" },
+            ],
           },
           {
             kicker: "真实演示",
@@ -185,14 +203,15 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
               type: "video",
               src: "/case-studies/multimodal-search/real-demo-video.mp4",
               alt: "多模态检索真实演示录屏",
+              caption: "多模态检索功能演示",
             },
           },
         ],
         "lookx-generative-ai": [
           {
             kicker: "LookX · 建筑 AI SaaS",
-            title: "为建筑师做的 AI 产品",
-            summary: "建筑师需要渲染结果保留输入图里的结构，也需要少一点抽卡、试错和调参。",
+            title: "AI 产品的领域化设计",
+            summary: "使用 AI 时，建筑师关心两件事：渲染图要保留参考图中的空间结构与构件关系，生成过程也要少一些抽卡、反复试错和调参。",
             visual: "lookx-context",
             layout: "statement",
             media: {
@@ -203,22 +222,22 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
           },
           {
             kicker: "RENDER MODE",
-            title: "",
-            summary: "",
+            title: "一键渲染",
+            summary: "图像生成功能按前期设计、方案设计与设计深化三个建筑设计阶段组织，并分别适配各阶段的工作流。",
             visual: "lookx-render-mode",
             layout: "split",
           },
           {
             kicker: "AUTO TRAINING",
-            title: "",
-            summary: "",
+            title: "一键训练",
+            summary: "上传参考图即可一键训练 LoRA，无需自行调整或理解复杂的训练参数。",
             visual: "lookx-lora-training",
             layout: "split",
           },
           {
             kicker: "GENERATE SAME",
-            title: "",
-            summary: "",
+            title: "一键复刻",
+            summary: "用户可以直接复用社区公开作品背后的完整生成配置，而不是从结果图反推工作流。",
             visual: "lookx-generate-same",
             layout: "split",
           },
@@ -231,8 +250,8 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
           },
           {
             kicker: "RESULT",
-            title: "建筑师的真实使用，推动了产品增长",
-            summary: "AI 热潮带来了关注，但持续增长来自可控的渲染结果、低门槛的工作流，以及用户自发分享形成的社区传播。",
+            title: "用户持续发布的社区内容推动了产品的自然增长",
+            summary: "来自不同国家的用户和创作者把 LookX 的渲染结果做成教程、YouTube Shorts 和工作流演示，让产品通过真实内容自然扩散。",
             visual: "lookx-market-result",
             layout: "metrics",
             media: {
@@ -243,15 +262,15 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
             metrics: [
               { value: "$30K", label: "MRR" },
               { value: "600K", label: "注册用户" },
-              { value: "零营销预算", label: "" },
+              { value: "$0", label: "营销支出" },
             ],
           },
         ],
         "robotic-video-intelligence": [
           {
             kicker: "Video Intelligence Platform",
-            title: "面向视觉 AI 团队的统一平台",
-            summary: "产品、算法、测试与现场团队围绕同一份视频证据协作，更快定位问题，缩小实验室结果与现场部署之间的差距。",
+            title: "AI应用的最后一公里",
+            summary: "让 AI 在现场运行，不只需要模型：产品、算法、测试与现场部署团队还要结合现场情况同步数据、运行环境、模型版本与参数，并协同验证应用模块。",
             visual: "video-frontpage",
             layout: "statement",
             media: {
@@ -262,7 +281,7 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
           },
           {
             kicker: "PROBLEM",
-            title: "实验室表现，不等于现场表现",
+            title: "现场部署视觉模型的数据与配置漂移",
             summary: "",
             visual: "video-problem",
             layout: "statement",
@@ -276,22 +295,29 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
           },
           {
             kicker: "PRODUCT",
-            title: "从现场采集到业务确认，都在同一个平台完成",
-            summary: "我把实时采集、离线验证和结果复盘放进同一套任务界面，让不同角色围绕同一份视频证据协作。",
+            title: "覆盖现场测试、离线验证与结果复盘的视觉模型平台",
+            summary: "不同团队在现场测试、离线验证、回放与复核中共享同一任务上下文，包括视频、模型与参数。",
             visual: "video-product-workflow",
             layout: "statement",
           },
           {
             kicker: "INTERACTION",
-            title: "把推理结果变成可操作的界面",
-            summary: "这些交互不是装饰，而是为了让用户更快定位问题、控制视频证据，并批量处理任务。",
+            title: "面向视觉 AI 应用的 UI/UX 设计",
+            summary: "作为一个以媒体为核心的产品，UI/UX 的设计关键是清晰呈现任务及其视频与关联信息，并让浏览、定位与操作更加直接。",
             visual: "video-uiux-highlights",
             layout: "statement",
           },
           {
+            kicker: "UI DESIGN",
+            title: "组件状态、变体与设计令牌",
+            summary: "组件通过统一的行为与状态反馈保持交互一致，并以品牌色、形态语言与图标系统建立视觉辨识度。",
+            visual: "video-ui-philosophy",
+            layout: "statement",
+          },
+          {
             kicker: "ALGORITHM",
-            title: "融合可见光与红外，减少现场误报",
-            summary: "我把双光图像配准、相机畸变校正和可疑结果过滤串成一条检测链路，让系统在复杂现场更稳定。",
+            title: "案例：现场的误报促使工程团队迭代技术方案",
+            summary: "在无人机巡检的现场部署中，我们发现石油管道漏油区域与岩石阴影在可见光下难以区分。基于平台提供的一体化研发验证能力，算法团队成功开发并验证了双光融合检测算法。",
             visual: "video-fusion-detection",
             layout: "statement",
           },
@@ -299,8 +325,8 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
         "vision-agent": [
           {
             kicker: "WHY",
-            title: "面向视觉巡检的智能体系统",
-            summary: "传统 CV 很快，但能力边界固定：它无法识别预设类别之外的事件，也难以判断误报。VLM 驱动的智能体补上了这层上下文。",
+            title: "视觉巡检智能体系统",
+            summary: "传统 CV 能以低延迟完成固定类别检测，但难以处理类别外事件与疑似误报。视觉智能体在此基础上通过 VLM 引入场景上下文，补充语义判断能力。",
             visual: "vision-frontpage",
             layout: "statement",
             media: {
@@ -311,8 +337,8 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
           },
           {
             kicker: "CHOICE",
-            title: "VLM 提供常识，记忆系统补充历史上下文",
-            summary: "",
+            title: "从单次检测到具备历史上下文的视觉决策",
+            summary: "检测结果、对应图像与历史决策记录会被组织为 Prompt 上下文，供 VLM 进行决策推理。",
             visual: "vision-common-sense",
             layout: "statement",
             media: {
@@ -322,30 +348,32 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
             },
           },
           {
-            kicker: "LIVE SYSTEM",
-            title: "系统实时演示",
-            summary: "",
-            visual: "vision-live-demo",
-            layout: "statement",
-            media: {
-              type: "video",
-              src: "/case-studies/vision-agent/vision-agent-live-demo.mp4",
-              alt: "视觉智能体在实时视频流中进行分析与判断的界面录屏",
-            },
-          },
-          {
             kicker: "MEMORY",
-            title: "系统先把低成本视觉信号整理成结构化事实，再写入长期记忆",
-            summary: "",
+            title: "高频检测结果与过往决策的分层存储架构",
+            summary: "检测结果与事件仅保留在任务内存；经 VLM 确认的事实与决策记录落盘，供后续任务复用。",
             visual: "vision-feature-dump",
             layout: "statement",
           },
           {
             kicker: "TRIGGER",
-            title: "设计 VLM/LMM 调用的触发时机",
-            summary: "",
+            title: "VLM 决策的双链路触发机制",
+            summary: "主链路按固定周期或关注事件触发调用；侧链路响应由对话发起的交互调用。",
             visual: "vision-context-engineering",
             layout: "statement",
+          },
+          {
+            kicker: "LIVE SYSTEM",
+            title: "",
+            summary: "",
+            visual: "vision-live-demo",
+            layout: "statement",
+            media: {
+              type: "video",
+              src: "/case-studies/vision-agent/vision-agent-demo-v3.mp4",
+              poster: "/case-studies/vision-agent/vision-agent-demo-poster.jpg",
+              alt: "视觉智能体在实时视频流中进行分析与判断的界面录屏",
+              caption: "系统演示",
+            },
           },
         ],
       }
@@ -353,8 +381,8 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
         "multimodal-asset-search": [
           {
             kicker: "VISION DATA",
-            title: "Vision data are hard to store, organize, manage, and search",
-            summary: "Rich metadata — from model predictions, human annotations, sensor logs, and operational context — makes images findable, but only when it is structured and searchable.",
+            title: "Visual Data Management and Retrieval System",
+            summary: "It organizes image metadata, feature vectors, model predictions, and human annotations into a unified, queryable structure for searching and locating images.",
             visual: "mm-frontpage",
             layout: "statement",
             media: {
@@ -366,18 +394,29 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
           },
           {
             kicker: "METADATA LAYER",
-            title: "One image needs many ways to be understood",
-            summary: "Text, image embeddings, captions, annotations, tags, descriptions, and business metadata all act as retrieval lenses. They let users approach the same visual asset from different workflows.",
+            title: "A single image is associated with structured metadata, detections, captions, tags, and feature vectors.",
+            summary: "",
             visual: "mm-metadata",
             layout: "board",
           },
           {
+            kicker: "PLATFORM WORKFLOWS",
+            title: "Zero-Shot Detection, Data Generation, and Annotation",
+            summary: "Four demos cover selected platform features.",
+            visual: "mm-operations",
+            layout: "board",
+          },
+          {
             kicker: "SYSTEM ARCHITECTURE",
-            title: "Cost, throughput, and retrieval experience had to be designed together",
-            summary: "I used a self-hosted CLIP service for high-throughput embeddings, Vertex AI for similarity search, and BigQuery as the main feature table connecting GCS with the web application.",
+            title: "Million-Image Retrieval Architecture with CLIP, Vertex AI, and BigQuery",
+            summary: "Implementation Metrics",
             visual: "mm-infra",
             layout: "board",
-            points: ["1 million images stored", "120 images/s CLIP embedding", "< 1s query response time"],
+            implementationMetrics: [
+              { label: "Dataset size", value: "1M images" },
+              { label: "CLIP embedding throughput", value: "120 images/s" },
+              { label: "Query latency", value: "< 1 s" },
+            ],
           },
           {
             kicker: "REAL DEMO",
@@ -389,6 +428,7 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
               type: "video",
               src: "/case-studies/multimodal-search/real-demo-video.mp4",
               alt: "Real multimodal search demo recording",
+              caption: "Multimodal Search Feature Demo",
             },
           },
         ],
@@ -407,22 +447,22 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
           },
           {
             kicker: "RENDER MODE",
-            title: "",
-            summary: "",
+            title: "One-Click Rendering",
+            summary: "Image generation is structured around pre-design, schematic design, and design development, with workflows adapted to each stage.",
             visual: "lookx-render-mode",
             layout: "split",
           },
           {
             kicker: "AUTO TRAINING",
-            title: "",
-            summary: "",
+            title: "One-Click Training",
+            summary: "Upload reference images to train a custom LoRA without understanding or adjusting the training parameters.",
             visual: "lookx-lora-training",
             layout: "split",
           },
           {
             kicker: "GENERATE SAME",
-            title: "",
-            summary: "",
+            title: "One-Click Recreation",
+            summary: "Users can reuse community works with their full generation setup—no reverse-engineering from output images.",
             visual: "lookx-generate-same",
             layout: "split",
           },
@@ -435,8 +475,8 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
           },
           {
             kicker: "RESULT",
-            title: "Real Adoption by Architects Drove the Growth",
-            summary: "The AI wave brought attention, but sustained growth came from controllable rendering, accessible workflows, and users sharing their work organically.",
+            title: "Community-Created Content Drove the Product’s Organic Growth",
+            summary: "Users and creators turned LookX results into tutorials, Shorts, and workflow demos, carrying the product beyond our own launch efforts.",
             visual: "lookx-market-result",
             layout: "metrics",
             media: {
@@ -447,15 +487,15 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
             metrics: [
               { value: "$30K", label: "MRR" },
               { value: "600K", label: "Registered users" },
-              { value: "Zero marketing spend", label: "" },
+              { value: "$0", label: "Marketing Spend" },
             ],
           },
         ],
         "robotic-video-intelligence": [
           {
             kicker: "WHY",
-            title: "A Shared Platform for Vision AI Teams",
-            summary: "Product, algorithm, QA, and field teams work from the same video evidence to diagnose issues faster and close the gap between lab results and deployment.",
+            title: "AI Beyond the Lab",
+            summary: "Making AI work in the field takes more than a model: product, ML, QA, and field deployment teams have to sync on data, runtime context, model versions, and parameters while validating application modules together.",
             visual: "video-frontpage",
             layout: "statement",
             media: {
@@ -466,7 +506,7 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
           },
           {
             kicker: "PROBLEM",
-            title: "Lab Results Do Not Equal Field Results",
+            title: "Data and Configuration Drift in Field-Deployed Vision Models",
             summary: "",
             visual: "video-problem",
             layout: "statement",
@@ -480,22 +520,29 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
           },
           {
             kicker: "PRODUCT",
-            title: "From field collection to stakeholder sign-off in one platform.",
-            summary: "I connected live collection, offline validation, and review workflows around the same video evidence, so every role could work from one shared surface.",
+            title: "One Platform for Applied Vision Model Lifecycle",
+            summary: "Teams share one task context—video, models, and parameters—across field testing, offline validation, replay, and review.",
             visual: "video-product-workflow",
             layout: "statement",
           },
           {
             kicker: "INTERACTION",
-            title: "Turning inference results into usable interactions",
-            summary: "These details made video evidence easier to inspect, customize, scrub through, and batch-manage without forcing users to watch every frame.",
+            title: "Purpose-Built Media UI/UX for Vision AI",
+            summary: "As a media-oriented product, it needs UI/UX that clearly presents each task, its video, and related information with direct navigation and controls.",
             visual: "video-uiux-highlights",
             layout: "statement",
           },
           {
+            kicker: "UI DESIGN",
+            title: "Component States, Variants, and Design Tokens",
+            summary: "Components use consistent behavior and state feedback, with brand color, form, and icons providing visual identity.",
+            visual: "video-ui-philosophy",
+            layout: "statement",
+          },
+          {
             kicker: "ALGORITHM",
-            title: "Fusing visible-light and infrared detection",
-            summary: "I combined dual-spectrum registration, camera distortion correction, and suspicious-result filtering to make field detection more stable.",
+            title: "Example: A Field Challenge Reshaped the Solution",
+            summary: "During field deployment of the UAV inspection system, we found that pipeline oil leaks were difficult to distinguish from rock shadows in visible-light imagery. Using the platform’s integrated development and validation workflow, the ML team developed and validated a visible–thermal fusion detector.",
             visual: "video-fusion-detection",
             layout: "statement",
           },
@@ -515,8 +562,8 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
           },
           {
             kicker: "CHOICE",
-            title: "VLM for Common Sense. Memory for Historical Context.",
-            summary: "",
+            title: "From Isolated Detections to History-Aware Visual Decisions",
+            summary: "Detection results, corresponding images, and prior decisions are assembled into the prompt context for VLM decision-making.",
             visual: "vision-common-sense",
             layout: "statement",
             media: {
@@ -526,30 +573,32 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
             },
           },
           {
-            kicker: "LIVE SYSTEM",
-            title: "System Live Demo",
-            summary: "",
-            visual: "vision-live-demo",
-            layout: "statement",
-            media: {
-              type: "video",
-              src: "/case-studies/vision-agent/vision-agent-live-demo.mp4",
-              alt: "Vision agent interface reasoning over a live video stream",
-            },
-          },
-          {
             kicker: "MEMORY",
-            title: "The system structures low-cost visual signals before committing them to long-term memory",
-            summary: "",
+            title: "Tiered Storage for Detection Data and Decision History",
+            summary: "Detections and events stay in task memory; VLM-confirmed facts and decisions persist for reuse across tasks.",
             visual: "vision-feature-dump",
             layout: "statement",
           },
           {
             kicker: "TRIGGER",
-            title: "Designing when VLM/LMM calls should be triggered",
-            summary: "",
+            title: "Dual-Track Triggering for VLM Decision Calls",
+            summary: "The main track triggers calls at fixed intervals or on events of interest; the side track handles conversation-initiated calls.",
             visual: "vision-context-engineering",
             layout: "statement",
+          },
+          {
+            kicker: "LIVE SYSTEM",
+            title: "",
+            summary: "",
+            visual: "vision-live-demo",
+            layout: "statement",
+            media: {
+              type: "video",
+              src: "/case-studies/vision-agent/vision-agent-demo-v3.mp4",
+              poster: "/case-studies/vision-agent/vision-agent-demo-poster.jpg",
+              alt: "Vision agent interface reasoning over a live video stream",
+              caption: "System Demo",
+            },
           },
         ],
       };
@@ -658,19 +707,7 @@ const copy =
                         <p>{floorPlanDeck.context.summary}</p>
                       </div>
                       <figure class="floor-hero-visual" aria-label={locale === "zh" ? "户型图从栅格图像到重建模型的过程" : "Floor plan process from raster image to reconstructed model"}>
-                        <img src="/case-studies/floor-plan/floor-plan-hero.png" alt="" decoding="async" />
-                        <figcaption class="floor-hero-caption floor-hero-caption-reconstruction">
-                          {locale === "zh" ? "重建模型" : "Reconstruction"}
-                        </figcaption>
-                        <figcaption class="floor-hero-caption floor-hero-caption-vector">
-                          {locale === "zh" ? "矢量化数据" : "Vectorized Data"}
-                        </figcaption>
-                        <figcaption class="floor-hero-caption floor-hero-caption-segmentation">
-                          {locale === "zh" ? "语义分割" : "Segmentation"}
-                        </figcaption>
-                        <figcaption class="floor-hero-caption floor-hero-caption-raster">
-                          {locale === "zh" ? "栅格图像" : "Raster Image"}
-                        </figcaption>
+                        <img src="/case-studies/floor-plan/floor-plan-hero-v4.png" alt="" decoding="async" />
                       </figure>
                     </div>
                   </section>
@@ -686,55 +723,52 @@ const copy =
                     <div class="floor-deck floor-deck-synthetic-engine story-deck story-deck-floor-plan-reconstruction">
                       <div class="floor-deck-copy">
                         <h2>{floorPlanDeck.synthetic.title}</h2>
+                        <p>{floorPlanDeck.synthetic.summary}</p>
                       </div>
-                      <div class="floor-synthetic-pipeline">
-                        <figure class="floor-synthetic-source">
+                      <div class="floor-synthetic-grid">
+                        <figure class="floor-synthetic-card">
                           <img
-                            src="/case-studies/floor-plan/synthetic-left.png"
-                            alt={locale === "zh" ? "Xkool ABC 格式的户型矢量数据" : "Vectorized layout data in Xkool ABC format"}
+                            src="/case-studies/floor-plan/fp-synt-left.gif"
+                            alt={locale === "zh" ? "既有前端渲染专有矢量户型数据" : "Existing frontend rendering proprietary vectorized floor-plan data"}
                             decoding="async"
                           />
                           <figcaption>
-                            {locale === "zh"
-                              ? "Xkool ABC 格式矢量数据"
-                              : "Proprietary Vectorized Data"}
+                            <strong>{locale === "zh" ? "矢量数据渲染" : "Vector Data Rendering"}</strong>
+                            <span>
+                              {locale === "zh"
+                                ? "前端渲染器解析专有矢量户型数据，并按照构件布局将其绘制到前端画布。"
+                                : "The frontend renderer parses proprietary vector floor-plan data and draws each component onto the canvas."}
+                            </span>
                           </figcaption>
                         </figure>
-                        <img
-                          class="floor-synthetic-arrow"
-                          src="/case-studies/floor-plan/synthetic-arrow.png"
-                          alt=""
-                          aria-hidden="true"
-                          decoding="async"
-                        />
-                        <figure class="floor-synthetic-middle">
+                        <figure class="floor-synthetic-card">
                           <img
-                            src="/case-studies/floor-plan/synthetic-middle.png"
-                            alt={locale === "zh" ? "户型矢量数据与前端几何结构的对应关系" : "Mapping between vectorized floor-plan data and frontend geometry"}
+                            src="/case-studies/floor-plan/fp-synt-mid.gif"
+                            alt={locale === "zh" ? "通过 CSS 改写生成标注掩码" : "CSS editing generates annotation masks"}
                             decoding="async"
                           />
                           <figcaption>
-                            {locale === "zh" ? "前端属性改写" : "Frontend Attribute Editing"}
+                            <strong>{locale === "zh" ? "CSS 属性编辑" : "CSS Attribute Editing"}</strong>
+                            <span>
+                              {locale === "zh"
+                                ? "通过编辑 CSS 属性为独立构件分配标注颜色，并由 Selenium 自动执行整个流程。"
+                                : "Layout components are color-coded through CSS edits; the browser workflow is automated with Selenium."}
+                            </span>
                           </figcaption>
                         </figure>
-                        <img
-                          class="floor-synthetic-arrow"
-                          src="/case-studies/floor-plan/synthetic-arrow.png"
-                          alt=""
-                          aria-hidden="true"
-                          decoding="async"
-                        />
-                        <figure class="floor-synthetic-demo">
-                          <video
-                            src="/case-studies/floor-plan/synthetic-demo.mp4"
-                            autoplay
-                            muted
-                            loop
-                            playsinline
-                            preload="metadata"
-                          ></video>
+                        <figure class="floor-synthetic-card">
+                          <img
+                            src="/case-studies/floor-plan/fp-synt-right.gif"
+                            alt={locale === "zh" ? "区域几何计算生成训练数据" : "Region geometry calculation generates training data"}
+                            decoding="async"
+                          />
                           <figcaption>
-                            {locale === "zh" ? "几何计算生成标注" : "Geometry-Derived Annotations"}
+                            <strong>{locale === "zh" ? "多边形几何计算" : "Polygon Geometry Computation"}</strong>
+                            <span>
+                              {locale === "zh"
+                                ? "通过并集、差集等多边形运算组合构件标注，生成最终的分割标签图。"
+                                : "The final segmentation masks are generated using polygon operations such as union and difference."}
+                            </span>
                           </figcaption>
                         </figure>
                       </div>
@@ -781,38 +815,54 @@ const copy =
                     inert
                   >
                     <div class="floor-deck floor-deck-room-optimization story-deck story-deck-floor-plan-reconstruction">
+                      <div class="floor-deck-copy">
+                        <h2>{locale === "zh" ? "一阶段优化：空间多边形简化" : "Optimization Stage 1: Room Polygon Regularization"}</h2>
+                      </div>
                       <div class="floor-optimization-visual">
-                        <div class="floor-room-op-layout" aria-hidden="true">
-                          <figure class="floor-room-op-card">
-                            <img src="/case-studies/floor-plan/room-op-1.png" alt="" decoding="async" />
-                            <figcaption>{locale === "zh" ? "锯齿轮廓" : "Zigzag Contours"}</figcaption>
+                        <div class="floor-room-constraint-layout">
+                          <figure class="floor-room-constraint-source">
+                            <img
+                              src="/case-studies/floor-plan/fp-op1-left.png"
+                              alt={locale === "zh" ? "锯齿状房间轮廓优化为稳定房间多边形" : "Zigzagged room contours optimized into stable room polygons"}
+                              decoding="async"
+                            />
+                            <figcaption>
+                              {locale === "zh"
+                                ? "锯齿状轮廓经过优化，形成边界简化、相邻边方向受约束的空间多边形。"
+                                : "Zigzagged raw contours are simplified into simple polygons with constrained edge directions."}
+                            </figcaption>
                           </figure>
-                          <figure class="floor-room-op-card">
-                            <img src="/case-studies/floor-plan/room-op-2.png" alt="" decoding="async" />
-                            <figcaption>{locale === "zh" ? "真实房间几何仍不清晰" : "Design Geometry Still Unclear"}</figcaption>
-                          </figure>
-                          <figure class="floor-room-op-card floor-room-op-card-final">
-                            <span class="floor-room-op-final-media">
-                              <img src="/case-studies/floor-plan/room-op-3.png" alt="" decoding="async" />
-                              <img
-                                class="floor-room-op-gif"
-                                src="/case-studies/floor-plan/room-boundary-optimization.gif"
-                                alt=""
-                                loading="eager"
-                              />
-                            </span>
-                            <figcaption>{locale === "zh" ? "干净稳定的房间多边形" : "Clean, Stable Room Polygons"}</figcaption>
-                          </figure>
+                          <div class="floor-room-constraint-list" aria-label={locale === "zh" ? "房间多边形优化约束" : "Room polygon optimization constraints"}>
+                            {[
+                              {
+                                label: "L1",
+                                image: "/case-studies/floor-plan/room-L1.webp",
+                                en: "Keep optimized vertices close to initial predicted boundary vertices.",
+                                zh: "保持优化后的顶点接近初始预测边界顶点。",
+                              },
+                              {
+                                label: "L2",
+                                image: "/case-studies/floor-plan/room-L2.webp",
+                                en: "Favor diagonal or orthogonal adjacent edges.",
+                                zh: "优先保持相邻边为对角或正交方向。",
+                              },
+                              {
+                                label: "L3",
+                                image: "/case-studies/floor-plan/room-L3.webp",
+                                en: "Keep optimized polygon close to the initial polygon.",
+                                zh: "保持优化后的多边形接近初始多边形。",
+                              },
+                            ].map((constraint) => (
+                              <article class="floor-room-constraint-item">
+                                <span class="floor-room-constraint-badge">{constraint.label}</span>
+                                <div class="floor-room-constraint-copy">
+                                  <p>{locale === "zh" ? constraint.zh : constraint.en}</p>
+                                  <img src={constraint.image} alt="" decoding="async" />
+                                </div>
+                              </article>
+                            ))}
+                          </div>
                         </div>
-                        <p class="lookx-feature-statement floor-optimization-statement">
-                          <span class="lookx-feature-lead">
-                            {locale === "zh" ? "房间几何优化" : "Room geometry optimization"}
-                          </span>
-                          <span aria-hidden="true"> — </span>
-                          {locale === "zh"
-                            ? "简化轮廓、稳定顶点、正交化边界。"
-                            : "Simplify contours, stabilize vertices, and orthogonalize boundaries."}
-                        </p>
                       </div>
                     </div>
                   </section>
@@ -826,38 +876,54 @@ const copy =
                     inert
                   >
                     <div class="floor-deck floor-deck-wallcenter-optimization story-deck story-deck-floor-plan-reconstruction">
+                      <div class="floor-deck-copy">
+                        <h2>{locale === "zh" ? "二阶段优化：空间骨架提取" : "Optimization Stage 2: Spatial Skeleton Extraction"}</h2>
+                      </div>
                       <div class="floor-optimization-visual">
-                        <div class="floor-room-op-layout floor-wallcenter-op-layout" aria-hidden="true">
-                          <figure class="floor-room-op-card">
-                            <img src="/case-studies/floor-plan/wallcenter-op-1.png" alt="" decoding="async" />
-                            <figcaption>{locale === "zh" ? "提取墙体中心线" : "Extract Wall Centerlines"}</figcaption>
+                        <div class="floor-room-constraint-layout floor-wall-constraint-layout">
+                          <figure class="floor-room-constraint-source">
+                            <img
+                              src="/case-studies/floor-plan/fp-op2-left.png"
+                              alt={locale === "zh" ? "墙体多边形被提取为墙体中心线结构图" : "Wall polygons reduced to wall centerline structural graph"}
+                              decoding="async"
+                            />
+                            <figcaption>
+                              {locale === "zh"
+                                ? "图优化将相邻房间边界合并为墙体中心线，形成用于空间划分的墙中线骨架。"
+                                : "Graph optimization merges adjacent room boundaries into a shared wall-centerline skeleton."}
+                            </figcaption>
                           </figure>
-                          <figure class="floor-room-op-card">
-                            <img src="/case-studies/floor-plan/wallcenter-op-2.png" alt="" decoding="async" />
-                            <figcaption>{locale === "zh" ? "从图结构到虚拟空间" : "From Graph to Virtual Space"}</figcaption>
-                          </figure>
-                          <figure class="floor-room-op-card floor-room-op-card-final floor-wallcenter-op-card-final">
-                            <span class="floor-room-op-final-media">
-                              <img src="/case-studies/floor-plan/wallcenter-op-3.png" alt="" decoding="async" />
-                              <img
-                                class="floor-room-op-gif floor-wallcenter-op-gif"
-                                src="/case-studies/floor-plan/full-layout-optimization-transparent.gif"
-                                alt=""
-                                loading="eager"
-                              />
-                            </span>
-                            <figcaption>{locale === "zh" ? "门窗构件完成重建" : "Doors and Windows Reconstructed"}</figcaption>
-                          </figure>
+                          <div class="floor-room-constraint-list floor-wall-constraint-list" aria-label={locale === "zh" ? "墙体中心线优化约束" : "Wall centerline optimization constraints"}>
+                            {[
+                              {
+                                label: "L1",
+                                image: "/case-studies/floor-plan/fp-graph-1.png",
+                                en: "Keep adjacent room boundaries close, converging to wall centerlines.",
+                                zh: "保持相邻房间边界接近，并收敛到墙体中心线。",
+                              },
+                              {
+                                label: "L2",
+                                image: "/case-studies/floor-plan/fp-graph-2.png",
+                                en: "Make graph edges strongly diagonal or orthogonal.",
+                                zh: "让图结构边尽量保持对角或正交方向。",
+                              },
+                              {
+                                label: "L3",
+                                image: "/case-studies/floor-plan/fp-graph-3.png",
+                                en: "Keep optimized graph nodes close to their initial positions.",
+                                zh: "保持优化后的图节点接近其初始位置。",
+                              },
+                            ].map((constraint) => (
+                              <article class="floor-room-constraint-item floor-wall-constraint-item">
+                                <span class="floor-room-constraint-badge">{constraint.label}</span>
+                                <div class="floor-room-constraint-copy floor-wall-constraint-copy">
+                                  <p>{locale === "zh" ? constraint.zh : constraint.en}</p>
+                                  <img src={constraint.image} alt="" decoding="async" />
+                                </div>
+                              </article>
+                            ))}
+                          </div>
                         </div>
-                        <p class="lookx-feature-statement floor-optimization-statement">
-                          <span class="lookx-feature-lead">
-                            {locale === "zh" ? "空间骨架提取" : "Spatial skeleton extraction"}
-                          </span>
-                          <span aria-hidden="true"> — </span>
-                          {locale === "zh"
-                            ? "移动、精简并合并图结构，得到墙体中心线。"
-                            : "Move, reduce, and merge graph elements into wall centerlines."}
-                        </p>
                       </div>
                     </div>
                   </section>
@@ -871,10 +937,12 @@ const copy =
                     inert
                   >
                     <div class="floor-deck floor-deck-ifc-viewer story-deck story-deck-floor-plan-reconstruction">
-                      <div class="floor-deck-copy">
-                        <h2>{floorPlanDeck.ifcViewer.title}</h2>
-                      </div>
-                      <FloorplanIfcViewer locale={locale} />
+                      <figure class="floor-ifc-figure">
+                        <FloorplanIfcViewer locale={locale} />
+                        <p class="floor-ifc-caption">
+                          {locale === "zh" ? "交互式 BIM 重建预览" : "Reconstructed BIM model"}
+                        </p>
+                      </figure>
                     </div>
                   </section>
 
@@ -893,10 +961,26 @@ const copy =
                       <div
                         class={`floor-deck story-deck story-deck-${project.data.slug} story-visual-${slide.visual} story-layout-${resolveStoryLayout(slide, slideIndex)}`}
                       >
-                        {slide.title || slide.summary || slide.points ? (
+                        {slide.title || slide.summary || slide.points || slide.implementationMetrics ? (
                           <div class="floor-deck-copy">
-                            {slide.title ? <h2>{slide.title}</h2> : null}
+                            {slide.title ? (
+                              <h2>
+                                {slide.titleLines
+                                  ? slide.titleLines.map((line) => <span class="story-title-line">{line}</span>)
+                                  : slide.title}
+                              </h2>
+                            ) : null}
                             {slide.summary ? <p>{slide.summary}</p> : null}
+                            {slide.implementationMetrics ? (
+                              <dl class="mm-infra-metrics">
+                                {slide.implementationMetrics.map((metric) => (
+                                  <div>
+                                    <dt>{metric.label}</dt>
+                                    <dd>{metric.value}</dd>
+                                  </div>
+                                ))}
+                              </dl>
+                            ) : null}
                             {slide.points ? (
                               <ul class="story-points">
                                 {slide.points.map((point) => (
@@ -909,55 +993,22 @@ const copy =
                         {slide.visual === "lookx-tech-system" ? (
                           <figure class="lookx-tech-visual" aria-label="LookX model training, workflow development, and prompt routing system">
                             <div class="lookx-tech-panel lookx-tech-base">
-                              <img src="/case-studies/lookx/tech/base-model-training.png" alt="" decoding="async" />
-                              <figcaption class="lookx-tech-caption lookx-tech-caption-title lookx-tech-base-title">
+                              <h3>
                                 {locale === "zh" ? "基础模型训练" : "Base Model Training"}
-                              </figcaption>
-                              <figcaption class="lookx-tech-caption lookx-tech-caption-small lookx-tech-base-dataset">
-                                {locale === "zh" ? "私有数据集" : "Proprietary Dataset"}
-                              </figcaption>
-                              <figcaption class="lookx-tech-caption lookx-tech-caption-small lookx-tech-base-caption-tool">
-                                {locale === "zh" ? "内部图文标注工具" : "Internal Caption Tool"}
-                              </figcaption>
-                              <figcaption class="lookx-tech-caption lookx-tech-caption-small lookx-tech-base-pairs">
-                                {locale === "zh" ? "{图像，描述} 对" : "{image, caption} Pairs"}
-                              </figcaption>
-                              <figcaption class="lookx-tech-caption lookx-tech-caption-small lookx-tech-base-model">
-                                {locale === "zh" ? "建筑扩散模型" : "Architectural Diffusion Model"}
-                              </figcaption>
+                              </h3>
+                              <img src="/case-studies/lookx/tech/base-model-training-v2.png" alt="" decoding="async" />
                             </div>
                             <div class="lookx-tech-panel lookx-tech-workflow">
-                              <img src="/case-studies/lookx/tech/image-generation.png" alt="" decoding="async" />
-                              <figcaption class="lookx-tech-caption lookx-tech-caption-title lookx-tech-workflow-title">
+                              <h3>
                                 {locale === "zh" ? "图像生成" : "Image Generation"}
-                              </figcaption>
-                              <figcaption class="lookx-tech-caption lookx-tech-caption-small lookx-tech-workflow-comfy">
-                                {locale === "zh" ? "ComfyUI 工作流" : "Comfyui Workflows"}
-                              </figcaption>
-                              <figcaption class="lookx-tech-caption lookx-tech-caption-small lookx-tech-workflow-json">
-                                {locale === "zh" ? "API 请求的 .json 配置" : ".json for API requests"}
-                              </figcaption>
-                              <figcaption class="lookx-tech-caption lookx-tech-caption-small lookx-tech-workflow-features">
-                                {locale === "zh" ? "产品功能" : "Product Features"}
-                              </figcaption>
+                              </h3>
+                              <img src="/case-studies/lookx/tech/image-generation-v2.png" alt="" decoding="async" />
                             </div>
                             <div class="lookx-tech-panel lookx-tech-routing">
-                              <img src="/case-studies/lookx/tech/prompt-routing.png" alt="" decoding="async" />
-                              <figcaption class="lookx-tech-caption lookx-tech-caption-title lookx-tech-routing-title">
+                              <h3>
                                 {locale === "zh" ? "提示词路由" : "Prompt Routing"}
-                              </figcaption>
-                              <figcaption class="lookx-tech-caption lookx-tech-caption-small lookx-tech-routing-prompt">
-                                {locale === "zh" ? "用户提示词" : "User Prompt"}
-                              </figcaption>
-                              <figcaption class="lookx-tech-caption lookx-tech-caption-small lookx-tech-routing-embedding">
-                                {locale === "zh" ? "提示词嵌入模型" : "Prompt Embedding Model"}
-                              </figcaption>
-                              <figcaption class="lookx-tech-caption lookx-tech-caption-small lookx-tech-routing-similar">
-                                {locale === "zh" ? "查找最相似描述" : "Find Most Similar"}
-                              </figcaption>
-                              <figcaption class="lookx-tech-caption lookx-tech-caption-small lookx-tech-routing-pipeline">
-                                {locale === "zh" ? "生成管线路由" : "Pipeline Routing"}
-                              </figcaption>
+                              </h3>
+                              <img src="/case-studies/lookx/tech/prompt-routing-v2.png" alt="" decoding="async" />
                             </div>
                           </figure>
                         ) : null}
@@ -969,7 +1020,48 @@ const copy =
                               alt=""
                               decoding="async"
                             />
+                            <figcaption>{slide.title}</figcaption>
                           </figure>
+                        ) : null}
+                        {slide.visual === "mm-operations" ? (
+                          <div class="mm-operations-visual" aria-label={locale === "zh" ? "视觉数据平台操作能力" : "Visual dataset platform operations"}>
+                            <figure class="mm-operations-card">
+                              <div class="mm-operations-media">
+                                <img src="/case-studies/multimodal-search/mmsearch-zero-det.gif" alt="" decoding="async" />
+                                <figcaption>
+                                  <strong>{locale === "zh" ? "零样本检测" : "Zero-Shot Detection"}</strong>
+                                  <span>{locale === "zh" ? "快速验证新类别和候选数据。" : "Validate new classes and candidate data quickly."}</span>
+                                </figcaption>
+                              </div>
+                            </figure>
+                            <figure class="mm-operations-card">
+                              <div class="mm-operations-media">
+                                <img src="/case-studies/multimodal-search/mmsearch-generate.gif" alt="" decoding="async" />
+                                <figcaption>
+                                  <strong>{locale === "zh" ? "模板化生成" : "Templated Generation"}</strong>
+                                  <span>{locale === "zh" ? "按任务模板批量生成训练素材。" : "Generate training assets from reusable task templates."}</span>
+                                </figcaption>
+                              </div>
+                            </figure>
+                            <figure class="mm-operations-card">
+                              <div class="mm-operations-media">
+                                <img src="/case-studies/multimodal-search/mmsearch-stitch.gif" alt="" decoding="async" />
+                                <figcaption>
+                                  <strong>{locale === "zh" ? "合成数据与图像编辑" : "Synthetic Data and Image Editing"}</strong>
+                                  <span>{locale === "zh" ? "拼接、编辑并扩展可用图像样本。" : "Stitch, edit, and expand usable image samples."}</span>
+                                </figcaption>
+                              </div>
+                            </figure>
+                            <figure class="mm-operations-card">
+                              <div class="mm-operations-media">
+                                <img src="/case-studies/multimodal-search/mmsearch-tag.gif" alt="" decoding="async" />
+                                <figcaption>
+                                  <strong>{locale === "zh" ? "标签与标注" : "Tags and Annotation"}</strong>
+                                  <span>{locale === "zh" ? "维护可检索、可训练的数据标签。" : "Maintain searchable labels for training pipelines."}</span>
+                                </figcaption>
+                              </div>
+                            </figure>
+                          </div>
                         ) : null}
                         {slide.visual === "mm-infra" ? (
                           <figure class="mm-infra-visual" aria-label="Multimodal search infrastructure balancing cost, throughput, and retrieval experience">
@@ -987,21 +1079,12 @@ const copy =
                               class="lookx-pipeline-image"
                               src={
                                 locale === "zh"
-                                  ? "/case-studies/lookx/lookx-rendering-cn.png"
-                                  : "/case-studies/lookx/lookx-rendering-v4.png"
+                                  ? "/case-studies/lookx/lookx-rendering-zh-v2.png"
+                                  : "/case-studies/lookx/lookx-rendering-en-v2.png"
                               }
                               alt=""
                               decoding="async"
                             />
-                            <figcaption class="lookx-feature-statement">
-                              <span class="lookx-feature-lead">
-                                {locale === "zh" ? "一键渲染" : "One-click rendering"}
-                              </span>
-                              <span aria-hidden="true"> — </span>
-                              {locale === "zh"
-                                ? "让 AI 适应建筑设计的每个阶段。"
-                                : "AI that adapts to each stage of architectural design."}
-                            </figcaption>
                           </figure>
                         ) : null}
                         {slide.visual === "lookx-lora-training" ? (
@@ -1012,15 +1095,6 @@ const copy =
                               alt=""
                               decoding="async"
                             />
-                            <figcaption class="lookx-feature-statement">
-                              <span class="lookx-feature-lead">
-                                {locale === "zh" ? "一键训练" : "One-click training"}
-                              </span>
-                              <span aria-hidden="true"> — </span>
-                              {locale === "zh"
-                                ? "上传参考图，LoRA 配置与训练交给 LookX。"
-                                : "Upload reference images. LookX handles LoRA setup and training."}
-                            </figcaption>
                           </figure>
                         ) : null}
                         {slide.visual === "lookx-generate-same" ? (
@@ -1031,15 +1105,6 @@ const copy =
                               alt=""
                               decoding="async"
                             />
-                            <figcaption class="lookx-feature-statement">
-                              <span class="lookx-feature-lead">
-                                {locale === "zh" ? "一键复刻" : "One-click recreation"}
-                              </span>
-                              <span aria-hidden="true"> — </span>
-                              {locale === "zh"
-                                ? "从一张成品出发，直接复用背后的整套生成参数。"
-                                : "Start from a finished work and reuse the complete generation setup behind it."}
-                            </figcaption>
                           </figure>
                         ) : null}
                         {slide.visual === "video-problem" ? (
@@ -1056,52 +1121,46 @@ const copy =
                         ) : null}
                         {slide.visual === "video-system-architecture" ? (
                           <figure class="video-system-architecture-visual" aria-label={locale === "zh" ? "视频分析引擎系统架构图" : "System architecture diagram for the video analysis engine"}>
-                            <img src="/case-studies/video-intelligence/system-architecture.png" alt="" decoding="async" />
-                            <figcaption class="video-system-proof">
-                              <p class="video-system-statement">
-                                <span>{locale === "zh" ? "视频分析引擎" : "Video analysis engine"}</span>
-                                <span aria-hidden="true"> — </span>
-                                {locale === "zh"
-                                  ? "实时流保持响应，离线任务跑满推理吞吐。"
-                                  : "Live streams stay responsive while offline jobs run at full inference throughput."}
-                              </p>
+                            <img src="/case-studies/video-intelligence/video-analysis-engine-v2.png" alt="" decoding="async" />
+                            <figcaption class="video-system-title">{locale === "zh" ? "视频分析引擎架构" : "Video Analysis Engine Architecture"}</figcaption>
+                            <div class="video-system-proof">
                               <div class="video-system-highlights">
-                                <div><strong>5 → 40 FPS</strong><span>{locale === "zh" ? "单 GPU 查询吞吐" : "Single-GPU query throughput"}</span></div>
-                                <div><strong>Non-blocking</strong><span>{locale === "zh" ? "具备背压控制的实时管线" : "Backpressure-safe realtime pipeline"}</span></div>
-                                <div><strong>120 FPS</strong><span>{locale === "zh" ? "离线推理与检测日志回放" : "Offline inference and detection-log replay"}</span></div>
+                                <div><strong>12 Streams</strong><span>{locale === "zh" ? "最大 GPU 并发" : "Max GPU Concurrency"}</span></div>
+                                <div><strong>1080p30</strong><span>{locale === "zh" ? "输出流" : "Output Stream"}</span></div>
+                                <div><strong>120 FPS</strong><span>{locale === "zh" ? "最大推理速度" : "Max Inference Speed"}</span></div>
                               </div>
-                            </figcaption>
+                            </div>
                           </figure>
                         ) : null}
                         {slide.visual === "video-product-workflow" ? (
                           <div class="video-product-workflow-visual" aria-label={locale === "zh" ? "视频智能平台产品工作流" : "Video intelligence product workflow"}>
                             {[
                               {
-                                title: locale === "zh" ? "流式任务" : "Streaming Tasks",
+                                title: locale === "zh" ? "模拟实飞" : "Flight Sim",
                                 tags: ["FDE", locale === "zh" ? "客户" : "Client"],
-                                image: "/case-studies/video-intelligence/product-streaming.png",
+                                image: "/case-studies/video-intelligence/vi-page4-left-v2.png",
                                 caption:
                                   locale === "zh"
-                                    ? "现场数据采集与算法压力测试：无人机飞行、多路流模拟、实时 bbox 反馈"
-                                    : "Field data collection and algorithm stress-testing: drone flights, multi-stream simulation, live bbox feedback",
+                                    ? "RTMP 接入、多路流压测、实时 bbox 叠加"
+                                    : "RTMP ingest, multi-stream load tests, live bbox overlays",
                               },
                               {
                                 title: locale === "zh" ? "文件推理" : "File Inference",
                                 tags: ["MLE", "Dev", "QA"],
-                                image: "/case-studies/video-intelligence/product-file-inference.png",
+                                image: "/case-studies/video-intelligence/vi-page4-mid-v2.png",
                                 caption:
                                   locale === "zh"
-                                    ? "围绕验收标准做离线批量验证：模型 A/B 对比、逐帧真值复核"
-                                    : "Batch offline validation against exit criteria: model A/B comparison, per-frame ground truth review",
+                                    ? "批量推理、模型 A/B 对比、逐帧复核"
+                                    : "Batch inference, model A/B comparison, frame-level review",
                               },
                               {
                                 title: locale === "zh" ? "复盘分析" : "Review & Analysis",
                                 tags: [locale === "zh" ? "销售" : "Sales", "MLE", "QA"],
-                                image: "/case-studies/video-intelligence/product-review-analysis.png",
+                                image: "/case-studies/video-intelligence/vi-page4-right-v2.png",
                                 caption:
                                   locale === "zh"
-                                    ? "为相关方整理可交付证据：时间线回放、事件截图、可分享片段"
-                                    : "Curated evidence for stakeholders: timeline replay, event snapshots, shareable clips",
+                                    ? "时间线回放、事件截图、证据片段导出"
+                                    : "Timeline replay, event snapshots, evidence clip export",
                               },
                             ].map((item) => (
                               <figure class="video-product-card">
@@ -1123,7 +1182,7 @@ const copy =
                           <div class="video-uiux-grid" aria-label={locale === "zh" ? "视频智能平台交互亮点" : "Video intelligence UI interaction highlights"}>
                             {[
                               {
-                                title: locale === "zh" ? "前端解耦渲染" : "Decoupled Rendering",
+                                title: locale === "zh" ? "解耦渲染" : "Decoupled Rendering",
                                 image: "/case-studies/video-intelligence/uiux/decoupled-rendering.gif",
                                 caption:
                                   locale === "zh"
@@ -1131,7 +1190,7 @@ const copy =
                                     : "Inference overlays are rendered in the frontend instead of burned into frames, making visualization flexible and customizable.",
                               },
                               {
-                                title: locale === "zh" ? "逐帧进度追踪" : "Frame Progress Tracking",
+                                title: locale === "zh" ? "推理进度追踪" : "Inference Progress Tracking",
                                 image: "/case-studies/video-intelligence/uiux/progress-bar.gif",
                                 caption:
                                   locale === "zh"
@@ -1151,7 +1210,7 @@ const copy =
                                 image: "/case-studies/video-intelligence/uiux/tooltip-marker.gif",
                                 caption:
                                   locale === "zh"
-                                    ? "关键事件被标记在时间线上，用户可以直接跳到有价值的片段，而不是看完整段视频。"
+                                    ? "关键事件会被明确标记在时间线上，用户可以直接跳到有价值的片段，而不是看完整段视频。"
                                     : "Custom event markers and tooltips guide users straight to meaningful moments instead of making them watch the full video.",
                               },
                             ].map((item) => (
@@ -1165,49 +1224,73 @@ const copy =
                             ))}
                           </div>
                         ) : null}
+                        {slide.visual === "video-ui-philosophy" ? (
+                          <figure class="video-ui-philosophy-visual" aria-label={locale === "zh" ? "视频智能平台 Storybook 组件系统" : "Storybook component system for the video intelligence platform"}>
+                            <img src="/case-studies/video-intelligence/vi-ui-components-01.png" alt="" decoding="async" />
+                            <img src="/case-studies/video-intelligence/vi-ui-components-02.png" alt="" decoding="async" />
+                            <img src="/case-studies/video-intelligence/vi-ui-components-03.png" alt="" decoding="async" />
+                          </figure>
+                        ) : null}
                         {slide.visual === "video-fusion-detection" ? (
-                          <div class="video-fusion-visual" aria-label={locale === "zh" ? "可见光与红外融合检测算法演示" : "Visible-light and infrared fusion detection demo"}>
-                            <video src="/case-studies/video-intelligence/fusion/fusion-detection.mp4" autoplay muted loop playsinline preload="metadata"></video>
-                            <div class="video-fusion-overlay">
-                              {[
-                                {
-                                  n: "1",
-                                  text:
-                                    locale === "zh"
-                                      ? "SEI 帧数据用于红外与可见光图像配准"
-                                      : "SEI frame data for Infrared and visible-light image registration",
-                                },
-                                {
-                                  n: "2",
-                                  text:
-                                    locale === "zh"
-                                      ? "单应性矩阵用于相机畸变校正"
-                                      : "Homography Matrix for camera distortion correction",
-                                },
-                                {
-                                  n: "3",
-                                  text:
-                                    locale === "zh"
-                                      ? "过滤可疑 YOLO 结果，降低误报"
-                                      : "Filter suspicious YOLO result to reduce false alarms",
-                                },
-                              ].map((item) => (
-                                <div class={`video-fusion-note video-fusion-note-${item.n}`}>
-                                  <b>{item.n}</b>
-                                  <span>{item.text}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
+                          <figure class="video-fusion-visual" aria-label={locale === "zh" ? "可见光与红外融合检测算法演示" : "Visible-light and infrared fusion detection demo"}>
+                            <video
+                              src={lowTrafficMode ? undefined : "/case-studies/video-intelligence/fusion/vi-fusion-v2.mp4"}
+                              data-heavy-src={lowTrafficMode ? "/case-studies/video-intelligence/fusion/vi-fusion-v2.mp4" : undefined}
+                              autoplay={lowTrafficMode ? undefined : true}
+                              muted
+                              loop
+                              playsinline
+                              preload={lowTrafficMode ? "none" : "metadata"}
+                            ></video>
+                          </figure>
                         ) : null}
                         {slide.visual === "vision-feature-dump" ? (
-                          <div class="vision-feature-dump-visual" aria-label={locale === "zh" ? "Feature dump memory structure" : "Feature dump memory structure"}>
-                            <figure class="vision-feature-image vision-feature-image-stream">
-                              <img src="/case-studies/vision-agent/feature-dump-stream.png" alt="" decoding="async" />
+                          <div class="vision-feature-dump-visual" aria-label={locale === "zh" ? "视觉智能体结构化事实与长期记忆设计" : "Structured facts and long-term memory design for the vision agent"}>
+                            <figure class="vision-feature-primary">
+                              <img src="/case-studies/vision-agent/feature-dump-v3.png" alt="" decoding="async" />
                             </figure>
-                            <figure class="vision-feature-image vision-feature-image-memory">
-                              <img src="/case-studies/vision-agent/feature-dump-memory.png" alt="" decoding="async" />
-                            </figure>
+                            <div class="vision-feature-facts">
+                              {[
+                                {
+                                  label: locale === "zh" ? "事件" : "Events",
+                                  status: locale === "zh" ? "仅驻留内存" : "in-memory only",
+                                  storage: "memory",
+                                  title: locale === "zh" ? "用户关心的领域事件" : "Domain-meaningful occurrences users care about",
+                                  example: locale === "zh" ? "例如：00:03–00:05 发现违停车辆" : "e.g. an illegally parked vehicle detected from 00:03–00:05",
+                                },
+                                {
+                                  label: locale === "zh" ? "检测" : "Detections",
+                                  status: locale === "zh" ? "仅驻留内存" : "in-memory only",
+                                  storage: "memory",
+                                  title: locale === "zh" ? "CV 模型输出的逐帧检测框快照" : "Raw per-frame bbox snapshots from CV models",
+                                  example: 'e.g. {"class_name":"car", "conf":0.9404, "track_id":52, ...}',
+                                },
+                                {
+                                  label: locale === "zh" ? "记忆" : "Memory",
+                                  status: locale === "zh" ? "写入磁盘" : "flush to disk",
+                                  storage: "disk",
+                                  title: locale === "zh" ? "VLM/LMM 操作产生的事实" : "Facts produced by active VLM/LMM operations",
+                                  example: locale === "zh" ? "例如：G2 高速 K34–35，日间车流量较低……" : "e.g. Highway section G2 K34–35. Light daytime traffic...",
+                                },
+                                {
+                                  label: locale === "zh" ? "历史" : "History",
+                                  status: locale === "zh" ? "写入磁盘" : "flush to disk",
+                                  storage: "disk",
+                                  title: locale === "zh" ? "历史判断原因与任务事实" : "Historical verdict reasons and task-specific facts",
+                                  example: locale === "zh" ? "例如：低角度晨光下，高架梁产生的阴影" : "e.g. shadow cast by an overpass girder in low-angle morning sun",
+                                },
+                              ].map((item) => (
+                                <section class="vision-feature-fact">
+                                  <div class="vision-feature-route" aria-label={`${item.label}: ${item.status}`}>
+                                    <b>{item.label}</b>
+                                    <i aria-hidden="true"></i>
+                                    <em class={`is-${item.storage}`}>{item.status}</em>
+                                  </div>
+                                  <strong>{item.title}</strong>
+                                  <span>{item.example}</span>
+                                </section>
+                              ))}
+                            </div>
                           </div>
                         ) : null}
                         {slide.visual === "vision-context-engineering" ? (
@@ -1218,16 +1301,27 @@ const copy =
                         {slide.media ? (
                           <figure class="story-cover-asset" aria-label={slide.media.alt ?? ""}>
                             {slide.media.type === "video" ? (
-                              <video src={slide.media.src} poster={slide.media.poster} autoplay muted loop playsinline preload="metadata"></video>
+                              <video
+                                src={lowTrafficMode ? undefined : slide.media.src}
+                                data-heavy-src={lowTrafficMode ? slide.media.src : undefined}
+                                poster={slide.media.poster}
+                                autoplay={lowTrafficMode ? undefined : true}
+                                muted
+                                loop
+                                playsinline
+                                preload={lowTrafficMode ? "none" : "metadata"}
+                              ></video>
                             ) : (
                               <img src={slide.media.src} alt={slide.media.alt ?? ""} decoding="async" />
                             )}
                             {slide.media.caption ? (
                               <figcaption>
                                 {slide.visual === "mm-frontpage" ? (
-                                  <>
-                                    Annotated <span>Stuffing Box</span> of a pumpjack in drone-shot images
-                                  </>
+                                  locale === "zh" ? (
+                                    <>无人机拍摄的磕头机<span>盘根盒</span>图像</>
+                                  ) : (
+                                    <>Annotated <span>Stuffing Box</span> of a pumpjack in drone-shot images</>
+                                  )
                                 ) : (
                                   slide.media.caption
                                 )}
@@ -1295,13 +1389,14 @@ const copy =
                     {project.data.sessionVideo ? (
                       <div class="media-scene" aria-label={project.data.diagramAlt}>
                         <video
-                          src={project.data.sessionVideo}
+                          src={lowTrafficMode ? undefined : project.data.sessionVideo}
+                          data-heavy-src={lowTrafficMode ? project.data.sessionVideo : undefined}
                           poster={project.data.sessionPoster ?? project.data.sessionVisual}
-                          autoplay
+                          autoplay={lowTrafficMode ? undefined : true}
                           muted
                           loop
                           playsinline
-                          preload="auto"
+                          preload={lowTrafficMode ? "none" : "auto"}
                         ></video>
                       </div>
                     ) : (
@@ -1430,20 +1525,23 @@ const copy =
   <FlowControlPill projects={projects} locale={locale} />
 </section>
 
-<script is:inline define:vars={{ projects: projects.map((project) => ({
-  slug: project.data.slug,
-  title: project.data.title,
-  pillTitleLines: (pillTitles[project.data.slug]?.[locale] ?? [project.data.sessionHeadline ?? project.data.title, ""]),
-  timelineDate: timelineMeta[project.data.slug]?.date ?? project.data.period,
-  timelineCompanyName: companyLinks[timelineMeta[project.data.slug]?.company]?.name ?? "",
-  timelineCompanyHref: companyLinks[timelineMeta[project.data.slug]?.company]?.href ?? "",
-  summary: project.data.summary,
-  eyebrow: project.data.eyebrow,
-  role: project.data.role,
-  diagram: project.data.diagram,
-  pillThumb: pillThumbs[project.data.slug] ?? project.data.diagram,
-  accent: project.data.accent,
-})) }}>
+<script is:inline define:vars={{
+  lowTrafficMode,
+  projects: projects.map((project) => ({
+    slug: project.data.slug,
+    title: project.data.title,
+    pillTitleLines: (pillTitles[project.data.slug]?.[locale] ?? [project.data.sessionHeadline ?? project.data.title]),
+    timelineDate: timelineMeta[project.data.slug]?.date ?? project.data.period,
+    timelineCompanyName: companyLinks[timelineMeta[project.data.slug]?.company]?.name ?? "",
+    timelineCompanyHref: companyLinks[timelineMeta[project.data.slug]?.company]?.href ?? "",
+    summary: project.data.summary,
+    eyebrow: project.data.eyebrow,
+    role: project.data.role,
+    diagram: project.data.diagram,
+    pillThumb: pillThumbs[project.data.slug] ?? project.data.diagram,
+    accent: project.data.accent,
+  })),
+}}>
   const viewer = document.querySelector("[data-work-viewer]");
 
   if (viewer instanceof HTMLElement) {
@@ -1452,16 +1550,44 @@ const copy =
     const projectNodes = [...viewer.querySelectorAll("[data-viewer-project]")];
     const title = viewer.querySelector("[data-viewer-title]");
     const edition = viewer.querySelector("[data-viewer-edition]");
-    const editionDate = viewer.querySelector("[data-viewer-edition-date]");
-    const editionCompany = viewer.querySelector("[data-viewer-edition-company]");
-    const thumbnail = viewer.querySelector("[data-viewer-thumbnail]");
-    const episodeReadout = viewer.querySelector("[data-episode-readout]");
+	    const editionDate = viewer.querySelector("[data-viewer-edition-date]");
+	    const editionCompany = viewer.querySelector("[data-viewer-edition-company]");
+	    const thumbnail = viewer.querySelector("[data-viewer-thumbnail]");
+	    const carouselReturn = viewer.querySelector("[data-viewer-carousel-return]");
+	    const episodeReadout = viewer.querySelector("[data-episode-readout]");
     const pageCurrent = viewer.querySelector("[data-page-current]");
     const pageTotal = viewer.querySelector("[data-page-total]");
     const pillChannel = viewer.querySelector("[data-pill-channel]");
+    const fullscreenButton = viewer.querySelector("[data-viewer-fullscreen]");
     const episodeDots = [...viewer.querySelectorAll("[data-episode-select]")];
     let activeIndex = 0;
     let activeEpisode = 0;
+
+    const playVideo = (video) => {
+      if (lowTrafficMode && !video.getAttribute("src") && video.dataset.heavySrc) {
+        video.src = video.dataset.heavySrc;
+        video.load();
+      }
+      video.play().catch(() => {});
+    };
+
+    const syncVideos = () => {
+      const viewIsActive = document.documentElement.dataset.portfolioView === "tv";
+      projectNodes.forEach((projectNode, projectIndex) => {
+        projectNode.querySelectorAll("video").forEach((video) => {
+          const episode = video.closest("[data-viewer-episode]");
+          const active =
+            viewIsActive &&
+            projectIndex === activeIndex &&
+            episode?.classList.contains("is-active");
+          if (active) {
+            playVideo(video);
+            return;
+          }
+          video.pause();
+        });
+      });
+    };
 
     const activeEpisodeNodes = () => [
       ...(projectNodes[activeIndex]?.querySelectorAll("[data-viewer-episode]") ?? []),
@@ -1490,6 +1616,7 @@ const copy =
         counter.textContent = ` EP ${String(activeEpisode + 1).padStart(2, "0")} / ${String(episodes.length).padStart(2, "0")}`;
       });
       if (pageCurrent) pageCurrent.textContent = String(activeEpisode + 1).padStart(2, "0");
+      syncVideos();
     };
 
     const showProject = (nextIndex, announce = true) => {
@@ -1503,11 +1630,16 @@ const copy =
         node.querySelector("[data-viewer-info-panel]")?.setAttribute("aria-hidden", "true");
       });
 
-      const project = projectData[activeIndex];
-      if (!project) return;
-      if (title) {
+	      const project = projectData[activeIndex];
+	      if (!project) return;
+	      try {
+	        window.localStorage.setItem("portfolio:lastProjectSlug", project.slug);
+	      } catch {
+	        // Ignore storage failures; project navigation should still work without persistence.
+	      }
+	      if (title) {
         title.replaceChildren(
-          ...project.pillTitleLines.map((line) => {
+          ...project.pillTitleLines.filter(Boolean).map((line) => {
             const span = document.createElement("span");
             span.textContent = line;
             return span;
@@ -1522,6 +1654,7 @@ const copy =
       }
       if (thumbnail instanceof HTMLElement) {
         thumbnail.dataset.viewerThumbnailSlug = project.slug;
+        thumbnail.parentElement?.style.setProperty("--viewer-thumb-image", `url("${project.pillThumb}")`);
       }
       viewer.className = viewer.className.replace(/\baccent-\S+/g, "").replace(/\bproject-\S+/g, "");
       viewer.classList.add(`accent-${project.accent}`, `project-${project.slug}`);
@@ -1546,17 +1679,47 @@ const copy =
     viewer.querySelector("[data-episode-next]")?.addEventListener("click", () => {
       showEpisode(activeEpisode + 1);
     });
-    document.querySelector(".wordmark")?.addEventListener("click", (event) => {
-      event.preventDefault();
-      const project = projectData[activeIndex];
-      window.dispatchEvent(
-        new CustomEvent("portfolio:back-to-sessions", {
-          detail: { slug: project?.slug },
-        }),
+    const syncFullscreenButton = () => {
+      if (!(fullscreenButton instanceof HTMLElement)) return;
+      const active = document.fullscreenElement === viewer;
+      fullscreenButton.classList.toggle("is-active", active);
+      fullscreenButton.setAttribute(
+        "aria-label",
+        active
+          ? fullscreenButton.dataset.exitFullscreenLabel || "Exit full screen"
+          : fullscreenButton.dataset.fullscreenLabel || "Full screen",
       );
+      fullscreenButton.setAttribute("aria-pressed", active ? "true" : "false");
+    };
+    fullscreenButton?.addEventListener("click", () => {
+      if (!document.fullscreenEnabled) return;
+      if (document.fullscreenElement === viewer) {
+        document.exitFullscreen?.();
+        return;
+      }
+      viewer.requestFullscreen?.();
     });
+    document.addEventListener("fullscreenchange", syncFullscreenButton);
+    syncFullscreenButton();
+	    document.querySelector(".wordmark")?.addEventListener("click", (event) => {
+	      event.preventDefault();
+	      const project = projectData[activeIndex];
+	      window.dispatchEvent(
+	        new CustomEvent("portfolio:back-to-sessions", {
+          detail: { slug: project?.slug },
+	        }),
+	      );
+	    });
+	    carouselReturn?.addEventListener("click", () => {
+	      const project = projectData[activeIndex];
+	      window.dispatchEvent(
+	        new CustomEvent("portfolio:back-to-sessions", {
+	          detail: { slug: project?.slug },
+	        }),
+	      );
+	    });
 
-    episodeDots.forEach((dot) => {
+	    episodeDots.forEach((dot) => {
       dot.addEventListener("click", () => {
         showEpisode(Number(dot.getAttribute("data-episode-select")));
       });
@@ -1608,5 +1771,6 @@ const copy =
       const index = projectData.findIndex((project) => project.slug === event.detail?.slug);
       if (index >= 0) showProject(index, false);
     });
+    window.addEventListener("portfolio:view-change", syncVideos);
   }
 </script>

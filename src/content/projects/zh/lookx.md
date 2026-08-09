@@ -32,10 +32,10 @@ framework: 可控图像生成
 frameworkSummary: 将模型能力封装为专业而简单的任务工作流，而不是暴露通用 Diffusion 操作界面。
 sessionTitle: 建筑 AI 渲染
 sessionHeadline: 隐藏模型，保留创造
-sessionDescription: 把扩散模型封装进建筑师熟悉的任务流程，在保持设计细节控制的同时降低使用门槛。
-sessionVisual: /case-studies/lookx/lookx-hero-video-poster.jpg
-sessionVideo: /case-studies/lookx/lookx-hero.mp4
-sessionPoster: /case-studies/lookx/lookx-hero-video-poster.jpg
+sessionDescription: 为了适配建筑师实际的工作方式与设计要求，将生成式 AI 能力重新组织为更符合用户背景的 AI 产品。
+sessionVisual: /case-studies/lookx/lookx-hero-media-v2-poster.jpg
+sessionVideo: /case-studies/lookx/lookx-hero-media-v2.mp4
+sessionPoster: /case-studies/lookx/lookx-hero-media-v2-poster.jpg
 sessionMetric:
   value: 40万+
   label: 注册用户

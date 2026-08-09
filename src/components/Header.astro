@@ -20,7 +20,7 @@ const homeLabel = locale === "zh" ? `返回首页，${nameLabel}` : `Home, ${nam
 ---
 
 <header class="site-header">
-  <a class="wordmark" href={copy.home} aria-label={homeLabel}>
+  <a class="wordmark" href={copy.home} aria-label={homeLabel} data-sessions-memory-link>
     <svg class="wordmark-logo" xmlns="http://www.w3.org/2000/svg" width="1600" height="360" viewBox="0 0 1600 360" role="img" aria-hidden="true" fill="none">
       <rect width="1600" height="360" fill="transparent"/>
       <text x="40" y="286"
@@ -32,9 +32,8 @@ const homeLabel = locale === "zh" ? `返回首页，${nameLabel}` : `Home, ${nam
     </svg>
   </a>
   <nav aria-label={locale === "zh" ? "主导航" : "Primary navigation"}>
-    <a href={copy.projects} aria-current={isCurrent(copy.projects) ? "page" : undefined}>{copy.nav.work}</a>
+    <a href={copy.projects} aria-current={isCurrent(copy.projects) ? "page" : undefined} data-sessions-memory-link>{copy.nav.work}</a>
     <a href={copy.about} aria-current={isCurrent(copy.about) ? "page" : undefined}>{copy.nav.about}</a>
-    <a href={copy.contact} aria-current={isCurrent(copy.contact) ? "page" : undefined}>{copy.nav.contact}</a>
     <a
       class="language-switch"
       href={localeTarget}
@@ -48,6 +47,39 @@ const homeLabel = locale === "zh" ? `返回首页，${nameLabel}` : `Home, ${nam
 </header>
 
 <script>
+  const validProjectSlugs = new Set([
+    "vision-agent",
+    "robotic-video-intelligence",
+    "multimodal-asset-search",
+    "lookx-generative-ai",
+    "floor-plan-reconstruction",
+  ]);
+
+  const latestProjectSlug = () => {
+    try {
+      const slug = window.localStorage.getItem("portfolio:lastProjectSlug");
+      return slug && validProjectSlugs.has(slug) ? slug : "";
+    } catch {
+      return "";
+    }
+  };
+
+  document.querySelectorAll("[data-sessions-memory-link]").forEach((link) => {
+    if (!(link instanceof HTMLAnchorElement)) return;
+    const setMemoryHref = () => {
+      const slug = latestProjectSlug();
+      if (!slug) return;
+      const target = new URL(link.href);
+      target.searchParams.set("view", "sessions");
+      target.hash = slug;
+      link.href = target.toString();
+    };
+
+    link.addEventListener("pointerenter", setMemoryHref);
+    link.addEventListener("focus", setMemoryHref);
+    link.addEventListener("click", setMemoryHref);
+  });
+
   document.querySelectorAll("[data-locale-switch]").forEach((link) => {
     link.addEventListener("click", () => {
       const locale = link.getAttribute("data-locale");
