@@ -20,7 +20,7 @@ technologies:
   - SQLite
   - Docker
 metrics:
-  - value: 8 × 30 FPS
+  - value: 12 × 30 FPS
     label: 单张 RTX 4090 并发视频流
   - value: 100→5
     label: 集成调试人天
@@ -41,7 +41,7 @@ sessionVisual: /case-studies/video-intelligence/wanxiang-hero-poster.jpg
 sessionVideo: /case-studies/video-intelligence/vi-hero-media-v2.mp4
 sessionPoster: /case-studies/video-intelligence/wanxiang-hero-poster.jpg
 sessionMetric:
-  value: 8 × 30 FPS
+  value: 12 × 30 FPS
   label: 单张 RTX 4090 并发视频流
 implementationStatus: Agent-ready 平台；尚未实现 LLM/VLM Agent 层
 accent: sage
@@ -110,7 +110,7 @@ GStreamer 负责文件、RTMP、RGB/红外拼接和双路视频输入。结果�
 
 ## 结果
 
-平台在单张 RTX 4090 上支持 **8 路并发、每路 30 FPS**。内部记录显示，集成调试从约 **100 人天降至 5 人天**，客户测试从 **80 人天降至 2 人天**，演示准备从 **100 人天降至 2 人天**。
+平台在单张 RTX 4090 上支持 **12 路并发、每路 30 FPS**。内部记录显示，集成调试从约 **100 人天降至 5 人天**，客户测试从 **80 人天降至 2 人天**，演示准备从 **100 人天降至 2 人天**。
 
 团队面向一个外部高速客户，在单次两天现场访问中使用遥控器操作无人机，完成了实时 POC，而不再需要数周的硬件安装与环境调试。
 

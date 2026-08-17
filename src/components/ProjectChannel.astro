@@ -52,18 +52,18 @@ const floorPlanDeck =
     ? {
         context: {
           title: "户型图矢量化重建",
-          summary: "系统结合像素级分割、约束优化与几何计算，将栅格户型图转换为可供后续应用使用的结构化 BIM 数据。",
+          summary: "该混合模型结合了语义分割、约束优化与几何计算，将栅格化的户型图转换为可供后续应用使用的结构化 BIM 数据。",
         },
         bottleneck: {
           title: "缺少中间层，应用只能重画",
           summary: "如果图像不能变成墙、门窗、房间和拓扑关系，后续的计量、检索、BIM 导出和业务应用都会停在人工环节。",
         },
         synthetic: {
-          title: "基于前端工程的训练数据合成",
-          summary: "这套流程复用专有前端渲染器，通过自动改写 CSS 样式批量生成分割数据，替代高成本的人工标注。",
+          title: "在实践中，像素级分割标注成本往往很高",
+          summary: "因此，我们复用已有的专有前端渲染器，通过自动改写 CSS 样式批量生成分割标签，减少对人工标注的依赖。",
         },
         graph: {
-          title: "数据产出：7 万张带分割标注的户型图",
+          title: "数据产出：7 万份语义分割标注数据",
           summary: "从 segmentation 得到房间轮廓后，通过多边形简化和两轮图优化，把噪声边界收敛为可编辑的空间骨架。",
         },
         roomOptimization: {
@@ -79,8 +79,8 @@ const floorPlanDeck =
           summary: "墙体中心线、房间、门窗和楼板被导出为 IFC，并在浏览器中直接检查空间关系与三维几何。",
         },
         result: {
-          title: "最终得到的是可复用的空间数据",
-          summary: "系统生成 5 万+ 矢量户型数据，覆盖中国主流住宅户型，并在 Xkool 多个产品和业务场景中复用。",
+          title: "重建结果的商业应用",
+          summary: "通过这套技术，XKool 设计云平台的户型库覆盖了中国住宅市场中的大部分常见户型；多家客户也会在户型研判过程中直接批量采购完整的 BIM 模型。",
         },
       }
     : {
@@ -93,11 +93,11 @@ const floorPlanDeck =
           summary: "If an image cannot become walls, openings, rooms, and topology, measurement, retrieval, BIM export, and business workflows stay manual.",
         },
         synthetic: {
-          title: "Frontend Engineering for Synthetic Training Data",
-          summary: "The workflow reuses the proprietary frontend renderer and automates CSS overrides to generate segmentation masks, replacing costly manual annotation.",
+          title: "Manual Segmentation Labeling Is Expensive",
+          summary: "To address this, we created automated pipelines with Selenium to generate annotations at scale.",
         },
         graph: {
-          title: "Pipeline Output: 70K Floor Plans with Segmentation Labels",
+          title: "Dataset Output: 70K Semantic Segmentation Annotations",
           summary: "Segmentation gives room contours; polygon simplification and two graph-optimization rounds turn noisy boundaries into editable spatial skeletons.",
         },
         roomOptimization: {
@@ -113,8 +113,8 @@ const floorPlanDeck =
           summary: "Wall centerlines, rooms, openings, and slabs are exported as IFC, then inspected directly in the browser as spatial geometry.",
         },
         result: {
-          title: "The output is reusable spatial data",
-          summary: "The system generated 50K+ vectorized layouts across mainstream Chinese residential plans and was reused in multiple Xkool projects.",
+          title: "Commercial Use of Reconstructed BIM Models",
+          summary: "The pipeline expanded XKool Design Cloud’s floor-plan library to cover most common residential layout types in China; multiple clients also purchase complete BIM models in bulk for layout evaluation.",
         },
       };
 type StoryDeckSlide = {
@@ -157,46 +157,46 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
             kicker: "视觉数据",
             title: "视觉数据管理与检索系统",
             titleLines: ["视觉数据管理与", "检索系统"],
-            summary: "将图像元数据、特征向量、模型预测和人工标注统一组织为可查询的数据架构，支持图像搜索与定位。",
+            summary: "平台统一管理图像元数据、特征向量、模型预测与人工标注，并通过交互界面支持用户在百万级图像中快速检索、评估和复用数据。",
             visual: "mm-frontpage",
             layout: "statement",
             media: {
               type: "image",
-              src: "/case-studies/multimodal-search/frontpage-hero.png",
+              src: "/case-studies/multimodal-search/mmsearch-page1-v2.png",
               alt: "多模态检索系统界面",
               caption: "无人机拍摄的磕头机盘根盒图像",
             },
           },
           {
+            kicker: "问题",
+            title: "仅靠文件目录难以有效管理大规模视觉数据",
+            summary: "按常规的研发习惯，图像数据将会分散在不同的对象存储路径中。而仅靠路径、文件名或少量标签，很难按视觉内容、模型结果或业务语义定位所需数据。",
+            visual: "mm-data-problem",
+            layout: "board",
+          },
+          {
             kicker: "元数据层",
-            title: "结构化元数据、检测结果、文本描述、标签和特征向量为图像检索提供多种查询依据。",
+            title: "除了图像之外，元数据、标签、文本描述、特征向量与标注结果也能成为多模态检索的查询依据。",
             summary: "文本、图像 embedding、caption、annotation、tag、description 和业务 metadata 都是检索入口。它们让用户能从不同工作流切入同一批视觉资产。",
             visual: "mm-metadata",
             layout: "board",
           },
           {
-            kicker: "平台能力",
-            title: "零样本检测、合成数据生成与标注工具",
-            summary: "四组操作演示涵盖平台的部分功能：零样本检测、模板化生成、图像拼接与编辑，以及标签与标注管理。",
-            visual: "mm-operations",
-            layout: "board",
-          },
-          {
             kicker: "系统架构",
-            title: "基于 CLIP、Vertex AI 与 BigQuery 的百万级图像检索架构",
-            summary: "实现指标",
+            title: "基于 CLIP、Vertex AI 与 BigQuery 的图像检索架构",
+            summary: "",
             visual: "mm-infra",
             layout: "board",
             implementationMetrics: [
-              { label: "数据集规模", value: "100 万张图像" },
-              { label: "CLIP 向量生成吞吐量", value: "120 张图像/秒" },
-              { label: "查询延迟", value: "< 1 秒" },
+              { label: "数据集规模", value: "超 100 万张图像" },
+              { label: "CLIP 向量生成速度", value: "120 张图像/秒" },
+              { label: "多模态检索响应速度", value: "< 1 秒" },
             ],
           },
           {
             kicker: "真实演示",
-            title: "文本和图像都可以成为查询入口",
-            summary: "",
+            title: "视觉数据检索",
+            summary: "通过文本或图像查询，团队可以准备初始标注集、检查数据质量，并持续复用已有视觉数据。",
             visual: "mm-real-demo",
             layout: "board",
             media: {
@@ -206,12 +206,19 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
               caption: "多模态检索功能演示",
             },
           },
+          {
+            kicker: "平台能力",
+            title: "从检索延伸到视觉模型开发工作流",
+            summary: "基于同一数据层，平台也针对用户在视觉模型研发中的具体需求提供相应adhoc功能。",
+            visual: "mm-operations",
+            layout: "board",
+          },
         ],
         "lookx-generative-ai": [
           {
             kicker: "LookX · 建筑 AI SaaS",
-            title: "AI 产品的领域化设计",
-            summary: "使用 AI 时，建筑师关心两件事：渲染图要保留参考图中的空间结构与构件关系，生成过程也要少一些抽卡、反复试错和调参。",
+            title: "AI 产品的行业化设计",
+            summary: "使用 AI 时，建筑师最关心两件事：一是生成的图像要保留参考图中的空间结构与构件关系，二是生成过程中要少一些抽卡、反复试错和调参。",
             visual: "lookx-context",
             layout: "statement",
             media: {
@@ -219,6 +226,13 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
               src: "/case-studies/lookx/lookx-hero-image.webp",
               alt: "LookX 建筑 AI 渲染界面",
             },
+          },
+          {
+            kicker: "产品设计",
+            title: "产品目标：降低建筑师使用生成式 AI 的门槛",
+            summary: "围绕这一目标，我们设计并实现了一键渲染、一键训练与一键复刻三项核心功能。",
+            visual: "lookx-design-directions",
+            layout: "board",
           },
           {
             kicker: "RENDER MODE",
@@ -230,7 +244,7 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
           {
             kicker: "AUTO TRAINING",
             title: "一键训练",
-            summary: "上传参考图即可一键训练 LoRA，无需自行调整或理解复杂的训练参数。",
+            summary: "上传参考图即可一键训练 LoRA，无需自行理解或调整复杂的训练参数。",
             visual: "lookx-lora-training",
             layout: "split",
           },
@@ -243,15 +257,15 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
           },
           {
             kicker: "TECH",
-            title: "",
+            title: "产品功能背后的一些技术细节",
             summary: "",
             visual: "lookx-tech-system",
             layout: "board",
           },
           {
             kicker: "RESULT",
-            title: "用户持续发布的社区内容推动了产品的自然增长",
-            summary: "来自不同国家的用户和创作者把 LookX 的渲染结果做成教程、YouTube Shorts 和工作流演示，让产品通过真实内容自然扩散。",
+            title: "社区传播与商业增长",
+            summary: "来自不同国家的用户和创作者持续分享渲染结果、制作多语种教程，让 LookX 获得了持续且有机的商业增长。",
             visual: "lookx-market-result",
             layout: "metrics",
             media: {
@@ -260,7 +274,7 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
               alt: "Users sharing LookX AI rendering workflows on social media",
             },
             metrics: [
-              { value: "$30K", label: "MRR" },
+              { value: "$30K", label: "月订阅收入" },
               { value: "600K", label: "注册用户" },
               { value: "$0", label: "营销支出" },
             ],
@@ -281,43 +295,43 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
           },
           {
             kicker: "PROBLEM",
-            title: "现场部署视觉模型的数据与配置漂移",
-            summary: "",
+            title: "现场部署中的数据与配置漂移",
+            summary: "视频码率、画面比例或推理参数等细微变化，都可能让实验室与现场结果难以复现，也让问题来源更难定位。",
             visual: "video-problem",
             layout: "statement",
           },
           {
-            kicker: "SYSTEM",
-            title: "",
-            summary: "",
-            visual: "video-system-architecture",
+            kicker: "PRODUCT",
+            title: "轻量化研发验证平台：复现现场结果，定位差异来源",
+            summary: "不同团队能通过平台功能去调整与对齐模型运行环境的上下文，包括直播流规格、运行配置与视频分析引擎参数等。",
+            visual: "video-product-workflow",
             layout: "statement",
           },
           {
-            kicker: "PRODUCT",
-            title: "覆盖现场测试、离线验证与结果复盘的视觉模型平台",
-            summary: "不同团队在现场测试、离线验证、回放与复核中共享同一任务上下文，包括视频、模型与参数。",
-            visual: "video-product-workflow",
+            kicker: "SYSTEM",
+            title: "视频分析引擎架构",
+            summary: "为提升多路视频的实时处理性能，GStreamer 管线、模型服务与结果存储均进行了针对性重构。",
+            visual: "video-system-architecture",
             layout: "statement",
           },
           {
             kicker: "INTERACTION",
             title: "面向视觉 AI 应用的 UI/UX 设计",
-            summary: "作为一个以媒体为核心的产品，UI/UX 的设计关键是清晰呈现任务及其视频与关联信息，并让浏览、定位与操作更加直接。",
+            summary: "在以视频与图像媒体为核心的用户工作流中，UI/UX 的关键是清晰呈现任务及其视频与关联信息，并让浏览、定位与操作更加直接。",
             visual: "video-uiux-highlights",
             layout: "statement",
           },
           {
             kicker: "UI DESIGN",
-            title: "组件状态、变体与设计令牌",
-            summary: "组件通过统一的行为与状态反馈保持交互一致，并以品牌色、形态语言与图标系统建立视觉辨识度。",
+            title: "组件、变体与设计令牌",
+            summary: "销售常常用这套轻量化平台代替高需求的正式产品进行客户演示，因此组件设计也需要保持品牌一致性。",
             visual: "video-ui-philosophy",
             layout: "statement",
           },
           {
             kicker: "ALGORITHM",
-            title: "案例：现场的误报促使工程团队迭代技术方案",
-            summary: "在无人机巡检的现场部署中，我们发现石油管道漏油区域与岩石阴影在可见光下难以区分。基于平台提供的一体化研发验证能力，算法团队成功开发并验证了双光融合检测算法。",
+            title: "案例：研发团队通过平台迭代技术方案",
+            summary: "在无人机巡检的现场部署中，我们发现石油管道漏油区域与岩石阴影在可见光下难以区分。基于平台提供的一体化研发验证能力，算法研发团队成功开发并验证了双光融合检测算法。",
             visual: "video-fusion-detection",
             layout: "statement",
           },
@@ -336,43 +350,49 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
             },
           },
           {
+            kicker: "PROBLEM",
+            title: "传统 CV 模型的几个缺点",
+            summary: "",
+            visual: "vision-cv-limits",
+            layout: "statement",
+          },
+          {
             kicker: "CHOICE",
-            title: "从单次检测到具备历史上下文的视觉决策",
-            summary: "检测结果、对应图像与历史决策记录会被组织为 Prompt 上下文，供 VLM 进行决策推理。",
+            title: "解决思路：从单次检测到具备历史上下文的视觉决策",
+            summary: "",
             visual: "vision-common-sense",
             layout: "statement",
             media: {
               type: "image",
-              src: "/case-studies/vision-agent/vlm-memory-static.png",
+              src: "/case-studies/vision-agent/va-page3-v3.png",
               alt: "视觉智能体常识推理与记忆示意",
             },
           },
           {
             kicker: "MEMORY",
-            title: "高频检测结果与过往决策的分层存储架构",
-            summary: "检测结果与事件仅保留在任务内存；经 VLM 确认的事实与决策记录落盘，供后续任务复用。",
+            title: "记忆设计：兼顾高频检测结果与长期决策记录",
+            summary: "高频检测与事件的明细只在任务内保留；任务结束后，系统将提取明细的统计特征、并与任务的决策记录写入跨任务记忆。",
             visual: "vision-feature-dump",
             layout: "statement",
           },
           {
             kicker: "TRIGGER",
-            title: "VLM 决策的双链路触发机制",
-            summary: "主链路按固定周期或关注事件触发调用；侧链路响应由对话发起的交互调用。",
+            title: "应用实现：VLM 决策的双链路触发机制",
+            summary: "借鉴“快慢脑”的概念，系统按固定周期（如每 2 秒）触发多模态大模型推理；用户发起实时对话时，则通过侧链路触发交互式调用。",
             visual: "vision-context-engineering",
             layout: "statement",
           },
           {
             kicker: "LIVE SYSTEM",
-            title: "",
-            summary: "",
+            title: "系统原型演示",
+            summary: "这个视觉智能体系统已在团队内部完成可运行的原型，但目前尚未用于实际客户项目。",
             visual: "vision-live-demo",
             layout: "statement",
             media: {
               type: "video",
-              src: "/case-studies/vision-agent/vision-agent-demo-v3.mp4",
+              src: "/case-studies/vision-agent/vision-agent-demo-v7.mp4",
               poster: "/case-studies/vision-agent/vision-agent-demo-poster.jpg",
               alt: "视觉智能体在实时视频流中进行分析与判断的界面录屏",
-              caption: "系统演示",
             },
           },
         ],
@@ -382,46 +402,46 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
           {
             kicker: "VISION DATA",
             title: "Visual Data Management and Retrieval System",
-            summary: "It organizes image metadata, feature vectors, model predictions, and human annotations into a unified, queryable structure for searching and locating images.",
+            summary: "It unifies image metadata, embeddings, captions, and human annotations in an interactive interface for evaluating and reusing visual data.",
             visual: "mm-frontpage",
             layout: "statement",
             media: {
               type: "image",
-              src: "/case-studies/multimodal-search/frontpage-hero.png",
+              src: "/case-studies/multimodal-search/mmsearch-page1-v2.png",
               alt: "Multimodal search system interface",
               caption: "Annotated Stuffing Box of a pumpjack in drone-shot images",
             },
           },
           {
+            kicker: "PROBLEM",
+            title: "File Hierarchies Do Not Scale to Million-Image Datasets",
+            summary: "Images scattered across object-storage paths are difficult to manage, let alone retrieve by visual content or domain context.",
+            visual: "mm-data-problem",
+            layout: "board",
+          },
+          {
             kicker: "METADATA LAYER",
-            title: "A single image is associated with structured metadata, detections, captions, tags, and feature vectors.",
+            title: "Metadata, descriptions, captions, embeddings, and annotations provide multiple ways to retrieve visual data.",
             summary: "",
             visual: "mm-metadata",
             layout: "board",
           },
           {
-            kicker: "PLATFORM WORKFLOWS",
-            title: "Zero-Shot Detection, Data Generation, and Annotation",
-            summary: "Four demos cover selected platform features.",
-            visual: "mm-operations",
-            layout: "board",
-          },
-          {
             kicker: "SYSTEM ARCHITECTURE",
-            title: "Million-Image Retrieval Architecture with CLIP, Vertex AI, and BigQuery",
-            summary: "Implementation Metrics",
+            title: "Visual Data Retrieval Architecture with CLIP, Vertex AI, and BigQuery",
+            summary: "",
             visual: "mm-infra",
             layout: "board",
             implementationMetrics: [
-              { label: "Dataset size", value: "1M images" },
+              { label: "Indexed Assets", value: "Over 1M" },
               { label: "CLIP embedding throughput", value: "120 images/s" },
               { label: "Query latency", value: "< 1 s" },
             ],
           },
           {
             kicker: "REAL DEMO",
-            title: "Text and images can both become query inputs",
-            summary: "",
+            title: "Visual Data Retrieval",
+            summary: "Teams combine text and image queries with metadata and caption filters to assemble annotation sets, assess data quality, and reuse existing vision data.",
             visual: "mm-real-demo",
             layout: "board",
             media: {
@@ -431,12 +451,19 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
               caption: "Multimodal Search Feature Demo",
             },
           },
+          {
+            kicker: "PLATFORM WORKFLOWS",
+            title: "From Retrieval to Vision-Model Workflows",
+            summary: "Built on the same data layer, the platform also provides ad hoc tools for specific needs in vision-model development.",
+            visual: "mm-operations",
+            layout: "board",
+          },
         ],
         "lookx-generative-ai": [
           {
             kicker: "WHY",
             title: "An AI Product Built for Architects",
-            summary: "Architects need renderings that keep the structure of the input image, with less dice rolling, fewer failed attempts, and less parameter tuning.",
+            summary: "When using AI, architects care most about two things: first, keeping the spatial structure of the reference image intact; second, spending less time on dice rolling and manual tuning during generation.",
             visual: "lookx-context",
             layout: "statement",
             media: {
@@ -446,37 +473,44 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
             },
           },
           {
+            kicker: "PRODUCT DESIGN",
+            title: "Design Goal: Lowering the Barrier to Generative AI for Architects",
+            summary: "Around this goal, we designed and implemented three core features: one-click rendering, one-click training, and one-click recreation.",
+            visual: "lookx-design-directions",
+            layout: "board",
+          },
+          {
             kicker: "RENDER MODE",
             title: "One-Click Rendering",
-            summary: "Image generation is structured around pre-design, schematic design, and design development, with workflows adapted to each stage.",
+            summary: "The image-generation feature provides a tailored workflow for each design stage: pre-design, schematic design, and design development.",
             visual: "lookx-render-mode",
             layout: "split",
           },
           {
             kicker: "AUTO TRAINING",
             title: "One-Click Training",
-            summary: "Upload reference images to train a custom LoRA without understanding or adjusting the training parameters.",
+            summary: "With the LoRA training feature, users only need to upload reference images to train a custom LoRA.",
             visual: "lookx-lora-training",
             layout: "split",
           },
           {
             kicker: "GENERATE SAME",
             title: "One-Click Recreation",
-            summary: "Users can reuse community works with their full generation setup—no reverse-engineering from output images.",
+            summary: "Users can reuse the complete generation setup behind a creation without reverse-engineering it from the output image.",
             visual: "lookx-generate-same",
             layout: "split",
           },
           {
             kicker: "TECH",
-            title: "",
+            title: "Technical Details Behind the Product Features",
             summary: "",
             visual: "lookx-tech-system",
             layout: "board",
           },
           {
             kicker: "RESULT",
-            title: "Community-Created Content Drove the Product’s Organic Growth",
-            summary: "Users and creators turned LookX results into tutorials, Shorts, and workflow demos, carrying the product beyond our own launch efforts.",
+            title: "Community Sharing and Business Growth",
+            summary: "Users and creators from different countries have been sharing works and creating multilingual tutorials on social media, contributing to LookX’s sustained organic growth.",
             visual: "lookx-market-result",
             layout: "metrics",
             media: {
@@ -486,7 +520,7 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
             },
             metrics: [
               { value: "$30K", label: "MRR" },
-              { value: "600K", label: "Registered users" },
+              { value: "600K", label: "Registered Users" },
               { value: "$0", label: "Marketing Spend" },
             ],
           },
@@ -495,7 +529,7 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
           {
             kicker: "WHY",
             title: "AI Beyond the Lab",
-            summary: "Making AI work in the field takes more than a model: product, ML, QA, and field deployment teams have to sync on data, runtime context, model versions, and parameters while validating application modules together.",
+            summary: "Making AI work in the field takes more than a model: PM, MLE, QA, and FDE teams must align data, runtime configurations, model versions, and parameters to reproduce model behavior across environments.",
             visual: "video-frontpage",
             layout: "statement",
             media: {
@@ -506,43 +540,43 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
           },
           {
             kicker: "PROBLEM",
-            title: "Data and Configuration Drift in Field-Deployed Vision Models",
-            summary: "",
+            title: "Data and Configuration Drift in Field Deployment",
+            summary: "Changes in video bitrate, aspect ratio, or inference parameters can make results hard to reproduce and discrepancies hard to trace.",
             visual: "video-problem",
             layout: "statement",
           },
           {
-            kicker: "SYSTEM",
-            title: "",
-            summary: "",
-            visual: "video-system-architecture",
+            kicker: "PRODUCT",
+            title: "Lightweight Platform to Align Lab and Field Results",
+            summary: "Teams align stream specifications, runtime configurations, and video-analysis parameters through the platform.",
+            visual: "video-product-workflow",
             layout: "statement",
           },
           {
-            kicker: "PRODUCT",
-            title: "One Platform for Applied Vision Model Lifecycle",
-            summary: "Teams share one task context—video, models, and parameters—across field testing, offline validation, replay, and review.",
-            visual: "video-product-workflow",
+            kicker: "SYSTEM",
+            title: "Video Analysis Engine Architecture",
+            summary: "GStreamer pipelines, model serving, and result storage were refactored to improve real-time performance.",
+            visual: "video-system-architecture",
             layout: "statement",
           },
           {
             kicker: "INTERACTION",
             title: "Purpose-Built Media UI/UX for Vision AI",
-            summary: "As a media-oriented product, it needs UI/UX that clearly presents each task, its video, and related information with direct navigation and controls.",
+            summary: "In media-centric workflows, UI/UX must clearly present media and related task information while keeping navigation and controls direct.",
             visual: "video-uiux-highlights",
             layout: "statement",
           },
           {
             kicker: "UI DESIGN",
-            title: "Component States, Variants, and Design Tokens",
-            summary: "Components use consistent behavior and state feedback, with brand color, form, and icons providing visual identity.",
+            title: "Components, Variants, and Design Tokens",
+            summary: "Sales often uses this lightweight platform for client demos, so its components must maintain brand consistency as well.",
             visual: "video-ui-philosophy",
             layout: "statement",
           },
           {
             kicker: "ALGORITHM",
-            title: "Example: A Field Challenge Reshaped the Solution",
-            summary: "During field deployment of the UAV inspection system, we found that pipeline oil leaks were difficult to distinguish from rock shadows in visible-light imagery. Using the platform’s integrated development and validation workflow, the ML team developed and validated a visible–thermal fusion detector.",
+            title: "Example: Iterating the Solution with the Platform",
+            summary: "During field deployment, the UAV inspection system could not reliably distinguish pipeline oil leaks from rock shadows in visible-light imagery. The MLE team used the platform’s integrated workflow to develop and validate a visible–thermal fusion detector.",
             visual: "video-fusion-detection",
             layout: "statement",
           },
@@ -551,7 +585,7 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
           {
             kicker: "WHY",
             title: "Vision Agent System for Inspection",
-            summary: "Traditional CV is fast but rigid: it cannot recognize events beyond predefined classes or reason about false alarms. A VLM-powered agent supplies the missing context.",
+            summary: "Traditional CV is fast but rigid: it cannot recognize out-of-class events or verify potential false alarms. A VLM-powered agent is designed to overcome both limits.",
             visual: "vision-frontpage",
             layout: "statement",
             media: {
@@ -561,43 +595,49 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
             },
           },
           {
+            kicker: "PROBLEM",
+            title: "Limits of Traditional CV Pipelines",
+            summary: "",
+            visual: "vision-cv-limits",
+            layout: "statement",
+          },
+          {
             kicker: "CHOICE",
-            title: "From Isolated Detections to History-Aware Visual Decisions",
-            summary: "Detection results, corresponding images, and prior decisions are assembled into the prompt context for VLM decision-making.",
+            title: "The Approach: From Isolated Detections to History-Aware Visual Decisions",
+            summary: "",
             visual: "vision-common-sense",
             layout: "statement",
             media: {
               type: "image",
-              src: "/case-studies/vision-agent/vlm-memory-static.png",
+              src: "/case-studies/vision-agent/va-page3-v3.png",
               alt: "Vision agent common-sense reasoning and memory concept",
             },
           },
           {
             kicker: "MEMORY",
-            title: "Tiered Storage for Detection Data and Decision History",
-            summary: "Detections and events stay in task memory; VLM-confirmed facts and decisions persist for reuse across tasks.",
+            title: "Memory Design: Balancing High-Frequency Detections and Decision History",
+            summary: "Detection and event records stay task-local; their statistical features and agent decisions will be carried across tasks.",
             visual: "vision-feature-dump",
             layout: "statement",
           },
           {
             kicker: "TRIGGER",
-            title: "Dual-Track Triggering for VLM Decision Calls",
-            summary: "The main track triggers calls at fixed intervals or on events of interest; the side track handles conversation-initiated calls.",
+            title: "Implementation: Dual-Track Triggering for VLM Decision Calls",
+            summary: "Inspired by fast–slow brain concept, the main track invokes the VLM at fixed intervals, while user interactions trigger calls through a side track.",
             visual: "vision-context-engineering",
             layout: "statement",
           },
           {
             kicker: "LIVE SYSTEM",
-            title: "",
-            summary: "",
+            title: "Prototype Demo",
+            summary: "This experimental system has been implemented as a working prototype but has not yet been used in a client project.",
             visual: "vision-live-demo",
             layout: "statement",
             media: {
               type: "video",
-              src: "/case-studies/vision-agent/vision-agent-demo-v3.mp4",
+              src: "/case-studies/vision-agent/vision-agent-demo-v7.mp4",
               poster: "/case-studies/vision-agent/vision-agent-demo-poster.jpg",
               alt: "Vision agent interface reasoning over a live video stream",
-              caption: "System Demo",
             },
           },
         ],
@@ -790,11 +830,11 @@ const copy =
                       <div class="floor-segment-layout" aria-hidden="true">
                         <figure class="floor-segment-panel floor-segment-panel-left">
                           <img src="/case-studies/floor-plan/segment-left.png" alt="" decoding="async" />
-                          <figcaption>{locale === "zh" ? "矢量户型与像素标注成对生成" : "Paired layout and pixel-level label"}</figcaption>
+                          <figcaption>{locale === "zh" ? "标注数据有像素级的准确性" : "Pixel-accurate segmentation labels"}</figcaption>
                         </figure>
                         <figure class="floor-segment-panel floor-segment-panel-right">
                           <img src="/case-studies/floor-plan/segment-right.png" alt="" decoding="async" />
-                          <figcaption>{locale === "zh" ? "基于 DeepLabV3 训练（mIoU 0.85）" : "Trained with DeepLabV3 (mIoU 0.85)"}</figcaption>
+                          <figcaption>{locale === "zh" ? "用于训练 DeepLabV3+ 模型（mIoU 0.85）" : "Trained with DeepLabV3+ (mIoU 0.85)"}</figcaption>
                         </figure>
                         <img
                           class="floor-segment-bottom"
@@ -828,8 +868,8 @@ const copy =
                             />
                             <figcaption>
                               {locale === "zh"
-                                ? "锯齿状轮廓经过优化，形成边界简化、相邻边方向受约束的空间多边形。"
-                                : "Zigzagged raw contours are simplified into simple polygons with constrained edge directions."}
+                                ? "语义分割模型的空间多边形边界带有大量锯齿，经过优化后可以形成边界简化且合理的空间多边形。"
+                                : "Zigzagged contours from semantic segmentation are optimized into room polygons with simplified boundaries and constrained edge directions."}
                             </figcaption>
                           </figure>
                           <div class="floor-room-constraint-list" aria-label={locale === "zh" ? "房间多边形优化约束" : "Room polygon optimization constraints"}>
@@ -889,8 +929,8 @@ const copy =
                             />
                             <figcaption>
                               {locale === "zh"
-                                ? "图优化将相邻房间边界合并为墙体中心线，形成用于空间划分的墙中线骨架。"
-                                : "Graph optimization merges adjacent room boundaries into a shared wall-centerline skeleton."}
+                                ? "在一阶段优化的结果上，通过图优化将相邻房间边界合并为墙体中心线，形成用于空间划分的墙中线骨架。"
+                                : "Starting from the optimized room polygons, graph optimization merges adjacent room boundaries into wall centerlines, forming the skeleton for spatial subdivision."}
                             </figcaption>
                           </figure>
                           <div class="floor-room-constraint-list floor-wall-constraint-list" aria-label={locale === "zh" ? "墙体中心线优化约束" : "Wall centerline optimization constraints"}>
@@ -937,6 +977,10 @@ const copy =
                     inert
                   >
                     <div class="floor-deck floor-deck-ifc-viewer story-deck story-deck-floor-plan-reconstruction">
+                      <div class="floor-ifc-result-copy">
+                        <h2>{floorPlanDeck.result.title}</h2>
+                        <p>{floorPlanDeck.result.summary}</p>
+                      </div>
                       <figure class="floor-ifc-figure">
                         <FloorplanIfcViewer locale={locale} />
                         <p class="floor-ifc-caption">
@@ -990,25 +1034,72 @@ const copy =
                             ) : null}
                           </div>
                         ) : null}
+                        {slide.visual === "lookx-design-directions" ? (
+                          <div class="lookx-design-directions" aria-label={locale === "zh" ? "降低生成式 AI 使用门槛的三个产品设计方向" : "Three product directions for lowering the barrier to generative AI"}>
+                            {[
+                              {
+                                label: locale === "zh" ? "适配建筑项目的不同阶段" : "DESIGNED FOR PROJECT PHASES",
+                                title: locale === "zh" ? "一键渲染" : "One-Click Rendering",
+                                body:
+                                  locale === "zh"
+                                    ? "通过适配实际项目各个设计阶段的一键工作流，降低建筑师在生成过程中的调参和调试成本。"
+                                    : "Tailor workflows to each phase of an architectural project, so users spend less time on trial and error and manual parameter tuning during generation.",
+                              },
+                              {
+                                label: locale === "zh" ? "降低模型定制的技术门槛" : "EASY MODEL CUSTOMIZATION",
+                                title: locale === "zh" ? "一键训练" : "One-Click Training",
+                                body:
+                                  locale === "zh"
+                                    ? "将 LoRA 模型训练封装成简单的产品功能，让建筑师无需掌握大量训练参数，轻松定制专属生成风格。"
+                                    : "Package LoRA training as a simple product feature, allowing architects to create custom generation styles without learning numerous training parameters.",
+                              },
+                              {
+                                label: locale === "zh" ? "让作品配置可以复用" : "REUSABLE GENERATION SETUPS",
+                                title: locale === "zh" ? "一键复刻" : "One-Click Recreation",
+                                body:
+                                  locale === "zh"
+                                    ? "将生成结果的完整配置以结构化方式存储，让用户可以学习并复用他人分享的成熟生成配置。"
+                                    : "Store the full setup for each creation so users can learn from and reuse established generation workflows in Creations Plaza.",
+                              },
+                            ].map((direction, index) => (
+                              <>
+                                <article class="lookx-design-direction">
+                                  <span class="lookx-design-direction-number">{String(index + 1).padStart(2, "0")}</span>
+                                  <span class="lookx-design-direction-label">{direction.label}</span>
+                                  <h3>{direction.title}</h3>
+                                  <p>{direction.body}</p>
+                                </article>
+                                {index < 2 ? <i class="lookx-design-separator" aria-hidden="true"></i> : null}
+                              </>
+                            ))}
+                          </div>
+                        ) : null}
                         {slide.visual === "lookx-tech-system" ? (
                           <figure class="lookx-tech-visual" aria-label="LookX model training, workflow development, and prompt routing system">
-                            <div class="lookx-tech-panel lookx-tech-base">
-                              <h3>
-                                {locale === "zh" ? "基础模型训练" : "Base Model Training"}
-                              </h3>
-                              <img src="/case-studies/lookx/tech/base-model-training-v2.png" alt="" decoding="async" />
+                            <div class="lookx-tech-left">
+                              <div class="lookx-tech-panel lookx-tech-base">
+                                <div class="lookx-tech-panel-heading">
+                                  <h3>{locale === "zh" ? "基础模型训练" : "Base Model Training"}</h3>
+                                  <p>{locale === "zh" ? "基于高质量领域数据训练基础大模型" : "Foundation-model training on curated architectural data"}</p>
+                                </div>
+                                <img src="/case-studies/lookx/tech/lookx_tech_left1.png" alt="" decoding="async" />
+                              </div>
+                              <i class="lookx-tech-horizontal-divider" aria-hidden="true"></i>
+                              <div class="lookx-tech-panel lookx-tech-workflow">
+                                <div class="lookx-tech-panel-heading">
+                                  <h3>{locale === "zh" ? "图像生成" : "Image Generation"}</h3>
+                                  <p>{locale === "zh" ? "围绕功能开发图像生成工作流和微服务" : "Dedicated pipelines and services for each generation feature"}</p>
+                                </div>
+                                <img src="/case-studies/lookx/tech/lookx_tech_left2.png" alt="" decoding="async" />
+                              </div>
                             </div>
-                            <div class="lookx-tech-panel lookx-tech-workflow">
-                              <h3>
-                                {locale === "zh" ? "图像生成" : "Image Generation"}
-                              </h3>
-                              <img src="/case-studies/lookx/tech/image-generation-v2.png" alt="" decoding="async" />
-                            </div>
+                            <i class="lookx-tech-vertical-divider" aria-hidden="true"></i>
                             <div class="lookx-tech-panel lookx-tech-routing">
-                              <h3>
-                                {locale === "zh" ? "提示词路由" : "Prompt Routing"}
-                              </h3>
-                              <img src="/case-studies/lookx/tech/prompt-routing-v2.png" alt="" decoding="async" />
+                              <div class="lookx-tech-panel-heading">
+                                <h3>{locale === "zh" ? "提示词路由" : "Prompt Routing"}</h3>
+                                <p>{locale === "zh" ? "通过识别意图自动选择基础模型" : "Automatic model selection"}</p>
+                              </div>
+                              <img src="/case-studies/lookx/tech/lookx_tech_right.png" alt="" decoding="async" />
                             </div>
                           </figure>
                         ) : null}
@@ -1022,6 +1113,26 @@ const copy =
                             />
                             <figcaption>{slide.title}</figcaption>
                           </figure>
+                        ) : null}
+                        {slide.visual === "mm-data-problem" ? (
+                          <div class="mm-data-problem-visual" aria-label={locale === "zh" ? "手动浏览对象存储中的图像样本" : "Manually browsing image samples in object storage"}>
+                            <figure>
+                              <img src="/case-studies/multimodal-search/object-storage-scroll.gif" alt="" decoding="async" />
+                              <figcaption>
+                                {locale === "zh"
+                                  ? "手动翻看对象存储中的数据集"
+                                  : "Manually scrolling through dataset in object storage"}
+                              </figcaption>
+                            </figure>
+                            <i class="mm-data-problem-arrow" aria-hidden="true"></i>
+                            <strong>
+                              {locale === "zh" ? (
+                                <>需要一个高效的<br />检索系统</>
+                              ) : (
+                                <>A Better Retrieval<br />System Is Needed</>
+                              )}
+                            </strong>
+                          </div>
                         ) : null}
                         {slide.visual === "mm-operations" ? (
                           <div class="mm-operations-visual" aria-label={locale === "zh" ? "视觉数据平台操作能力" : "Visual dataset platform operations"}>
@@ -1120,9 +1231,41 @@ const copy =
                           </div>
                         ) : null}
                         {slide.visual === "video-system-architecture" ? (
-                          <figure class="video-system-architecture-visual" aria-label={locale === "zh" ? "视频分析引擎系统架构图" : "System architecture diagram for the video analysis engine"}>
-                            <img src="/case-studies/video-intelligence/video-analysis-engine-v2.png" alt="" decoding="async" />
-                            <figcaption class="video-system-title">{locale === "zh" ? "视频分析引擎架构" : "Video Analysis Engine Architecture"}</figcaption>
+                          <>
+                            <figure class="video-system-architecture-visual" aria-label={locale === "zh" ? "视频分析引擎系统架构图" : "System architecture diagram for the video analysis engine"}>
+                              <img src="/case-studies/video-intelligence/video-analysis-engine-v2.png" alt="" decoding="async" />
+                              <div class="video-system-decisions">
+                                {[
+                                  {
+                                    title: locale === "zh" ? "配置化 GStreamer 模板" : "Configurable GStreamer Templates",
+                                    body:
+                                      locale === "zh"
+                                        ? "同一模板通过配置切换 RTMP 与文件输入输出，覆盖四种输入输出组合。"
+                                        : "A unified template supports RTMP or file input with RTMP or file output, covering all four combinations.",
+                                  },
+                                  {
+                                    title: locale === "zh" ? "进程内模型服务" : "In-Process Model Serving",
+                                    body:
+                                      locale === "zh"
+                                        ? "不采用微服务调用，模型服务与帧处理器同进程运行，减少 IPC 与数据传输开销，提高推理吞吐。"
+                                        : "Model serving runs with the frame processor instead of behind a microservice, reducing IPC and data-transfer overhead to improve inference throughput.",
+                                  },
+                                  {
+                                    title: locale === "zh" ? "结果存储设计" : "Result Storage Design",
+                                    body:
+                                      locale === "zh"
+                                        ? "检测结果、事件与媒体文件分别存储并独立分发，避免阻塞主推理链路。"
+                                        : "Detections, events, and media files are stored separately and distributed independently to avoid blocking the main inference path.",
+                                  },
+                                ].map((decision, decisionIndex) => (
+                                  <section class="video-system-decision">
+                                    <span>{String(decisionIndex + 1).padStart(2, "0")}</span>
+                                    <strong>{decision.title}</strong>
+                                    <p>{decision.body}</p>
+                                  </section>
+                                ))}
+                              </div>
+                            </figure>
                             <div class="video-system-proof">
                               <div class="video-system-highlights">
                                 <div><strong>12 Streams</strong><span>{locale === "zh" ? "最大 GPU 并发" : "Max GPU Concurrency"}</span></div>
@@ -1130,7 +1273,7 @@ const copy =
                                 <div><strong>120 FPS</strong><span>{locale === "zh" ? "最大推理速度" : "Max Inference Speed"}</span></div>
                               </div>
                             </div>
-                          </figure>
+                          </>
                         ) : null}
                         {slide.visual === "video-product-workflow" ? (
                           <div class="video-product-workflow-visual" aria-label={locale === "zh" ? "视频智能平台产品工作流" : "Video intelligence product workflow"}>
@@ -1141,8 +1284,8 @@ const copy =
                                 image: "/case-studies/video-intelligence/vi-page4-left-v2.png",
                                 caption:
                                   locale === "zh"
-                                    ? "RTMP 接入、多路流压测、实时 bbox 叠加"
-                                    : "RTMP ingest, multi-stream load tests, live bbox overlays",
+                                    ? "RTMP/RTSP 接入、模拟实况推理、多路流预览"
+                                    : "RTMP/RTSP ingest, live inference, multi-stream preview",
                               },
                               {
                                 title: locale === "zh" ? "文件推理" : "File Inference",
@@ -1150,8 +1293,8 @@ const copy =
                                 image: "/case-studies/video-intelligence/vi-page4-mid-v2.png",
                                 caption:
                                   locale === "zh"
-                                    ? "批量推理、模型 A/B 对比、逐帧复核"
-                                    : "Batch inference, model A/B comparison, frame-level review",
+                                    ? "离线批量推理、模型效果对比、逐帧复核面板"
+                                    : "Batch inference, model comparison, frame-level review",
                               },
                               {
                                 title: locale === "zh" ? "复盘分析" : "Review & Analysis",
@@ -1159,8 +1302,8 @@ const copy =
                                 image: "/case-studies/video-intelligence/vi-page4-right-v2.png",
                                 caption:
                                   locale === "zh"
-                                    ? "时间线回放、事件截图、证据片段导出"
-                                    : "Timeline replay, event snapshots, evidence clip export",
+                                    ? "时间线回放、事件截图与片段导出、任务记录管理"
+                                    : "Timeline replay, evidence export, task history",
                               },
                             ].map((item) => (
                               <figure class="video-product-card">
@@ -1233,84 +1376,230 @@ const copy =
                         ) : null}
                         {slide.visual === "video-fusion-detection" ? (
                           <figure class="video-fusion-visual" aria-label={locale === "zh" ? "可见光与红外融合检测算法演示" : "Visible-light and infrared fusion detection demo"}>
-                            <video
-                              src={lowTrafficMode ? undefined : "/case-studies/video-intelligence/fusion/vi-fusion-v2.mp4"}
-                              data-heavy-src={lowTrafficMode ? "/case-studies/video-intelligence/fusion/vi-fusion-v2.mp4" : undefined}
-                              autoplay={lowTrafficMode ? undefined : true}
-                              muted
-                              loop
-                              playsinline
-                              preload={lowTrafficMode ? "none" : "metadata"}
-                            ></video>
-                          </figure>
-                        ) : null}
-                        {slide.visual === "vision-feature-dump" ? (
-                          <div class="vision-feature-dump-visual" aria-label={locale === "zh" ? "视觉智能体结构化事实与长期记忆设计" : "Structured facts and long-term memory design for the vision agent"}>
-                            <figure class="vision-feature-primary">
-                              <img src="/case-studies/vision-agent/feature-dump-v3.png" alt="" decoding="async" />
-                            </figure>
-                            <div class="vision-feature-facts">
-                              {[
-                                {
-                                  label: locale === "zh" ? "事件" : "Events",
-                                  status: locale === "zh" ? "仅驻留内存" : "in-memory only",
-                                  storage: "memory",
-                                  title: locale === "zh" ? "用户关心的领域事件" : "Domain-meaningful occurrences users care about",
-                                  example: locale === "zh" ? "例如：00:03–00:05 发现违停车辆" : "e.g. an illegally parked vehicle detected from 00:03–00:05",
-                                },
-                                {
-                                  label: locale === "zh" ? "检测" : "Detections",
-                                  status: locale === "zh" ? "仅驻留内存" : "in-memory only",
-                                  storage: "memory",
-                                  title: locale === "zh" ? "CV 模型输出的逐帧检测框快照" : "Raw per-frame bbox snapshots from CV models",
-                                  example: 'e.g. {"class_name":"car", "conf":0.9404, "track_id":52, ...}',
-                                },
-                                {
-                                  label: locale === "zh" ? "记忆" : "Memory",
-                                  status: locale === "zh" ? "写入磁盘" : "flush to disk",
-                                  storage: "disk",
-                                  title: locale === "zh" ? "VLM/LMM 操作产生的事实" : "Facts produced by active VLM/LMM operations",
-                                  example: locale === "zh" ? "例如：G2 高速 K34–35，日间车流量较低……" : "e.g. Highway section G2 K34–35. Light daytime traffic...",
-                                },
-                                {
-                                  label: locale === "zh" ? "历史" : "History",
-                                  status: locale === "zh" ? "写入磁盘" : "flush to disk",
-                                  storage: "disk",
-                                  title: locale === "zh" ? "历史判断原因与任务事实" : "Historical verdict reasons and task-specific facts",
-                                  example: locale === "zh" ? "例如：低角度晨光下，高架梁产生的阴影" : "e.g. shadow cast by an overpass girder in low-angle morning sun",
-                                },
-                              ].map((item) => (
-                                <section class="vision-feature-fact">
-                                  <div class="vision-feature-route" aria-label={`${item.label}: ${item.status}`}>
-                                    <b>{item.label}</b>
-                                    <i aria-hidden="true"></i>
-                                    <em class={`is-${item.storage}`}>{item.status}</em>
-                                  </div>
-                                  <strong>{item.title}</strong>
-                                  <span>{item.example}</span>
-                                </section>
-                              ))}
-                            </div>
-                          </div>
-                        ) : null}
-                        {slide.visual === "vision-context-engineering" ? (
-                          <figure class="vision-context-engineering-visual" aria-label={locale === "zh" ? "VLM/LMM 调用触发与上下文工程示意" : "VLM/LMM trigger and context engineering diagram"}>
-                            <img src="/case-studies/vision-agent/context-engineering.png" alt="" decoding="async" />
-                          </figure>
-                        ) : null}
-                        {slide.media ? (
-                          <figure class="story-cover-asset" aria-label={slide.media.alt ?? ""}>
-                            {slide.media.type === "video" ? (
+                            <div class="vision-demo-video-control" data-vision-demo-video-control>
                               <video
-                                src={lowTrafficMode ? undefined : slide.media.src}
-                                data-heavy-src={lowTrafficMode ? slide.media.src : undefined}
-                                poster={slide.media.poster}
+                                src={lowTrafficMode ? undefined : "/case-studies/video-intelligence/fusion/vi-fusion-v2.mp4"}
+                                data-heavy-src={lowTrafficMode ? "/case-studies/video-intelligence/fusion/vi-fusion-v2.mp4" : undefined}
                                 autoplay={lowTrafficMode ? undefined : true}
                                 muted
                                 loop
                                 playsinline
                                 preload={lowTrafficMode ? "none" : "metadata"}
                               ></video>
+                              <button type="button" aria-label={locale === "zh" ? "暂停视频" : "Pause video"} data-vision-demo-toggle>
+                                <svg class="vision-demo-icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6v12M16 6v12" /></svg>
+                                <svg class="vision-demo-icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 9 6-9 6Z" /></svg>
+                              </button>
+                            </div>
+                          </figure>
+                        ) : null}
+                        {slide.visual === "vision-cv-limits" ? (
+                          <div class="vision-cv-limits" aria-label={locale === "zh" ? "传统 CV 模型的五类限制" : "Five limitations of traditional CV pipelines"}>
+                            <div class="vision-cv-limit-row vision-cv-limit-row-three">
+                              {[
+                                {
+                                  image: "/case-studies/vision-agent/problems/problem-1-v2.png",
+                                  title: locale === "zh" ? "检测类别固定" : "Closed-Set Recognition",
+                                  body:
+                                    locale === "zh"
+                                      ? "检测模型只能检测预先定义的类别，而无法识别预设类别之外的对象。"
+                                      : "The detector outputs predefined classes only; objects outside the label set cannot be recognized.",
+                                },
+                                {
+                                  image: "/case-studies/vision-agent/problems/problem-2-v2.png",
+                                  title: locale === "zh" ? "模型没有记忆" : "Stateless, Frame-Level Inference",
+                                  body:
+                                    locale === "zh"
+                                      ? "模型在每次推理时只处理当前帧图像，不保留跨帧状态，也没有可供后续判断使用的长程记忆与时序上下文。"
+                                      : "Inference uses only the current frame, without persistent memory or temporal context.",
+                                },
+                                {
+                                  image: "/case-studies/vision-agent/problems/problem-3-v2.png",
+                                  title: locale === "zh" ? "仅使用图像特征" : "Limited to Image Features",
+                                  body:
+                                    locale === "zh"
+                                      ? "模型推理通常只使用图像特征，没有系统纳入已有的传感器数据与历史任务记录。"
+                                      : "Model inference typically uses image features alone; sensor data and task records are not systematically integrated.",
+                                },
+                              ].map((item, itemIndex) => (
+                                <figure class="vision-cv-limit-card">
+                                  <div class="vision-cv-limit-image">
+                                    <img src={item.image} alt="" decoding="async" />
+                                  </div>
+                                  <figcaption>
+                                    <div class="vision-cv-limit-heading">
+                                      <span>{String(itemIndex + 1).padStart(2, "0")}</span>
+                                      <strong>{item.title}</strong>
+                                    </div>
+                                  </figcaption>
+                                </figure>
+                              ))}
+                            </div>
+                            <div class="vision-cv-limit-row vision-cv-limit-row-two">
+                              {[
+                                {
+                                  image: "/case-studies/vision-agent/problems/problem-4-v2.png",
+                                  title: locale === "zh" ? "对数据偏移敏感" : "Sensitive to Domain Shift",
+                                  body:
+                                    locale === "zh"
+                                      ? "不同的场地、视角、光照都可能使输入数据偏离训练分布，增加误检与漏检。"
+                                      : "Changes in site, viewpoint, or lighting can shift inputs from the training distribution, increasing false positives and negatives.",
+                                },
+                                {
+                                  image: "/case-studies/vision-agent/problems/problem-5-v2.png",
+                                  title: locale === "zh" ? "整体流程不够解耦" : "Tightly Coupled Pipeline",
+                                  body:
+                                    locale === "zh"
+                                      ? "模型与后处理逻辑包装好后难以观测与调整，出现模型效果问题后很难溯源定位。"
+                                      : "Model and post-processing modules are tightly coupled, making failures hard to trace and components hard to adjust.",
+                                },
+                              ].map((item, itemIndex) => (
+                                <figure class="vision-cv-limit-card">
+                                  <div class="vision-cv-limit-image">
+                                    <img src={item.image} alt="" decoding="async" />
+                                  </div>
+                                  <figcaption>
+                                    <div class="vision-cv-limit-heading">
+                                      <span>{String(itemIndex + 4).padStart(2, "0")}</span>
+                                      <strong>{item.title}</strong>
+                                    </div>
+                                  </figcaption>
+                                </figure>
+                              ))}
+                            </div>
+                          </div>
+                        ) : null}
+                        {slide.visual === "vision-common-sense" ? (
+                          <figure class="vision-decision-architecture" aria-label={locale === "zh" ? "视觉智能体从检测结果到决策与工具调用的系统设计" : "Vision agent system design from detections to decisions and tool calls"}>
+                            <img src="/case-studies/vision-agent/va-page3-v3.png" alt="" decoding="async" />
+                            <div class="vision-decision-points">
+                              {[
+                                {
+                                  title: locale === "zh" ? "在检测结果后增加决策模块" : "Detections Are Not Final Decisions",
+                                  body:
+                                    locale === "zh"
+                                      ? "CV 模型高频输出检测结果；系统将其作为 Prompt 的一部分交给 VLM 进一步判断。"
+                                      : "CV models produce detections at high frequency; the system adds them to the prompt for further VLM reasoning.",
+                                },
+                                {
+                                  title: locale === "zh" ? "基于各类事实组织决策上下文" : "Context Engineering before VLM Call",
+                                  body:
+                                    locale === "zh"
+                                      ? "系统会将任务中的图像、检测结果与过往历史记录等信息组成供 VLM 调用的上下文。"
+                                      : "The system selects relevant snapshots, detections, and history to build the context for each VLM call.",
+                                },
+                                {
+                                  title: locale === "zh" ? "决策结果也会用于支持未来决策" : "Feed Decisions Back to the System",
+                                  body:
+                                    locale === "zh"
+                                      ? "VLM 返回的内容会主导工具调用或结论输出，并将执行结果重新写入记忆模块，交给后续决策继续参考。"
+                                      : "The VLM output drives tool calls and execution results are written back to memory for subsequent decisions.",
+                                },
+                              ].map((point, pointIndex) => (
+                                <section class="vision-decision-point">
+                                  <span>{String(pointIndex + 1).padStart(2, "0")}</span>
+                                  <strong>{point.title}</strong>
+                                  <p>{point.body}</p>
+                                </section>
+                              ))}
+                            </div>
+                          </figure>
+                        ) : null}
+                        {slide.visual === "vision-feature-dump" ? (
+                          <div class="vision-memory-architecture" aria-label={locale === "zh" ? "视觉智能体的任务内与跨任务记忆架构" : "Task-local and cross-task memory architecture for the vision agent"}>
+                            <section class="vision-memory-group vision-memory-session">
+                              <h3>{locale === "zh" ? "仅在任务内保留的记忆" : "Task-Local Memory"}</h3>
+                              <article>
+                                <strong>{locale === "zh" ? "检测结果" : "Detection"}</strong>
+                                <b>{locale === "zh" ? "CV 模型输出的逐帧检测结果和图像快照" : "Per-frame bboxes from CV models and snapshots"}</b>
+                                <code>{'e.g. [{"x1":643.125, "y1":529.5, "x2":718.875, "y2":604.5, "class_id":1, "class_name":"car", "conf":0.9404, "track_id":52}, ...]'}</code>
+                              </article>
+                              <article>
+                                <strong>{locale === "zh" ? "事件" : "Event"}</strong>
+                                <b>{locale === "zh" ? "用户关心的业务相关事件" : "Domain-meaningful events users care about"}</b>
+                                <code>e.g. illegal parking vehicle found between 00:03 ~ 00:05 seconds</code>
+                              </article>
+                            </section>
+
+                            <div class="vision-memory-arrow vision-memory-arrow-distill" aria-hidden="true">
+                              <span><b>{locale === "zh" ? "结束后" : "pass to"}</b><i></i>{locale === "zh" ? <em>传入</em> : null}</span>
+                              <span><b>{locale === "zh" ? "结束后" : "pass to"}</b><i></i>{locale === "zh" ? <em>传入</em> : null}</span>
+                            </div>
+
+                            <section class="vision-memory-process">
+                              <h3>{locale === "zh" ? <>任务结束后<br />压缩记忆信息</> : "End-of-Task Distill"}</h3>
+                              <p>{locale === "zh" ? <>缩减事件长度<br />提取任务统计特征</> : <><span>Compaction</span><span>Feature Extraction</span></>}</p>
+                            </section>
+
+                            <div class="vision-memory-arrow vision-memory-arrow-add" aria-hidden="true">
+                              <span><b>{locale === "zh" ? "写入" : "add to"}</b><i></i></span>
+                            </div>
+
+                            <section class="vision-memory-group vision-memory-persistent">
+                              <h3>{locale === "zh" ? "跨任务保留的记忆" : "Cross-Task Memory"}</h3>
+                              <article>
+                                <strong>{locale === "zh" ? "智能体日志" : "Agent Log"}</strong>
+                                <b>{locale === "zh" ? "VLM/LMM 决策后的结果或动作记录" : "Facts produced by active VLM/LMM operations"}</b>
+                                <code>{'e.g. {"summary_id":"sum_27_t300", "t_start":2.0, "t_end":3.1, "content":"Highway section G2km34-35. Light daytime traffic..."}'}</code>
+                              </article>
+                              <article>
+                                <strong>{locale === "zh" ? "历史记录" : "History"}</strong>
+                                <b>{locale === "zh" ? "历史决策记录与前序任务提取的特征" : "Prior verdict reasons and extracted task facts"}</b>
+                                <code>{'e.g. record_id="a3f7c912", item_id="pend_0047", reason="shadow cast by overpass girder during low-angle morning sun"'}</code>
+                              </article>
+                            </section>
+
+                            <div class="vision-memory-arrow vision-memory-arrow-update" aria-hidden="true">
+                              <span><b>{locale === "zh" ? "空闲时" : "update"}</b><i></i><em>{locale === "zh" ? "更新" : "when idle"}</em></span>
+                            </div>
+
+                            <section class="vision-memory-process vision-memory-lifecycle">
+                              <h3>{locale === "zh" ? "生命周期管理" : "Lifecycle Management"}</h3>
+                              <ul>
+                                <li>{locale === "zh" ? "清理过期记忆" : "Pruning"}</li>
+                                <li>{locale === "zh" ? "只更新重要记录" : "Diff-based Update"}</li>
+                                <li>{locale === "zh" ? "按使用频率排序" : "Weighted Facts"}</li>
+                              </ul>
+                            </section>
+                          </div>
+                        ) : null}
+                        {slide.visual === "vision-context-engineering" ? (
+                          <figure class="vision-context-engineering-visual" aria-label={locale === "zh" ? "VLM/LMM 调用触发与上下文工程示意" : "VLM/LMM trigger and context engineering diagram"}>
+                            <img src="/case-studies/vision-agent/va-page5-v3.png" alt="" decoding="async" />
+                          </figure>
+                        ) : null}
+                        {slide.media && slide.visual !== "vision-common-sense" ? (
+                          <figure class="story-cover-asset" aria-label={slide.media.alt ?? ""}>
+                            {slide.media.type === "video" ? (
+                              slide.visual === "vision-live-demo" || slide.visual === "mm-real-demo" ? (
+                                <div class="vision-demo-video-control" data-vision-demo-video-control>
+                                  <video
+                                    src={lowTrafficMode ? undefined : slide.media.src}
+                                    data-heavy-src={lowTrafficMode ? slide.media.src : undefined}
+                                    poster={slide.media.poster}
+                                    autoplay={lowTrafficMode ? undefined : true}
+                                    muted
+                                    loop
+                                    playsinline
+                                    preload={lowTrafficMode ? "none" : "metadata"}
+                                  ></video>
+                                  <button type="button" aria-label={locale === "zh" ? "暂停视频" : "Pause video"} data-vision-demo-toggle>
+                                    <svg class="vision-demo-icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6v12M16 6v12" /></svg>
+                                    <svg class="vision-demo-icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 9 6-9 6Z" /></svg>
+                                  </button>
+                                </div>
+                              ) : (
+                                <video
+                                  src={lowTrafficMode ? undefined : slide.media.src}
+                                  data-heavy-src={lowTrafficMode ? slide.media.src : undefined}
+                                  poster={slide.media.poster}
+                                  autoplay={lowTrafficMode ? undefined : true}
+                                  muted
+                                  loop
+                                  playsinline
+                                  preload={lowTrafficMode ? "none" : "metadata"}
+                                ></video>
+                              )
                             ) : (
                               <img src={slide.media.src} alt={slide.media.alt ?? ""} decoding="async" />
                             )}
@@ -1580,7 +1869,7 @@ const copy =
             viewIsActive &&
             projectIndex === activeIndex &&
             episode?.classList.contains("is-active");
-          if (active) {
+          if (active && video.dataset.userPaused !== "true") {
             playVideo(video);
             return;
           }
@@ -1588,6 +1877,52 @@ const copy =
         });
       });
     };
+
+    viewer.querySelectorAll("[data-vision-demo-video-control]").forEach((control) => {
+      const video = control.querySelector("video");
+      const toggle = control.querySelector("[data-vision-demo-toggle]");
+      if (!(video instanceof HTMLVideoElement) || !(toggle instanceof HTMLButtonElement)) return;
+      let cursorTimer;
+
+      const hideDemoCursorLater = () => {
+        window.clearTimeout(cursorTimer);
+        cursorTimer = window.setTimeout(() => control.classList.remove("is-cursor-active"), 1200);
+      };
+
+      const syncDemoControl = () => {
+        const paused = video.paused;
+        control.classList.toggle("is-paused", paused);
+        toggle.setAttribute("aria-label", paused
+          ? (document.documentElement.lang === "zh-CN" ? "继续播放" : "Continue video")
+          : (document.documentElement.lang === "zh-CN" ? "暂停视频" : "Pause video"));
+      };
+
+      control.addEventListener("click", () => {
+        if (video.paused) {
+          video.dataset.userPaused = "false";
+          playVideo(video);
+        } else {
+          video.dataset.userPaused = "true";
+          video.pause();
+        }
+        control.classList.add("is-cursor-active");
+        hideDemoCursorLater();
+      });
+      control.addEventListener("pointermove", (event) => {
+        const bounds = control.getBoundingClientRect();
+        control.style.setProperty("--demo-cursor-x", `${event.clientX - bounds.left}px`);
+        control.style.setProperty("--demo-cursor-y", `${event.clientY - bounds.top}px`);
+        control.classList.add("is-cursor-active");
+        hideDemoCursorLater();
+      });
+      control.addEventListener("pointerleave", () => {
+        window.clearTimeout(cursorTimer);
+        control.classList.remove("is-cursor-active");
+      });
+      video.addEventListener("play", syncDemoControl);
+      video.addEventListener("pause", syncDemoControl);
+      syncDemoControl();
+    });
 
     const activeEpisodeNodes = () => [
       ...(projectNodes[activeIndex]?.querySelectorAll("[data-viewer-episode]") ?? []),

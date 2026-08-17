@@ -20,7 +20,7 @@ technologies:
   - SQLite
   - Docker
 metrics:
-  - value: 8 × 30 FPS
+  - value: 12 × 30 FPS
     label: concurrent streams on one RTX 4090
   - value: 100→5
     label: person-days for integration debugging
@@ -41,7 +41,7 @@ sessionVisual: /case-studies/video-intelligence/wanxiang-hero-poster.jpg
 sessionVideo: /case-studies/video-intelligence/vi-hero-media-v2.mp4
 sessionPoster: /case-studies/video-intelligence/wanxiang-hero-poster.jpg
 sessionMetric:
-  value: 8 × 30 FPS
+  value: 12 × 30 FPS
   label: concurrent streams on one RTX 4090
 implementationStatus: Agent-ready platform; no implemented LLM/VLM agent layer
 accent: sage
@@ -146,7 +146,7 @@ from drifting progressively further behind.
 
 ## Results
 
-The platform supported **eight concurrent 30 FPS streams on one RTX 4090**.
+The platform supported **12 concurrent 30 FPS streams on one RTX 4090**.
 Documented internal measurements showed integration debugging dropping from
 approximately **100 to 5 person-days**, customer testing from **80 to 2**, and
 demonstration preparation from **100 to 2**.
