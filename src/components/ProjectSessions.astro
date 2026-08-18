@@ -106,15 +106,14 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
           <div class="session-visual-frame">
             {project.data.sessionVideo ? (
               <video
-                src={lowTrafficMode ? undefined : project.data.sessionVideo}
-                data-heavy-src={lowTrafficMode ? project.data.sessionVideo : undefined}
-                poster={project.data.sessionPoster ?? project.data.sessionVisual}
+                data-heavy-src={project.data.sessionVideo}
+                data-poster={project.data.sessionPoster ?? project.data.sessionVisual}
                 aria-label={project.data.diagramAlt}
-                autoplay={lowTrafficMode ? undefined : true}
+                autoplay
                 muted
                 loop
                 playsinline
-                preload={lowTrafficMode ? "none" : "auto"}
+                preload="none"
               ></video>
             ) : project.data.slug === "floor-plan-reconstruction" ? (
               <FloorPlanProcess alt={project.data.diagramAlt} />
@@ -175,9 +174,17 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let activeIndex = 0;
     let wheelLocked = false;
+    let adjacentPosterIdle = 0;
+    let videoLoadTimer = 0;
+
+    const prepareVideoPoster = (video) => {
+      if (!(video instanceof HTMLVideoElement) || video.getAttribute("poster") || !video.dataset.poster) return;
+      video.poster = video.dataset.poster;
+    };
 
     const playVideo = (video) => {
-      if (lowTrafficMode && !video.getAttribute("src") && video.dataset.heavySrc) {
+      prepareVideoPoster(video);
+      if (!video.getAttribute("src") && video.dataset.heavySrc) {
         video.src = video.dataset.heavySrc;
         video.load();
       }
@@ -185,16 +192,27 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
     };
 
     const syncVideos = () => {
+      window.clearTimeout(videoLoadTimer);
       const viewIsActive = document.documentElement.dataset.portfolioView === "sessions";
+      let activeVideo;
       sessionsView.querySelectorAll("video").forEach((video) => {
         const owner = video.closest("[data-session-visual]");
         const ownerIndex = visuals.indexOf(owner);
         if (viewIsActive && ownerIndex === activeIndex && !reducedMotion) {
-          playVideo(video);
+          activeVideo = video;
           return;
         }
         video.pause();
       });
+      if (activeVideo) {
+        videoLoadTimer = window.setTimeout(() => {
+          const owner = activeVideo.closest("[data-session-visual]");
+          if (
+            document.documentElement.dataset.portfolioView === "sessions" &&
+            visuals.indexOf(owner) === activeIndex
+          ) playVideo(activeVideo);
+        }, 120);
+      }
     };
 
     const circularDistance = (index, center) => {
@@ -234,6 +252,21 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
       });
 
       syncVideos();
+
+      if (adjacentPosterIdle) {
+        if ("cancelIdleCallback" in window) window.cancelIdleCallback(adjacentPosterIdle);
+        else window.clearTimeout(adjacentPosterIdle);
+      }
+      const prepareAdjacentPosters = () => {
+        const previous = (activeIndex - 1 + visuals.length) % visuals.length;
+        const next = (activeIndex + 1) % visuals.length;
+        [visuals[previous], visuals[next]].forEach((visual) => {
+          visual?.querySelectorAll("video[data-poster]").forEach(prepareVideoPoster);
+        });
+      };
+      adjacentPosterIdle = "requestIdleCallback" in window
+        ? window.requestIdleCallback(prepareAdjacentPosters, { timeout: 1200 })
+        : window.setTimeout(prepareAdjacentPosters, 450);
 
       if (window.matchMedia("(max-width: 760px)").matches) {
         indexItems[activeIndex]?.scrollIntoView({
@@ -1111,6 +1144,46 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
       font-size: clamp(2.35rem, 10.4vw, 3.45rem);
       line-height: 1.18;
       letter-spacing: normal;
+    }
+  }
+
+  /* Keep the desktop carousel composition bounded after the canonical width.
+     Additional viewport space becomes an outer gutter instead of stretching
+     the title, media, and copy columns at different rates. */
+  @media (min-width: 1051px) {
+    .sessions-view {
+      grid-template-columns: minmax(18rem, 22.5rem) minmax(42rem, 60rem);
+      justify-content: center;
+      column-gap: clamp(2rem, 3vw, 2.75rem);
+      padding-right: max(2rem, calc((100vw - 85.25rem) / 2));
+      padding-left: max(2rem, calc((100vw - 85.25rem) / 2));
+    }
+
+    .sessions-project-stage {
+      grid-template-columns: minmax(18.5rem, 26.75rem) minmax(22.5rem, 30rem);
+      justify-content: center;
+      gap: clamp(2rem, 3vw, 2.75rem);
+      height: min(29.1rem, calc(100svh - 9.4rem));
+    }
+
+    .sessions-index button strong {
+      font-size: clamp(3.2rem, 5vw, 4.5rem);
+    }
+
+    .session-detail h1 {
+      font-size: clamp(3.35rem, 4.9vw, 4.41rem);
+    }
+
+    .session-summary {
+      font-size: clamp(1rem, 1.35vw, 1.215rem);
+    }
+
+    :global(html[lang="zh-CN"]) .sessions-index button strong {
+      font-size: clamp(2.45rem, 3.75vw, 3.375rem);
+    }
+
+    :global(html[lang="zh-CN"]) .session-detail h1 {
+      font-size: clamp(2.85rem, 3.85vw, 3.465rem);
     }
   }
 

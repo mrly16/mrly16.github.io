@@ -149,6 +149,21 @@ const resolveStoryLayout = (slide: StoryDeckSlide, index: number): NonNullable<S
   if (slide.media) return "split";
   return "board";
 };
+const commonHeadingVisuals = new Set([
+  "vision-feature-dump",
+  "vision-context-engineering",
+  "video-problem",
+  "video-product-workflow",
+  "video-system-architecture",
+  "video-uiux-highlights",
+  "video-ui-philosophy",
+  "mm-data-problem",
+  "mm-operations",
+  "lookx-design-directions",
+  "lookx-render-mode",
+  "lookx-lora-training",
+  "lookx-generate-same",
+]);
 const storyDecks: Record<string, StoryDeckSlide[]> =
   locale === "zh"
     ? {
@@ -162,7 +177,7 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
             layout: "statement",
             media: {
               type: "image",
-              src: "/case-studies/multimodal-search/mmsearch-page1-v2.png",
+              src: "/case-studies/multimodal-search/mmsearch-page1-v2.webp",
               alt: "多模态检索系统界面",
               caption: "无人机拍摄的磕头机盘根盒图像",
             },
@@ -202,6 +217,7 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
             media: {
               type: "video",
               src: "/case-studies/multimodal-search/real-demo-video.mp4",
+              poster: "/case-studies/multimodal-search/real-demo-video-poster.jpg",
               alt: "多模态检索真实演示录屏",
               caption: "多模态检索功能演示",
             },
@@ -270,7 +286,7 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
             layout: "metrics",
             media: {
               type: "image",
-              src: "/case-studies/lookx/user-sharing-on-social-media.png",
+              src: "/case-studies/lookx/user-sharing-on-social-media.webp",
               alt: "Users sharing LookX AI rendering workflows on social media",
             },
             metrics: [
@@ -289,7 +305,7 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
             layout: "statement",
             media: {
               type: "image",
-              src: "/case-studies/video-intelligence/video-intelligence-hero.png",
+              src: "/case-studies/video-intelligence/video-intelligence-hero.webp",
               alt: "视频智能平台界面",
             },
           },
@@ -345,7 +361,7 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
             layout: "statement",
             media: {
               type: "image",
-              src: "/case-studies/vision-agent/vision-agent-frontpage.png",
+              src: "/case-studies/vision-agent/vision-agent-frontpage.webp",
               alt: "视觉智能体 harness 系统示意",
             },
           },
@@ -364,7 +380,7 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
             layout: "statement",
             media: {
               type: "image",
-              src: "/case-studies/vision-agent/va-page3-v3.png",
+              src: "/case-studies/vision-agent/va-page3-v3.webp",
               alt: "视觉智能体常识推理与记忆示意",
             },
           },
@@ -407,7 +423,7 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
             layout: "statement",
             media: {
               type: "image",
-              src: "/case-studies/multimodal-search/mmsearch-page1-v2.png",
+              src: "/case-studies/multimodal-search/mmsearch-page1-v2.webp",
               alt: "Multimodal search system interface",
               caption: "Annotated Stuffing Box of a pumpjack in drone-shot images",
             },
@@ -447,6 +463,7 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
             media: {
               type: "video",
               src: "/case-studies/multimodal-search/real-demo-video.mp4",
+              poster: "/case-studies/multimodal-search/real-demo-video-poster.jpg",
               alt: "Real multimodal search demo recording",
               caption: "Multimodal Search Feature Demo",
             },
@@ -515,7 +532,7 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
             layout: "metrics",
             media: {
               type: "image",
-              src: "/case-studies/lookx/user-sharing-on-social-media.png",
+              src: "/case-studies/lookx/user-sharing-on-social-media.webp",
               alt: "Users sharing LookX AI rendering workflows on social media",
             },
             metrics: [
@@ -534,7 +551,7 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
             layout: "statement",
             media: {
               type: "image",
-              src: "/case-studies/video-intelligence/video-intelligence-hero.png",
+              src: "/case-studies/video-intelligence/video-intelligence-hero.webp",
               alt: "Video intelligence platform interface",
             },
           },
@@ -590,7 +607,7 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
             layout: "statement",
             media: {
               type: "image",
-              src: "/case-studies/vision-agent/vision-agent-frontpage.png",
+              src: "/case-studies/vision-agent/vision-agent-frontpage.webp",
               alt: "Vision agent harness system concept",
             },
           },
@@ -609,7 +626,7 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
             layout: "statement",
             media: {
               type: "image",
-              src: "/case-studies/vision-agent/va-page3-v3.png",
+              src: "/case-studies/vision-agent/va-page3-v3.webp",
               alt: "Vision agent common-sense reasoning and memory concept",
             },
           },
@@ -708,7 +725,8 @@ const copy =
     </a>
   </p>
 
-  <div class="viewer-stage" aria-live="polite">
+  <div class="viewer-stage-shell" data-viewer-stage-shell aria-live="polite">
+    <div class="viewer-stage">
     {projects.map((project, index) => {
       const floorPlan = project.data.slug === "floor-plan-reconstruction";
       const storyDeck = storyDecks[project.data.slug];
@@ -747,7 +765,7 @@ const copy =
                         <p>{floorPlanDeck.context.summary}</p>
                       </div>
                       <figure class="floor-hero-visual" aria-label={locale === "zh" ? "户型图从栅格图像到重建模型的过程" : "Floor plan process from raster image to reconstructed model"}>
-                        <img src="/case-studies/floor-plan/floor-plan-hero-v4.png" alt="" decoding="async" />
+                        <img loading="lazy" data-heavy-src="/case-studies/floor-plan/floor-plan-hero-v4.webp" alt="" decoding="async" />
                       </figure>
                     </div>
                   </section>
@@ -760,18 +778,19 @@ const copy =
                     aria-hidden="true"
                     inert
                   >
-                    <div class="floor-deck floor-deck-synthetic-engine story-deck story-deck-floor-plan-reconstruction">
+                    <div class="floor-deck floor-deck-synthetic-engine story-deck story-deck-floor-plan-reconstruction story-heading-standard">
                       <div class="floor-deck-copy">
                         <h2>{floorPlanDeck.synthetic.title}</h2>
                         <p>{floorPlanDeck.synthetic.summary}</p>
                       </div>
                       <div class="floor-synthetic-grid">
                         <figure class="floor-synthetic-card">
-                          <img
-                            src="/case-studies/floor-plan/fp-synt-left.gif"
-                            alt={locale === "zh" ? "既有前端渲染专有矢量户型数据" : "Existing frontend rendering proprietary vectorized floor-plan data"}
-                            decoding="async"
-                          />
+                          <video
+                            data-heavy-src="/case-studies/floor-plan/fp-synt-left.mp4"
+                            data-poster="/case-studies/floor-plan/fp-synt-left-poster.jpg"
+                            aria-label={locale === "zh" ? "既有前端渲染专有矢量户型数据" : "Existing frontend rendering proprietary vectorized floor-plan data"}
+                            autoplay loop muted playsinline preload="none"
+                          ></video>
                           <figcaption>
                             <strong>{locale === "zh" ? "矢量数据渲染" : "Vector Data Rendering"}</strong>
                             <span>
@@ -782,11 +801,12 @@ const copy =
                           </figcaption>
                         </figure>
                         <figure class="floor-synthetic-card">
-                          <img
-                            src="/case-studies/floor-plan/fp-synt-mid.gif"
-                            alt={locale === "zh" ? "通过 CSS 改写生成标注掩码" : "CSS editing generates annotation masks"}
-                            decoding="async"
-                          />
+                          <video
+                            data-heavy-src="/case-studies/floor-plan/fp-synt-mid.mp4"
+                            data-poster="/case-studies/floor-plan/fp-synt-mid-poster.jpg"
+                            aria-label={locale === "zh" ? "通过 CSS 改写生成标注掩码" : "CSS editing generates annotation masks"}
+                            autoplay loop muted playsinline preload="none"
+                          ></video>
                           <figcaption>
                             <strong>{locale === "zh" ? "CSS 属性编辑" : "CSS Attribute Editing"}</strong>
                             <span>
@@ -797,11 +817,12 @@ const copy =
                           </figcaption>
                         </figure>
                         <figure class="floor-synthetic-card">
-                          <img
-                            src="/case-studies/floor-plan/fp-synt-right.gif"
-                            alt={locale === "zh" ? "区域几何计算生成训练数据" : "Region geometry calculation generates training data"}
-                            decoding="async"
-                          />
+                          <video
+                            data-heavy-src="/case-studies/floor-plan/fp-synt-right.mp4"
+                            data-poster="/case-studies/floor-plan/fp-synt-right-poster.jpg"
+                            aria-label={locale === "zh" ? "区域几何计算生成训练数据" : "Region geometry calculation generates training data"}
+                            autoplay loop muted playsinline preload="none"
+                          ></video>
                           <figcaption>
                             <strong>{locale === "zh" ? "多边形几何计算" : "Polygon Geometry Computation"}</strong>
                             <span>
@@ -829,16 +850,16 @@ const copy =
                       </div>
                       <div class="floor-segment-layout" aria-hidden="true">
                         <figure class="floor-segment-panel floor-segment-panel-left">
-                          <img src="/case-studies/floor-plan/segment-left.png" alt="" decoding="async" />
+                          <img loading="lazy" data-heavy-src="/case-studies/floor-plan/segment-left.png" alt="" decoding="async" />
                           <figcaption>{locale === "zh" ? "标注数据有像素级的准确性" : "Pixel-accurate segmentation labels"}</figcaption>
                         </figure>
                         <figure class="floor-segment-panel floor-segment-panel-right">
-                          <img src="/case-studies/floor-plan/segment-right.png" alt="" decoding="async" />
+                          <img loading="lazy" data-heavy-src="/case-studies/floor-plan/segment-right.png" alt="" decoding="async" />
                           <figcaption>{locale === "zh" ? "用于训练 DeepLabV3+ 模型（mIoU 0.85）" : "Trained with DeepLabV3+ (mIoU 0.85)"}</figcaption>
                         </figure>
-                        <img
+                        <img loading="lazy"
                           class="floor-segment-bottom"
-                          src="/case-studies/floor-plan/segment-bottom.png"
+                          data-heavy-src="/case-studies/floor-plan/segment-bottom.png"
                           alt=""
                           decoding="async"
                         />
@@ -861,8 +882,8 @@ const copy =
                       <div class="floor-optimization-visual">
                         <div class="floor-room-constraint-layout">
                           <figure class="floor-room-constraint-source">
-                            <img
-                              src="/case-studies/floor-plan/fp-op1-left.png"
+                            <img loading="lazy"
+                              data-heavy-src="/case-studies/floor-plan/fp-op1-left.webp"
                               alt={locale === "zh" ? "锯齿状房间轮廓优化为稳定房间多边形" : "Zigzagged room contours optimized into stable room polygons"}
                               decoding="async"
                             />
@@ -897,7 +918,7 @@ const copy =
                                 <span class="floor-room-constraint-badge">{constraint.label}</span>
                                 <div class="floor-room-constraint-copy">
                                   <p>{locale === "zh" ? constraint.zh : constraint.en}</p>
-                                  <img src={constraint.image} alt="" decoding="async" />
+                                  <img loading="lazy" data-heavy-src={constraint.image} alt="" decoding="async" />
                                 </div>
                               </article>
                             ))}
@@ -922,8 +943,8 @@ const copy =
                       <div class="floor-optimization-visual">
                         <div class="floor-room-constraint-layout floor-wall-constraint-layout">
                           <figure class="floor-room-constraint-source">
-                            <img
-                              src="/case-studies/floor-plan/fp-op2-left.png"
+                            <img loading="lazy"
+                              data-heavy-src="/case-studies/floor-plan/fp-op2-left.webp"
                               alt={locale === "zh" ? "墙体多边形被提取为墙体中心线结构图" : "Wall polygons reduced to wall centerline structural graph"}
                               decoding="async"
                             />
@@ -958,7 +979,7 @@ const copy =
                                 <span class="floor-room-constraint-badge">{constraint.label}</span>
                                 <div class="floor-room-constraint-copy floor-wall-constraint-copy">
                                   <p>{locale === "zh" ? constraint.zh : constraint.en}</p>
-                                  <img src={constraint.image} alt="" decoding="async" />
+                                  <img loading="lazy" data-heavy-src={constraint.image} alt="" decoding="async" />
                                 </div>
                               </article>
                             ))}
@@ -1003,7 +1024,7 @@ const copy =
                       inert={slideIndex === 0 ? undefined : true}
                     >
                       <div
-                        class={`floor-deck story-deck story-deck-${project.data.slug} story-visual-${slide.visual} story-layout-${resolveStoryLayout(slide, slideIndex)}`}
+                        class={`floor-deck story-deck story-deck-${project.data.slug} story-visual-${slide.visual} story-layout-${resolveStoryLayout(slide, slideIndex)}${commonHeadingVisuals.has(slide.visual) ? " story-heading-standard" : ""}`}
                       >
                         {slide.title || slide.summary || slide.points || slide.implementationMetrics ? (
                           <div class="floor-deck-copy">
@@ -1082,7 +1103,7 @@ const copy =
                                   <h3>{locale === "zh" ? "基础模型训练" : "Base Model Training"}</h3>
                                   <p>{locale === "zh" ? "基于高质量领域数据训练基础大模型" : "Foundation-model training on curated architectural data"}</p>
                                 </div>
-                                <img src="/case-studies/lookx/tech/lookx_tech_left1.png" alt="" decoding="async" />
+                                <img loading="lazy" data-heavy-src="/case-studies/lookx/tech/lookx_tech_left1.webp" alt="" decoding="async" />
                               </div>
                               <i class="lookx-tech-horizontal-divider" aria-hidden="true"></i>
                               <div class="lookx-tech-panel lookx-tech-workflow">
@@ -1090,7 +1111,7 @@ const copy =
                                   <h3>{locale === "zh" ? "图像生成" : "Image Generation"}</h3>
                                   <p>{locale === "zh" ? "围绕功能开发图像生成工作流和微服务" : "Dedicated pipelines and services for each generation feature"}</p>
                                 </div>
-                                <img src="/case-studies/lookx/tech/lookx_tech_left2.png" alt="" decoding="async" />
+                                <img loading="lazy" data-heavy-src="/case-studies/lookx/tech/lookx_tech_left2.webp" alt="" decoding="async" />
                               </div>
                             </div>
                             <i class="lookx-tech-vertical-divider" aria-hidden="true"></i>
@@ -1099,15 +1120,15 @@ const copy =
                                 <h3>{locale === "zh" ? "提示词路由" : "Prompt Routing"}</h3>
                                 <p>{locale === "zh" ? "通过识别意图自动选择基础模型" : "Automatic model selection"}</p>
                               </div>
-                              <img src="/case-studies/lookx/tech/lookx_tech_right.png" alt="" decoding="async" />
+                              <img loading="lazy" data-heavy-src="/case-studies/lookx/tech/lookx_tech_right.webp" alt="" decoding="async" />
                             </div>
                           </figure>
                         ) : null}
                         {slide.visual === "mm-metadata" ? (
                           <figure class="mm-metadata-visual" aria-label="Multimodal image metadata with annotations, embeddings, captions, tags, and description">
-                            <img
+                            <img loading="lazy"
                               class="mm-metadata-image"
-                              src="/case-studies/multimodal-search/mmsearch-metadata.png"
+                              data-heavy-src="/case-studies/multimodal-search/mmsearch-metadata.png"
                               alt=""
                               decoding="async"
                             />
@@ -1117,7 +1138,7 @@ const copy =
                         {slide.visual === "mm-data-problem" ? (
                           <div class="mm-data-problem-visual" aria-label={locale === "zh" ? "手动浏览对象存储中的图像样本" : "Manually browsing image samples in object storage"}>
                             <figure>
-                              <img src="/case-studies/multimodal-search/object-storage-scroll.gif" alt="" decoding="async" />
+                              <video data-heavy-src="/case-studies/multimodal-search/object-storage-scroll.mp4" data-poster="/case-studies/multimodal-search/object-storage-scroll-poster.jpg" autoplay loop muted playsinline preload="none"></video>
                               <figcaption>
                                 {locale === "zh"
                                   ? "手动翻看对象存储中的数据集"
@@ -1138,7 +1159,7 @@ const copy =
                           <div class="mm-operations-visual" aria-label={locale === "zh" ? "视觉数据平台操作能力" : "Visual dataset platform operations"}>
                             <figure class="mm-operations-card">
                               <div class="mm-operations-media">
-                                <img src="/case-studies/multimodal-search/mmsearch-zero-det.gif" alt="" decoding="async" />
+                                <video data-heavy-src="/case-studies/multimodal-search/mmsearch-zero-det.mp4" data-poster="/case-studies/multimodal-search/mmsearch-zero-det-poster.jpg" autoplay loop muted playsinline preload="none"></video>
                                 <figcaption>
                                   <strong>{locale === "zh" ? "零样本检测" : "Zero-Shot Detection"}</strong>
                                   <span>{locale === "zh" ? "快速验证新类别和候选数据。" : "Validate new classes and candidate data quickly."}</span>
@@ -1147,7 +1168,7 @@ const copy =
                             </figure>
                             <figure class="mm-operations-card">
                               <div class="mm-operations-media">
-                                <img src="/case-studies/multimodal-search/mmsearch-generate.gif" alt="" decoding="async" />
+                                <video data-heavy-src="/case-studies/multimodal-search/mmsearch-generate.mp4" data-poster="/case-studies/multimodal-search/mmsearch-generate-poster.jpg" autoplay loop muted playsinline preload="none"></video>
                                 <figcaption>
                                   <strong>{locale === "zh" ? "模板化生成" : "Templated Generation"}</strong>
                                   <span>{locale === "zh" ? "按任务模板批量生成训练素材。" : "Generate training assets from reusable task templates."}</span>
@@ -1156,7 +1177,7 @@ const copy =
                             </figure>
                             <figure class="mm-operations-card">
                               <div class="mm-operations-media">
-                                <img src="/case-studies/multimodal-search/mmsearch-stitch.gif" alt="" decoding="async" />
+                                <video data-heavy-src="/case-studies/multimodal-search/mmsearch-stitch.mp4" data-poster="/case-studies/multimodal-search/mmsearch-stitch-poster.jpg" autoplay loop muted playsinline preload="none"></video>
                                 <figcaption>
                                   <strong>{locale === "zh" ? "合成数据与图像编辑" : "Synthetic Data and Image Editing"}</strong>
                                   <span>{locale === "zh" ? "拼接、编辑并扩展可用图像样本。" : "Stitch, edit, and expand usable image samples."}</span>
@@ -1165,7 +1186,7 @@ const copy =
                             </figure>
                             <figure class="mm-operations-card">
                               <div class="mm-operations-media">
-                                <img src="/case-studies/multimodal-search/mmsearch-tag.gif" alt="" decoding="async" />
+                                <video data-heavy-src="/case-studies/multimodal-search/mmsearch-tag.mp4" data-poster="/case-studies/multimodal-search/mmsearch-tag-poster.jpg" autoplay loop muted playsinline preload="none"></video>
                                 <figcaption>
                                   <strong>{locale === "zh" ? "标签与标注" : "Tags and Annotation"}</strong>
                                   <span>{locale === "zh" ? "维护可检索、可训练的数据标签。" : "Maintain searchable labels for training pipelines."}</span>
@@ -1176,9 +1197,9 @@ const copy =
                         ) : null}
                         {slide.visual === "mm-infra" ? (
                           <figure class="mm-infra-visual" aria-label="Multimodal search infrastructure balancing cost, throughput, and retrieval experience">
-                            <img
+                            <img loading="lazy"
                               class="mm-infra-image"
-                              src="/case-studies/multimodal-search/mmsearch-infra.png"
+                              data-heavy-src="/case-studies/multimodal-search/mmsearch-infra.webp"
                               alt=""
                               decoding="async"
                             />
@@ -1186,9 +1207,9 @@ const copy =
                         ) : null}
                         {slide.visual === "lookx-render-mode" ? (
                           <figure class="lookx-pipeline-visual" aria-label="Three architectural design stages routed into tailored generation pipelines">
-                            <img
+                            <img loading="lazy"
                               class="lookx-pipeline-image"
-                              src={
+                              data-heavy-src={
                                 locale === "zh"
                                   ? "/case-studies/lookx/lookx-rendering-zh-v2.png"
                                   : "/case-studies/lookx/lookx-rendering-en-v2.png"
@@ -1200,9 +1221,9 @@ const copy =
                         ) : null}
                         {slide.visual === "lookx-lora-training" ? (
                           <figure class="lookx-lora-visual" aria-label="One-click LoRA training workflow for architectural images">
-                            <img
+                            <img loading="lazy"
                               class="lookx-lora-image"
-                              src="/case-studies/lookx/lookx-lora-training.png"
+                              data-heavy-src="/case-studies/lookx/lookx-lora-training.png"
                               alt=""
                               decoding="async"
                             />
@@ -1210,9 +1231,9 @@ const copy =
                         ) : null}
                         {slide.visual === "lookx-generate-same" ? (
                           <figure class="lookx-same-visual" aria-label="Generate Same workflow for recreating shared works">
-                            <img
+                            <img loading="lazy"
                               class="lookx-same-image"
-                              src="/case-studies/lookx/lookx-generate-same.png"
+                              data-heavy-src="/case-studies/lookx/lookx-generate-same.png"
                               alt=""
                               decoding="async"
                             />
@@ -1221,11 +1242,11 @@ const copy =
                         {slide.visual === "video-problem" ? (
                           <div class="video-problem-visual" aria-label="Comparison between lab and field model inference results">
                             <figure>
-                              <img src="/case-studies/video-intelligence/problem-left.png" alt="" decoding="async" />
+                              <img loading="lazy" data-heavy-src="/case-studies/video-intelligence/problem-left.png" alt="" decoding="async" />
                               <figcaption>{locale === "zh" ? "实验室结果" : "Lab Result"}</figcaption>
                             </figure>
                             <figure>
-                              <img src="/case-studies/video-intelligence/problem-right.png" alt="" decoding="async" />
+                              <img loading="lazy" data-heavy-src="/case-studies/video-intelligence/problem-right.png" alt="" decoding="async" />
                               <figcaption>{locale === "zh" ? "现场结果" : "Field Result"}</figcaption>
                             </figure>
                           </div>
@@ -1233,7 +1254,7 @@ const copy =
                         {slide.visual === "video-system-architecture" ? (
                           <>
                             <figure class="video-system-architecture-visual" aria-label={locale === "zh" ? "视频分析引擎系统架构图" : "System architecture diagram for the video analysis engine"}>
-                              <img src="/case-studies/video-intelligence/video-analysis-engine-v2.png" alt="" decoding="async" />
+                              <img loading="lazy" data-heavy-src="/case-studies/video-intelligence/video-analysis-engine-v2.webp" alt="" decoding="async" />
                               <div class="video-system-decisions">
                                 {[
                                   {
@@ -1281,7 +1302,7 @@ const copy =
                               {
                                 title: locale === "zh" ? "模拟实飞" : "Flight Sim",
                                 tags: ["FDE", locale === "zh" ? "客户" : "Client"],
-                                image: "/case-studies/video-intelligence/vi-page4-left-v2.png",
+                                image: "/case-studies/video-intelligence/vi-page4-left-v2.webp",
                                 caption:
                                   locale === "zh"
                                     ? "RTMP/RTSP 接入、模拟实况推理、多路流预览"
@@ -1290,7 +1311,7 @@ const copy =
                               {
                                 title: locale === "zh" ? "文件推理" : "File Inference",
                                 tags: ["MLE", "Dev", "QA"],
-                                image: "/case-studies/video-intelligence/vi-page4-mid-v2.png",
+                                image: "/case-studies/video-intelligence/vi-page4-mid-v2.webp",
                                 caption:
                                   locale === "zh"
                                     ? "离线批量推理、模型效果对比、逐帧复核面板"
@@ -1299,7 +1320,7 @@ const copy =
                               {
                                 title: locale === "zh" ? "复盘分析" : "Review & Analysis",
                                 tags: [locale === "zh" ? "销售" : "Sales", "MLE", "QA"],
-                                image: "/case-studies/video-intelligence/vi-page4-right-v2.png",
+                                image: "/case-studies/video-intelligence/vi-page4-right-v2.webp",
                                 caption:
                                   locale === "zh"
                                     ? "时间线回放、事件截图与片段导出、任务记录管理"
@@ -1315,7 +1336,7 @@ const copy =
                                     ))}
                                   </div>
                                 </header>
-                                <img src={item.image} alt="" decoding="async" />
+                                <img loading="lazy" data-heavy-src={item.image} alt="" decoding="async" />
                                 <figcaption>{item.caption}</figcaption>
                               </figure>
                             ))}
@@ -1326,7 +1347,8 @@ const copy =
                             {[
                               {
                                 title: locale === "zh" ? "解耦渲染" : "Decoupled Rendering",
-                                image: "/case-studies/video-intelligence/uiux/decoupled-rendering.gif",
+                                video: "/case-studies/video-intelligence/uiux/decoupled-rendering.mp4",
+                                poster: "/case-studies/video-intelligence/uiux/decoupled-rendering-poster.jpg",
                                 caption:
                                   locale === "zh"
                                     ? "检测框与轨迹由前端渲染，而不是烧进视频帧，让结果展示可以随时筛选、换样式和叠加信息。"
@@ -1334,7 +1356,8 @@ const copy =
                               },
                               {
                                 title: locale === "zh" ? "推理进度追踪" : "Inference Progress Tracking",
-                                image: "/case-studies/video-intelligence/uiux/progress-bar.gif",
+                                video: "/case-studies/video-intelligence/uiux/progress-bar.mp4",
+                                poster: "/case-studies/video-intelligence/uiux/progress-bar-poster.jpg",
                                 caption:
                                   locale === "zh"
                                     ? "文件推理任务展示每一帧的处理进度，用户可以自由快进、回看和定位结果。"
@@ -1342,7 +1365,8 @@ const copy =
                               },
                               {
                                 title: locale === "zh" ? "拖拽多选" : "Drag Multi-select",
-                                image: "/case-studies/video-intelligence/uiux/slide-selection.gif",
+                                video: "/case-studies/video-intelligence/uiux/slide-selection.mp4",
+                                poster: "/case-studies/video-intelligence/uiux/slide-selection-poster.jpg",
                                 caption:
                                   locale === "zh"
                                     ? "媒体卡片和任务卡片支持拖拽框选，减少批量操作时的重复点击。"
@@ -1350,7 +1374,8 @@ const copy =
                               },
                               {
                                 title: locale === "zh" ? "事件标记与提示" : "Event Markers",
-                                image: "/case-studies/video-intelligence/uiux/tooltip-marker.gif",
+                                video: "/case-studies/video-intelligence/uiux/tooltip-marker.mp4",
+                                poster: "/case-studies/video-intelligence/uiux/tooltip-marker-poster.jpg",
                                 caption:
                                   locale === "zh"
                                     ? "关键事件会被明确标记在时间线上，用户可以直接跳到有价值的片段，而不是看完整段视频。"
@@ -1358,7 +1383,7 @@ const copy =
                               },
                             ].map((item) => (
                               <figure class="video-uiux-card">
-                                <img src={item.image} alt="" loading="lazy" decoding="async" />
+                                <video data-heavy-src={item.video} data-poster={item.poster} autoplay loop muted playsinline preload="none"></video>
                                 <figcaption>
                                   <strong>{item.title}</strong>
                                   <span>{item.caption}</span>
@@ -1369,22 +1394,21 @@ const copy =
                         ) : null}
                         {slide.visual === "video-ui-philosophy" ? (
                           <figure class="video-ui-philosophy-visual" aria-label={locale === "zh" ? "视频智能平台 Storybook 组件系统" : "Storybook component system for the video intelligence platform"}>
-                            <img src="/case-studies/video-intelligence/vi-ui-components-01.png" alt="" decoding="async" />
-                            <img src="/case-studies/video-intelligence/vi-ui-components-02.png" alt="" decoding="async" />
-                            <img src="/case-studies/video-intelligence/vi-ui-components-03.png" alt="" decoding="async" />
+                            <img loading="lazy" data-heavy-src="/case-studies/video-intelligence/vi-ui-components-01.png" alt="" decoding="async" />
+                            <img loading="lazy" data-heavy-src="/case-studies/video-intelligence/vi-ui-components-02.png" alt="" decoding="async" />
+                            <img loading="lazy" data-heavy-src="/case-studies/video-intelligence/vi-ui-components-03.png" alt="" decoding="async" />
                           </figure>
                         ) : null}
                         {slide.visual === "video-fusion-detection" ? (
                           <figure class="video-fusion-visual" aria-label={locale === "zh" ? "可见光与红外融合检测算法演示" : "Visible-light and infrared fusion detection demo"}>
                             <div class="vision-demo-video-control" data-vision-demo-video-control>
                               <video
-                                src={lowTrafficMode ? undefined : "/case-studies/video-intelligence/fusion/vi-fusion-v2.mp4"}
-                                data-heavy-src={lowTrafficMode ? "/case-studies/video-intelligence/fusion/vi-fusion-v2.mp4" : undefined}
-                                autoplay={lowTrafficMode ? undefined : true}
+                                data-heavy-src="/case-studies/video-intelligence/fusion/vi-fusion-v2.mp4"
+                                autoplay
                                 muted
                                 loop
                                 playsinline
-                                preload={lowTrafficMode ? "none" : "metadata"}
+                                preload="none"
                               ></video>
                               <button type="button" aria-label={locale === "zh" ? "暂停视频" : "Pause video"} data-vision-demo-toggle>
                                 <svg class="vision-demo-icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6v12M16 6v12" /></svg>
@@ -1398,7 +1422,7 @@ const copy =
                             <div class="vision-cv-limit-row vision-cv-limit-row-three">
                               {[
                                 {
-                                  image: "/case-studies/vision-agent/problems/problem-1-v2.png",
+                                  image: "/case-studies/vision-agent/problems/problem-1-v2.webp",
                                   title: locale === "zh" ? "检测类别固定" : "Closed-Set Recognition",
                                   body:
                                     locale === "zh"
@@ -1406,7 +1430,7 @@ const copy =
                                       : "The detector outputs predefined classes only; objects outside the label set cannot be recognized.",
                                 },
                                 {
-                                  image: "/case-studies/vision-agent/problems/problem-2-v2.png",
+                                  image: "/case-studies/vision-agent/problems/problem-2-v2.webp",
                                   title: locale === "zh" ? "模型没有记忆" : "Stateless, Frame-Level Inference",
                                   body:
                                     locale === "zh"
@@ -1414,7 +1438,7 @@ const copy =
                                       : "Inference uses only the current frame, without persistent memory or temporal context.",
                                 },
                                 {
-                                  image: "/case-studies/vision-agent/problems/problem-3-v2.png",
+                                  image: "/case-studies/vision-agent/problems/problem-3-v2.webp",
                                   title: locale === "zh" ? "仅使用图像特征" : "Limited to Image Features",
                                   body:
                                     locale === "zh"
@@ -1424,7 +1448,7 @@ const copy =
                               ].map((item, itemIndex) => (
                                 <figure class="vision-cv-limit-card">
                                   <div class="vision-cv-limit-image">
-                                    <img src={item.image} alt="" decoding="async" />
+                                    <img loading="lazy" data-heavy-src={item.image} alt="" decoding="async" />
                                   </div>
                                   <figcaption>
                                     <div class="vision-cv-limit-heading">
@@ -1438,7 +1462,7 @@ const copy =
                             <div class="vision-cv-limit-row vision-cv-limit-row-two">
                               {[
                                 {
-                                  image: "/case-studies/vision-agent/problems/problem-4-v2.png",
+                                  image: "/case-studies/vision-agent/problems/problem-4-v2.webp",
                                   title: locale === "zh" ? "对数据偏移敏感" : "Sensitive to Domain Shift",
                                   body:
                                     locale === "zh"
@@ -1446,7 +1470,7 @@ const copy =
                                       : "Changes in site, viewpoint, or lighting can shift inputs from the training distribution, increasing false positives and negatives.",
                                 },
                                 {
-                                  image: "/case-studies/vision-agent/problems/problem-5-v2.png",
+                                  image: "/case-studies/vision-agent/problems/problem-5-v2.webp",
                                   title: locale === "zh" ? "整体流程不够解耦" : "Tightly Coupled Pipeline",
                                   body:
                                     locale === "zh"
@@ -1456,7 +1480,7 @@ const copy =
                               ].map((item, itemIndex) => (
                                 <figure class="vision-cv-limit-card">
                                   <div class="vision-cv-limit-image">
-                                    <img src={item.image} alt="" decoding="async" />
+                                    <img loading="lazy" data-heavy-src={item.image} alt="" decoding="async" />
                                   </div>
                                   <figcaption>
                                     <div class="vision-cv-limit-heading">
@@ -1471,7 +1495,7 @@ const copy =
                         ) : null}
                         {slide.visual === "vision-common-sense" ? (
                           <figure class="vision-decision-architecture" aria-label={locale === "zh" ? "视觉智能体从检测结果到决策与工具调用的系统设计" : "Vision agent system design from detections to decisions and tool calls"}>
-                            <img src="/case-studies/vision-agent/va-page3-v3.png" alt="" decoding="async" />
+                            <img loading="lazy" data-heavy-src="/case-studies/vision-agent/va-page3-v3.webp" alt="" decoding="async" />
                             <div class="vision-decision-points">
                               {[
                                 {
@@ -1565,7 +1589,7 @@ const copy =
                         ) : null}
                         {slide.visual === "vision-context-engineering" ? (
                           <figure class="vision-context-engineering-visual" aria-label={locale === "zh" ? "VLM/LMM 调用触发与上下文工程示意" : "VLM/LMM trigger and context engineering diagram"}>
-                            <img src="/case-studies/vision-agent/va-page5-v3.png" alt="" decoding="async" />
+                            <img loading="lazy" data-heavy-src="/case-studies/vision-agent/va-page5-v3.png" alt="" decoding="async" />
                           </figure>
                         ) : null}
                         {slide.media && slide.visual !== "vision-common-sense" ? (
@@ -1574,14 +1598,13 @@ const copy =
                               slide.visual === "vision-live-demo" || slide.visual === "mm-real-demo" ? (
                                 <div class="vision-demo-video-control" data-vision-demo-video-control>
                                   <video
-                                    src={lowTrafficMode ? undefined : slide.media.src}
-                                    data-heavy-src={lowTrafficMode ? slide.media.src : undefined}
-                                    poster={slide.media.poster}
-                                    autoplay={lowTrafficMode ? undefined : true}
+                                    data-heavy-src={slide.media.src}
+                                    data-poster={slide.media.poster}
+                                    autoplay
                                     muted
                                     loop
                                     playsinline
-                                    preload={lowTrafficMode ? "none" : "metadata"}
+                                    preload="none"
                                   ></video>
                                   <button type="button" aria-label={locale === "zh" ? "暂停视频" : "Pause video"} data-vision-demo-toggle>
                                     <svg class="vision-demo-icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6v12M16 6v12" /></svg>
@@ -1590,18 +1613,17 @@ const copy =
                                 </div>
                               ) : (
                                 <video
-                                  src={lowTrafficMode ? undefined : slide.media.src}
-                                  data-heavy-src={lowTrafficMode ? slide.media.src : undefined}
-                                  poster={slide.media.poster}
-                                  autoplay={lowTrafficMode ? undefined : true}
+                                  data-heavy-src={slide.media.src}
+                                  data-poster={slide.media.poster}
+                                  autoplay
                                   muted
                                   loop
                                   playsinline
-                                  preload={lowTrafficMode ? "none" : "metadata"}
+                                  preload="none"
                                 ></video>
                               )
                             ) : (
-                              <img src={slide.media.src} alt={slide.media.alt ?? ""} decoding="async" />
+                              <img loading="lazy" data-heavy-src={slide.media.src} alt={slide.media.alt ?? ""} decoding="async" />
                             )}
                             {slide.media.caption ? (
                               <figcaption>
@@ -1678,19 +1700,18 @@ const copy =
                     {project.data.sessionVideo ? (
                       <div class="media-scene" aria-label={project.data.diagramAlt}>
                         <video
-                          src={lowTrafficMode ? undefined : project.data.sessionVideo}
-                          data-heavy-src={lowTrafficMode ? project.data.sessionVideo : undefined}
-                          poster={project.data.sessionPoster ?? project.data.sessionVisual}
-                          autoplay={lowTrafficMode ? undefined : true}
+                          data-heavy-src={project.data.sessionVideo}
+                          data-poster={project.data.sessionPoster ?? project.data.sessionVisual}
+                          autoplay
                           muted
                           loop
                           playsinline
-                          preload={lowTrafficMode ? "none" : "auto"}
+                          preload="none"
                         ></video>
                       </div>
                     ) : (
                       <div class="diagram-scene" role="img" aria-label={project.data.diagramAlt}>
-                        <img src={project.data.diagram} alt="" decoding="async" />
+                        <img loading="lazy" data-heavy-src={project.data.diagram} alt="" decoding="async" />
                       </div>
                     )}
 
@@ -1717,7 +1738,7 @@ const copy =
                         <h2>{copy.system}</h2>
                         <p>{copy.systemSummary}</p>
                       </div>
-                      <img src={project.data.diagram} alt={project.data.diagramAlt} loading="lazy" />
+                      <img loading="lazy" data-heavy-src={project.data.diagram} alt={project.data.diagramAlt} decoding="async" />
                     </div>
                   </section>
 
@@ -1809,6 +1830,7 @@ const copy =
         </article>
       );
     })}
+    </div>
   </div>
 
   <FlowControlPill projects={projects} locale={locale} />
@@ -1835,6 +1857,34 @@ const copy =
 
   if (viewer instanceof HTMLElement) {
     viewer.classList.add("is-hydrating");
+    const updateDeckScale = () => {
+      const artboardWidth = 1180.8;
+      const groupedHeight = 579;
+      // 16:9 width budget: cap the rendered artboard at 1344 CSS px wide (scale
+      // ≈1.138) so wide viewports leave side margins instead of enlarging the
+      // design further. The 1440×686 baseline (scale 1.0, artboard 1180.8px),
+      // the 981px handoff (scale 0.68), and the ≤980px stacked layout are
+      // all below the cap and stay untouched.
+      const maxArtboardWidth = 1344;
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      // 96 = 76px header clearance + 20px bottom padding, reserved before scaling.
+      const scale = Math.max(
+        0.3,
+        Math.min(
+          maxArtboardWidth / artboardWidth,
+          (viewportWidth * 0.82) / artboardWidth,
+          (viewportHeight - 96) / groupedHeight,
+        ),
+      );
+      // Center the composition vertically; keep the 76px floor to clear the header.
+      const topSpace = Math.max(76, (viewportHeight - groupedHeight * scale - 20) / 2);
+
+      viewer.style.setProperty("--deck-scale", scale.toFixed(5));
+      viewer.style.setProperty("--viewer-top-space", `${topSpace.toFixed(2)}px`);
+    };
+    updateDeckScale();
+    window.addEventListener("resize", updateDeckScale, { passive: true });
     const projectData = projects;
     const projectNodes = [...viewer.querySelectorAll("[data-viewer-project]")];
     const title = viewer.querySelector("[data-viewer-title]");
@@ -1851,9 +1901,28 @@ const copy =
     const episodeDots = [...viewer.querySelectorAll("[data-episode-select]")];
     let activeIndex = 0;
     let activeEpisode = 0;
+    let adjacentMediaIdle = 0;
+    let videoLoadTimer = 0;
+
+    const loadImage = (image) => {
+      if (!(image instanceof HTMLImageElement) || image.getAttribute("src") || !image.dataset.heavySrc) return;
+      image.src = image.dataset.heavySrc;
+    };
+
+    const prepareVideoPoster = (video) => {
+      if (!(video instanceof HTMLVideoElement) || video.getAttribute("poster") || !video.dataset.poster) return;
+      video.poster = video.dataset.poster;
+    };
+
+    const prepareEpisodeMedia = (episode) => {
+      if (!(episode instanceof HTMLElement)) return;
+      episode.querySelectorAll("img[data-heavy-src]").forEach(loadImage);
+      episode.querySelectorAll("video[data-poster]").forEach(prepareVideoPoster);
+    };
 
     const playVideo = (video) => {
-      if (lowTrafficMode && !video.getAttribute("src") && video.dataset.heavySrc) {
+      prepareVideoPoster(video);
+      if (!video.getAttribute("src") && video.dataset.heavySrc) {
         video.src = video.dataset.heavySrc;
         video.load();
       }
@@ -1861,7 +1930,9 @@ const copy =
     };
 
     const syncVideos = () => {
+      window.clearTimeout(videoLoadTimer);
       const viewIsActive = document.documentElement.dataset.portfolioView === "tv";
+      const activeVideos = [];
       projectNodes.forEach((projectNode, projectIndex) => {
         projectNode.querySelectorAll("video").forEach((video) => {
           const episode = video.closest("[data-viewer-episode]");
@@ -1870,12 +1941,22 @@ const copy =
             projectIndex === activeIndex &&
             episode?.classList.contains("is-active");
           if (active && video.dataset.userPaused !== "true") {
-            playVideo(video);
+            activeVideos.push(video);
             return;
           }
           video.pause();
         });
       });
+      if (activeVideos.length) {
+        videoLoadTimer = window.setTimeout(() => {
+          const currentEpisodes = activeEpisodeNodes();
+          const current = currentEpisodes[activeEpisode];
+          if (document.documentElement.dataset.portfolioView !== "tv" || !current?.classList.contains("is-active")) return;
+          activeVideos.forEach((video) => {
+            if (video.closest("[data-viewer-episode]") === current && video.dataset.userPaused !== "true") playVideo(video);
+          });
+        }, 120);
+      }
     };
 
     viewer.querySelectorAll("[data-vision-demo-video-control]").forEach((control) => {
@@ -1928,6 +2009,23 @@ const copy =
       ...(projectNodes[activeIndex]?.querySelectorAll("[data-viewer-episode]") ?? []),
     ];
 
+    const scheduleAdjacentEpisodeMedia = () => {
+      if (adjacentMediaIdle) {
+        if ("cancelIdleCallback" in window) window.cancelIdleCallback(adjacentMediaIdle);
+        else window.clearTimeout(adjacentMediaIdle);
+      }
+      const preload = () => {
+        const episodes = activeEpisodeNodes();
+        if (episodes.length < 2) return;
+        const previous = (activeEpisode - 1 + episodes.length) % episodes.length;
+        const next = (activeEpisode + 1) % episodes.length;
+        [episodes[previous], episodes[next]].forEach(prepareEpisodeMedia);
+      };
+      adjacentMediaIdle = "requestIdleCallback" in window
+        ? window.requestIdleCallback(preload, { timeout: 1200 })
+        : window.setTimeout(preload, 450);
+    };
+
     const showEpisode = (nextEpisode) => {
       const episodes = activeEpisodeNodes();
       if (!episodes.length) return;
@@ -1951,7 +2049,9 @@ const copy =
         counter.textContent = ` EP ${String(activeEpisode + 1).padStart(2, "0")} / ${String(episodes.length).padStart(2, "0")}`;
       });
       if (pageCurrent) pageCurrent.textContent = String(activeEpisode + 1).padStart(2, "0");
+      prepareEpisodeMedia(episodes[activeEpisode]);
       syncVideos();
+      scheduleAdjacentEpisodeMedia();
     };
 
     const showProject = (nextIndex, announce = true) => {
@@ -2034,7 +2134,10 @@ const copy =
       }
       viewer.requestFullscreen?.();
     });
-    document.addEventListener("fullscreenchange", syncFullscreenButton);
+    document.addEventListener("fullscreenchange", () => {
+      syncFullscreenButton();
+      updateDeckScale();
+    });
     syncFullscreenButton();
 	    document.querySelector(".wordmark")?.addEventListener("click", (event) => {
 	      event.preventDefault();
