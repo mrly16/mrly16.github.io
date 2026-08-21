@@ -632,7 +632,7 @@ const storyDecks: Record<string, StoryDeckSlide[]> =
           },
           {
             kicker: "MEMORY",
-            title: "Memory Design: Balancing High-Frequency Detections and Decision History",
+            title: "Memory Design: Balancing Storage Cost and Context Accuracy",
             summary: "Detection and event records stay task-local; their statistical features and agent decisions will be carried across tasks.",
             visual: "vision-feature-dump",
             layout: "statement",
@@ -1859,29 +1859,43 @@ const copy =
     viewer.classList.add("is-hydrating");
     const updateDeckScale = () => {
       const artboardWidth = 1180.8;
-      const groupedHeight = 579;
-      // 16:9 width budget: cap the rendered artboard at 1344 CSS px wide (scale
-      // ≈1.138) so wide viewports leave side margins instead of enlarging the
-      // design further. The 1440×686 baseline (scale 1.0, artboard 1180.8px),
-      // the 981px handoff (scale 0.68), and the ≤980px stacked layout are
-      // all below the cap and stay untouched.
-      const maxArtboardWidth = 1344;
+      const artboardHeight = 471;
+      const controlWidth = 720;
+      const controlHeight = 88;
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
-      // 96 = 76px header clearance + 20px bottom padding, reserved before scaling.
-      const scale = Math.max(
-        0.3,
-        Math.min(
-          maxArtboardWidth / artboardWidth,
-          (viewportWidth * 0.82) / artboardWidth,
-          (viewportHeight - 96) / groupedHeight,
-        ),
-      );
-      // Center the composition vertically; keep the 76px floor to clear the header.
-      const topSpace = Math.max(76, (viewportHeight - groupedHeight * scale - 20) / 2);
 
-      viewer.style.setProperty("--deck-scale", scale.toFixed(5));
-      viewer.style.setProperty("--viewer-top-space", `${topSpace.toFixed(2)}px`);
+      const header = document.querySelector(".site-header");
+      const headerHeight = header ? Math.ceil(header.getBoundingClientRect().height) : 72;
+
+      // Deck scale: fills ~92% of viewport width (≈4% side margins), pinned to
+      // exactly 1.0 at the canonical 1440×686 via the height term (471 deck +
+      // 88 control + 20 gap + 35 bottom ≈ 599px reserve below the header).
+      const widthScale = (viewportWidth * 0.92) / artboardWidth;
+      const heightScale = (viewportHeight - headerHeight - 143) / artboardHeight;
+      const deckScale = Math.max(0.5, Math.min(widthScale, heightScale));
+
+      // Control pill scales with the deck (720/1180.8 ≈ 0.61 of deck width).
+      const pillScale = deckScale;
+      const deckHeight = artboardHeight * deckScale;
+      const pillHeight = controlHeight * pillScale;
+
+      // Vertical distribution: deck just below the header, pill centered in the
+      // free region between the deck bottom and the viewport bottom, with
+      // 20–72px gaps so it stays visually tied to the deck.
+      const available = viewportHeight - headerHeight;
+      const extra = Math.max(0, available - deckHeight - pillHeight - 40);
+      const topGap = Math.min(56, Math.max(4, extra * 0.3));
+      const deckTop = headerHeight + topGap;
+      const freeBelow = viewportHeight - deckTop - deckHeight;
+      const pillGap = Math.max(20, (freeBelow - pillHeight) / 2);
+      const bottomGap = freeBelow - pillGap - pillHeight;
+
+      viewer.style.setProperty("--deck-scale", deckScale.toFixed(5));
+      viewer.style.setProperty("--pill-scale", pillScale.toFixed(5));
+      viewer.style.setProperty("--viewer-top-space", `${deckTop.toFixed(2)}px`);
+      viewer.style.setProperty("--pill-gap", `${pillGap.toFixed(2)}px`);
+      viewer.style.setProperty("--viewer-bottom-space", `${bottomGap.toFixed(2)}px`);
     };
     updateDeckScale();
     window.addEventListener("resize", updateDeckScale, { passive: true });

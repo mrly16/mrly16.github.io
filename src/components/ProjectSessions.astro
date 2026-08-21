@@ -150,10 +150,10 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
 
       <div class="sessions-navigation">
         <button type="button" data-session-previous aria-label={copy.previous}>
-          <ViewerIcon name="up" size={21} />
+          <ViewerIcon name="up" size={24} />
         </button>
         <button type="button" data-session-next aria-label={copy.next}>
-          <ViewerIcon name="down" size={21} />
+          <ViewerIcon name="down" size={24} />
         </button>
       </div>
     </div>
@@ -484,14 +484,23 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
     --session-ink: #f3f0e8;
     --session-index-face: var(--sans);
     --session-title-face: var(--serif);
+    /* Three-column editorial composition: index ≈25vw, media ≈31vw, copy = rest.
+       No hard max-width — the composition keeps expanding on large viewports. */
+    --session-index-w: clamp(15.5rem, 25vw, 42rem);
+    --session-media-w: clamp(20rem, calc(30vw + max(0px, 100vw - 90rem) * 0.15), 54rem);
+    --session-gutter: clamp(2rem, 4vw, 6rem);
+    /* Vertical step between stacked index items; grows with the type so the
+       active item and its blurred neighbours never overlap on large screens
+       (sized for the taller CJK line-box as well as Latin). */
+    --session-step: clamp(10rem, 14vw, 22rem);
     position: relative;
     isolation: isolate;
     display: grid;
-    grid-template-columns: minmax(18rem, 0.72fr) minmax(42rem, 1.72fr);
-    column-gap: clamp(1.5rem, 3vw, 3.75rem);
+    grid-template-columns: var(--session-index-w) minmax(0, 1fr);
+    column-gap: clamp(1.5rem, 2.4vw, 3.25rem);
     align-items: center;
     min-height: 100svh;
-    padding: clamp(5.5rem, 9vh, 8rem) clamp(2rem, 3.4vw, 4.25rem) clamp(3rem, 6vh, 5rem);
+    padding: clamp(5.5rem, 9vh, 8rem) var(--session-gutter) clamp(3rem, 6vh, 5rem);
     overflow: hidden;
     color: var(--session-ink);
     background: #101514;
@@ -668,18 +677,18 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
     z-index: 2;
     align-self: center;
     display: grid;
-    grid-template-columns: minmax(20rem, 0.88fr) minmax(26rem, 1.12fr);
+    grid-template-columns: var(--session-media-w) minmax(0, 1fr);
     align-items: stretch;
-    gap: clamp(2rem, 3.4vw, 4.75rem);
+    gap: clamp(1.5rem, 2.2vw, 3rem);
     width: 100%;
-    height: min(40rem, 74vh);
+    height: min(76vh, 56rem);
     grid-column: 2;
     grid-row: 1;
   }
 
   .sessions-index ol {
     position: relative;
-    height: min(27rem, 56vh);
+    height: min(68vh, 60rem);
     margin: 0;
     padding: 0;
     list-style: none;
@@ -691,7 +700,7 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
     width: 100%;
     opacity: 0;
     filter: blur(5px);
-    transform: translateY(calc(-50% + var(--session-distance, 0) * 9.8rem)) scale(0.72);
+    transform: translateY(calc(-50% + var(--session-distance, 0) * var(--session-step, 9.8rem))) scale(0.72);
     transform-origin: left center;
     transition:
       opacity 520ms ease,
@@ -730,7 +739,7 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
     display: block;
     max-width: 9ch;
     font-family: var(--session-index-face);
-    font-size: clamp(3.2rem, 5vw, 6.2rem);
+    font-size: clamp(3.2rem, 5.4vw, 8.5rem);
     font-weight: 600;
     line-height: 0.88;
     letter-spacing: -0.065em;
@@ -789,7 +798,7 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
   .session-visual-frame {
     --session-media-background: #e7e3d9;
     position: relative;
-    width: min(100%, 32rem);
+    width: 100%;
     aspect-ratio: 4 / 3;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: clamp(0.45rem, 0.9vw, 0.8rem);
@@ -826,18 +835,25 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
     position: relative;
     z-index: 3;
     align-self: stretch;
+    justify-self: center;
     display: flex;
     flex-direction: column;
+    align-items: stretch;
     justify-content: flex-end;
-    width: 100%;
+    gap: clamp(1.75rem, 4vh, 2.75rem);
+    max-width: 100%;
     height: 100%;
     grid-column: 2;
+    /* Anchor the nav relative to the centered media (≈70px below its bottom)
+       instead of the stage bottom, so on tall viewports the copy block does
+       not sink. The value is viewport-derived (not content), so the nav stays
+       fixed across project switches. */
+    padding-bottom: max(0px, calc(min(38vh, 28rem) - 11.6vw - 70px));
   }
 
   .sessions-details {
     position: relative;
-    flex: 1 1 auto;
-    min-height: 0;
+    flex: 0 0 auto;
   }
 
   .session-detail {
@@ -846,8 +862,10 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
     inset: 0;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    padding-bottom: 1.75rem;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding-top: 0;
+    padding-bottom: 0;
     opacity: 0;
     filter: blur(5px);
     pointer-events: none;
@@ -879,6 +897,8 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
   }
 
   .session-detail.is-active {
+    position: relative;
+    inset: auto;
     opacity: 1;
     filter: none;
     pointer-events: auto;
@@ -889,7 +909,7 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
     max-width: 12ch;
     margin: 0;
     font-family: var(--session-title-face);
-    font-size: clamp(3.35rem, 4.9vw, 6.2rem);
+    font-size: clamp(3.35rem, 4.4vw, 6rem);
     font-optical-sizing: auto;
     font-weight: 400;
     line-height: 0.95;
@@ -902,10 +922,10 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
   }
 
   .session-summary {
-    max-width: 34rem;
+    max-width: calc(34rem * (1 + 0.5 * (var(--screen-scale) - 1)));
     margin: 2.5rem 0 0;
     color: rgba(255, 255, 255, 0.78);
-    font: 200 clamp(1rem, 1.35vw, 1.25rem)/1.52 var(--sans);
+    font: 200 calc(1.17rem * (1 + 0.58 * (var(--screen-scale) - 1)))/1.52 var(--sans);
   }
 
   @media (min-width: 761px) {
@@ -924,7 +944,7 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
     border: 0;
     color: color-mix(in srgb, rgba(255, 255, 255, 0.74) 90%, var(--session-watch-tint));
     background: transparent;
-    font: 700 clamp(1rem, 1.15vw, 1.2rem)/1.35 var(--text);
+    font: 700 calc(1.08rem * (1 + 0.86 * (var(--screen-scale) - 1)))/1.35 var(--text);
     line-height: 1.3;
     letter-spacing: 0.01em;
     text-decoration: underline;
@@ -958,8 +978,8 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
   .sessions-copy-stack > .sessions-navigation button {
     display: grid;
     place-items: center;
-    width: 2.34rem;
-    height: 2.34rem;
+    width: calc(2.75rem * (1 + 0.43 * (var(--screen-scale) - 1)));
+    height: calc(2.75rem * (1 + 0.43 * (var(--screen-scale) - 1)));
     border: 0;
     border-radius: 50%;
     color: #151817;
@@ -971,36 +991,23 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
       background 180ms ease;
   }
 
+  .sessions-copy-stack > .sessions-navigation button :global(.viewer-icon) {
+    width: calc(1.51rem * (1 + 0.43 * (var(--screen-scale) - 1)));
+    height: calc(1.51rem * (1 + 0.43 * (var(--screen-scale) - 1)));
+  }
+
   .sessions-copy-stack > .sessions-navigation button:hover {
     background: #fffdf7;
     transform: translateY(-2px);
   }
 
-  @media (max-width: 1050px) {
-    .sessions-view {
-      grid-template-columns: minmax(11rem, 0.58fr) minmax(35rem, 1.65fr);
-      padding-inline: 2rem;
-    }
-
-    .sessions-project-stage {
-      grid-template-columns: minmax(16rem, 0.82fr) minmax(19rem, 1fr);
-      gap: 1.5rem;
-    }
-
-    .session-detail h1 {
-      font-size: clamp(3.2rem, 5.8vw, 5.2rem);
-    }
-  }
-
   :global(html[lang="zh-CN"]) .sessions-index button strong {
-    font-size: clamp(2.45rem, 3.75vw, 4.55rem);
     font-weight: 560;
     line-height: 1.18;
     letter-spacing: normal;
   }
 
   :global(html[lang="zh-CN"]) .session-detail h1 {
-    font-size: clamp(2.85rem, 3.85vw, 4.7rem);
     font-weight: 560;
     line-height: 1.2;
     letter-spacing: normal;
@@ -1144,46 +1151,6 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
       font-size: clamp(2.35rem, 10.4vw, 3.45rem);
       line-height: 1.18;
       letter-spacing: normal;
-    }
-  }
-
-  /* Keep the desktop carousel composition bounded after the canonical width.
-     Additional viewport space becomes an outer gutter instead of stretching
-     the title, media, and copy columns at different rates. */
-  @media (min-width: 1051px) {
-    .sessions-view {
-      grid-template-columns: minmax(18rem, 22.5rem) minmax(42rem, 60rem);
-      justify-content: center;
-      column-gap: clamp(2rem, 3vw, 2.75rem);
-      padding-right: max(2rem, calc((100vw - 85.25rem) / 2));
-      padding-left: max(2rem, calc((100vw - 85.25rem) / 2));
-    }
-
-    .sessions-project-stage {
-      grid-template-columns: minmax(18.5rem, 26.75rem) minmax(22.5rem, 30rem);
-      justify-content: center;
-      gap: clamp(2rem, 3vw, 2.75rem);
-      height: min(29.1rem, calc(100svh - 9.4rem));
-    }
-
-    .sessions-index button strong {
-      font-size: clamp(3.2rem, 5vw, 4.5rem);
-    }
-
-    .session-detail h1 {
-      font-size: clamp(3.35rem, 4.9vw, 4.41rem);
-    }
-
-    .session-summary {
-      font-size: clamp(1rem, 1.35vw, 1.215rem);
-    }
-
-    :global(html[lang="zh-CN"]) .sessions-index button strong {
-      font-size: clamp(2.45rem, 3.75vw, 3.375rem);
-    }
-
-    :global(html[lang="zh-CN"]) .session-detail h1 {
-      font-size: clamp(2.85rem, 3.85vw, 3.465rem);
     }
   }
 

@@ -37,6 +37,18 @@
   --type-heading-tracking: -0.035em;
   --type-body-tracking: -0.006em;
   --type-label-tracking: 0.065em;
+
+  /* Global viewport growth factor: 1× at the 1440×686 canonical, ≈1.86× @1920,
+     ≈2.4× @2560. Shared by the header, carousel, and About typography so every
+     role scales coherently on large screens instead of drifting independently. */
+  --screen-scale: clamp(1, calc(1 + (100vw - 90rem) / 560px), 2.4);
+
+  /* Shared responsive header system (used by carousel, TV, and About). */
+  --hdr-logo-h: clamp(1.35rem, calc(1.395rem + max(0px, 100vw - 90rem) * 0.036), 3.5rem);
+  --hdr-nav-fs: calc(0.85rem * var(--screen-scale));
+  --hdr-nav-gap: clamp(1rem, calc(1.1rem + max(0px, 100vw - 90rem) * 0.024), 2.4rem);
+  --hdr-pill-pad-b: clamp(0.4rem, calc(0.4rem + max(0px, 100vw - 90rem) * 0.012), 0.85rem);
+  --hdr-pill-pad-i: clamp(0.75rem, calc(0.75rem + max(0px, 100vw - 90rem) * 0.016), 1.4rem);
 }
 
 html[lang="zh-CN"] {
@@ -225,12 +237,12 @@ figcaption {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 96px;
+  min-height: max(96px, calc(var(--hdr-logo-h) + 3rem));
   border-bottom: 1px solid var(--line);
 }
 
 .identity-page .site-header {
-  min-height: 72px;
+  min-height: max(72px, calc(var(--hdr-logo-h) + 2.5rem));
   padding-right: clamp(1.25rem, 3vw, 2.6rem);
   padding-left: clamp(1.25rem, 3vw, 2.6rem);
   border: 0;
@@ -238,12 +250,11 @@ figcaption {
 }
 
 .identity-page .site-header nav {
-  gap: 1.8rem;
+  gap: var(--hdr-nav-gap);
 }
 
 .identity-page .site-header nav a {
   color: rgba(237, 233, 222, 0.62);
-  font-size: 0.82rem;
   font-weight: 400;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -272,7 +283,6 @@ figcaption {
 }
 
 .identity-page .language-switch {
-  padding: 0.45rem 0.72rem;
   border-color: rgba(237, 233, 222, 0.28);
 }
 
@@ -291,21 +301,22 @@ figcaption {
 
 .wordmark-logo {
   display: block;
-  height: clamp(1.35rem, 1.55vw, 1.65rem);
+  height: var(--hdr-logo-h);
   width: auto;
+  aspect-ratio: 1600 / 360;
 }
 
 .site-header nav {
   display: flex;
   align-items: center;
-  gap: clamp(1rem, 3vw, 2.2rem);
+  gap: var(--hdr-nav-gap);
 }
 
 .site-header nav a {
   position: relative;
   padding: 0.32rem 0.02rem 0.42rem;
   font-family: var(--label);
-  font-size: 0.9rem;
+  font-size: var(--hdr-nav-fs);
   font-weight: var(--type-label-weight);
   letter-spacing: var(--type-label-tracking);
   text-decoration: none;
@@ -341,7 +352,7 @@ figcaption {
 }
 
 .language-switch {
-  padding: 0.4rem 0.75rem;
+  padding: var(--hdr-pill-pad-b) var(--hdr-pill-pad-i);
   border: 1px solid var(--ink);
   border-radius: 999px;
 }
@@ -1068,7 +1079,7 @@ html[lang="zh-CN"] .case-hero h1 {
 
 .identity-page main {
   align-self: stretch;
-  width: min(calc(100% - clamp(2rem, 6vw, 6rem)), 1180px);
+  width: min(calc(100% - clamp(2rem, 6vw, 7rem)), calc(1180px + max(0px, 100vw - 90rem) * 0.8));
   margin: 0 auto;
   padding: clamp(0.2rem, 0.55vw, 0.48rem) 0 0;
 }
@@ -1083,9 +1094,9 @@ html[lang="zh-CN"] .case-hero h1 {
 
 .identity-hero-page {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+  grid-template-columns: minmax(0, 1fr) minmax(280px, calc(340px + max(0px, 100vw - 90rem) * 0.35));
   gap: clamp(2.2rem, 4.8vw, 5.4rem);
-  align-items: start;
+  align-items: stretch;
   min-height: 100%;
   padding: clamp(3.4rem, 7.8vh, 5rem) 0 clamp(0.35rem, 0.9vh, 0.7rem);
   margin-bottom: 0;
@@ -1095,14 +1106,13 @@ html[lang="zh-CN"] .case-hero h1 {
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(clamp(2rem, 7vh, 4rem), 1fr) auto;
   gap: 0;
   align-content: stretch;
   align-items: start;
   align-self: stretch;
   justify-self: start;
   width: 100%;
-  min-height: 100%;
   padding: 0;
   border-bottom: 0;
 }
@@ -1127,7 +1137,7 @@ html[lang="zh-CN"] .case-hero h1 {
   margin: clamp(1.85rem, 4.8vh, 2.9rem) 0 0;
   color: #f8f4eb;
   font-family: var(--text);
-  font-size: clamp(1.34rem, 1.98vw, 2.18rem);
+  font-size: clamp(1.34rem, calc(1.78rem * (1 + 0.54 * (var(--screen-scale) - 1))), 3.2rem);
   font-weight: 400;
   letter-spacing: normal;
   line-height: 1.18;
@@ -1146,7 +1156,7 @@ html[lang="zh-CN"] .identity-page .identity-intro h1 {
   width: fit-content;
   margin-top: clamp(1.65rem, 4.2vh, 2.45rem);
   color: color-mix(in srgb, rgba(255, 255, 255, 0.78) 90%, var(--identity-accent));
-  font: 200 clamp(0.9rem, 1.05vw, 1.04rem) / 1.35 var(--text);
+  font: 200 clamp(0.9rem, calc(0.945rem * var(--screen-scale)), 3rem) / 1.35 var(--text);
   letter-spacing: 0.01em;
   text-decoration: underline;
   text-decoration-thickness: 1px;
@@ -1208,12 +1218,12 @@ html[lang="zh-CN"] .identity-email-cta {
   row-gap: 0;
   align-items: start;
   width: 100%;
-  margin-bottom: clamp(1.75rem, 4.2vh, 2.6rem);
+  margin-bottom: 0;
   padding: 0;
   position: relative;
   color: rgba(245, 241, 232, 0.58);
   font-family: var(--label);
-  font-size: clamp(0.78rem, 0.92vw, 0.96rem);
+  font-size: clamp(0.78rem, calc(0.828rem * var(--screen-scale)), 1.75rem);
   letter-spacing: 0.04em;
 }
 
@@ -1267,7 +1277,7 @@ html[lang="zh-CN"] .identity-email-cta {
   margin-top: 0.32rem;
   color: var(--identity-accent);
   font-family: var(--label);
-  font-size: clamp(0.96rem, 1.12vw, 1.16rem);
+  font-size: clamp(0.96rem, calc(1.01rem * (1 + 0.79 * (var(--screen-scale) - 1))), 2.2rem);
   font-weight: 300;
   line-height: 1;
 }
@@ -1304,7 +1314,7 @@ html[lang="zh-CN"] .identity-email-cta {
 
 .identity-panel .eyebrow {
   color: var(--identity-accent);
-  font-size: clamp(0.94rem, 1.08vw, 1.12rem);
+  font-size: calc(0.972rem * var(--screen-scale));
   font-weight: 500;
 }
 
@@ -1344,8 +1354,9 @@ html[lang="zh-CN"] .identity-email-cta {
 }
 
 .identity-hero-page > .identity-panel {
-  align-self: start;
+  align-self: stretch;
   justify-self: stretch;
+  align-content: space-between;
 }
 
 .identity-hero-page > .identity-panel .timeline-group + .timeline-group {
@@ -1376,12 +1387,13 @@ html[lang="zh-CN"] .identity-email-cta {
 
 .identity-panel .timeline dt {
   color: rgba(245, 241, 232, 0.94);
+  font-size: calc(1rem * var(--screen-scale));
 }
 
 .timeline dd {
   margin: 0.22rem 0 0;
   color: var(--muted);
-  font-size: clamp(0.78rem, 0.86vw, 0.88rem);
+  font-size: calc(0.78rem * var(--screen-scale));
   line-height: 1.38;
 }
 
@@ -3944,7 +3956,7 @@ html[lang="zh-CN"] .channel-identity > span:last-child {
   top: 0;
   right: clamp(1.5rem, 3.2vw, 3.8rem);
   left: clamp(1.5rem, 3.2vw, 3.8rem);
-  min-height: 72px;
+  min-height: max(72px, calc(var(--hdr-logo-h) + 2.5rem));
   border: 0;
   color: #ede9de;
 }
@@ -3959,12 +3971,11 @@ html[lang="zh-CN"] .channel-identity > span:last-child {
 }
 
 .channel-home .site-header nav {
-  gap: 1.8rem;
+  gap: var(--hdr-nav-gap);
 }
 
 .channel-home .site-header nav a {
   color: rgba(237, 233, 222, 0.62);
-  font-size: 0.82rem;
   font-weight: 400;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -3984,7 +3995,6 @@ html[lang="zh-CN"] .channel-identity > span:last-child {
 }
 
 .channel-home .language-switch {
-  padding: 0.45rem 0.72rem;
   border-color: rgba(237, 233, 222, 0.28);
 }
 
@@ -4106,13 +4116,13 @@ html[lang="zh-CN"] .channel-identity > span:last-child {
 
 .viewer-edition {
   position: absolute;
-  top: 50%;
+  top: calc(var(--viewer-top-space) + var(--deck-artboard-height) * var(--deck-scale) / 2);
   right: clamp(1.1rem, 2.2vw, 2.6rem);
   display: flex;
   gap: 1.2rem;
   margin: 0;
   color: rgba(237, 233, 222, 0.48);
-  font: 500 0.78rem var(--mono);
+  font: 500 clamp(0.7rem, calc(0.78rem * var(--deck-scale)), 1.9rem) var(--mono);
   letter-spacing: 0.13em;
   text-transform: uppercase;
   transform: translateY(-50%) rotate(90deg) translateX(50%);
@@ -12419,14 +12429,16 @@ html[lang="zh-CN"] .floor-deck.story-heading-standard .floor-deck-copy > p {
     --deck-artboard-height: 471px;
     --deck-control-width: 720px;
     --deck-control-height: 88px;
-    --deck-group-gap: 20px;
     --deck-scale: 1;
+    --pill-scale: 1;
     --viewer-top-space: 76px;
+    --pill-gap: 20px;
+    --viewer-bottom-space: 20px;
     grid-template-rows: auto auto;
     align-content: start;
     align-items: start;
-    gap: calc(var(--deck-group-gap) * var(--deck-scale));
-    padding: var(--viewer-top-space) 0 20px;
+    gap: var(--pill-gap);
+    padding: var(--viewer-top-space) 0 var(--viewer-bottom-space);
   }
 
   .viewer-stage-shell {
@@ -12449,8 +12461,8 @@ html[lang="zh-CN"] .floor-deck.story-heading-standard .floor-deck-copy > p {
   .work-viewer .flow-pill-shell {
     --flow-pill-width: var(--deck-control-width);
     position: relative;
-    width: calc(var(--deck-control-width) * var(--deck-scale));
-    height: calc(var(--deck-control-height) * var(--deck-scale));
+    width: calc(var(--deck-control-width) * var(--pill-scale));
+    height: calc(var(--deck-control-height) * var(--pill-scale));
     margin: 0;
   }
 
@@ -12460,7 +12472,7 @@ html[lang="zh-CN"] .floor-deck.story-heading-standard .floor-deck-copy > p {
     left: 50%;
     width: var(--deck-control-width);
     height: var(--deck-control-height);
-    transform: translateX(-50%) scale(var(--deck-scale));
+    transform: translateX(-50%) scale(var(--pill-scale));
     transform-origin: top center;
   }
 
@@ -12517,25 +12529,12 @@ html[lang="zh-CN"] .floor-deck.story-heading-standard .floor-deck-copy > p {
    viewport height and width from stretching unrelated gaps and type sizes. */
 @media (min-width: 801px) {
   .identity-hero-page {
-    grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+    grid-template-columns: minmax(0, 1fr) minmax(280px, calc(340px + max(0px, 100vw - 90rem) * 0.35));
     gap: clamp(2.2rem, 4.8vw, 4.32rem);
   }
 
-  .identity-intro {
-    grid-template-rows: auto auto auto;
-    align-content: start;
-    align-self: start;
-    min-height: 0;
-  }
-
   .identity-page .identity-intro h1 {
-    font-size: clamp(1.34rem, 1.98vw, 1.782rem);
-  }
-
-  .identity-career-strip {
-    align-self: start;
-    margin-top: clamp(3rem, 8vh, 4.5rem);
-    margin-bottom: clamp(1.75rem, 4.2vh, 2.6rem);
+    font-size: clamp(1.34rem, calc(1.78rem * (1 + 0.54 * (var(--screen-scale) - 1))), 3.2rem);
   }
 }
 
@@ -12547,8 +12546,7 @@ html[lang="zh-CN"] .floor-deck.story-heading-standard .floor-deck-copy > p {
   }
 
   .identity-career-strip {
-    margin-top: clamp(2.2rem, 6.2vh, 3rem);
-    margin-bottom: clamp(1.4rem, 3.2vh, 1.75rem);
+    margin-bottom: 0;
   }
 
   .identity-page .identity-intro h1 {
@@ -12579,8 +12577,7 @@ html[lang="zh-CN"] .floor-deck.story-heading-standard .floor-deck-copy > p {
   }
 
   .identity-career-strip {
-    margin-top: clamp(1.6rem, 4.6vh, 2.2rem);
-    margin-bottom: clamp(1.1rem, 2.4vh, 1.4rem);
+    margin-bottom: 0;
   }
 
   .identity-page .identity-intro h1 {
