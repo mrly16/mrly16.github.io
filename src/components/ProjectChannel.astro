@@ -2207,8 +2207,13 @@ const copy =
 
     const initialSlug = decodeURIComponent(window.location.hash.slice(1));
     const initialIndex = projectData.findIndex((project) => project.slug === initialSlug);
-    if (initialIndex >= 0) showProject(initialIndex, false);
-    else showEpisode(0);
+    const requestedEpisode = Number(new URLSearchParams(window.location.search).get("episode")) - 1;
+    if (initialIndex >= 0) {
+      showProject(initialIndex, false);
+      if (Number.isInteger(requestedEpisode) && requestedEpisode >= 0) showEpisode(requestedEpisode);
+    } else {
+      showEpisode(Number.isInteger(requestedEpisode) && requestedEpisode >= 0 ? requestedEpisode : 0);
+    }
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         viewer.classList.remove("is-hydrating");

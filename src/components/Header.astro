@@ -34,15 +34,33 @@ const homeLabel = locale === "zh" ? `返回首页，${nameLabel}` : `Home, ${nam
   <nav aria-label={locale === "zh" ? "主导航" : "Primary navigation"}>
     <a href={copy.projects} aria-current={isCurrent(copy.projects) ? "page" : undefined} data-sessions-memory-link>{copy.nav.work}</a>
     <a href={copy.about} aria-current={isCurrent(copy.about) ? "page" : undefined}>{copy.nav.about}</a>
-    <a
-      class="language-switch"
-      href={localeTarget}
-      data-locale-switch
-      data-locale={locale === "en" ? "zh" : "en"}
-      lang={locale === "en" ? "zh-CN" : "en"}
-    >
-      {copy.language}
-    </a>
+    <div class="language-switcher" role="group" aria-label={locale === "zh" ? "语言切换" : "Language selector"}>
+      {locale === "en" ? (
+        <span class="language-option language-current" lang="en" aria-current="true">EN</span>
+      ) : (
+        <a
+          class="language-switch language-option"
+          href={localeTarget}
+          data-locale-switch
+          data-locale="en"
+          lang="en"
+          aria-label="切换到英文"
+        >EN</a>
+      )}
+      <span class="language-divider" aria-hidden="true">/</span>
+      {locale === "zh" ? (
+        <span class="language-option language-current" lang="zh-CN" aria-current="true">中文</span>
+      ) : (
+        <a
+          class="language-switch language-option"
+          href={localeTarget}
+          data-locale-switch
+          data-locale="zh"
+          lang="zh-CN"
+          aria-label="Switch to Chinese"
+        >中文</a>
+      )}
+    </div>
   </nav>
 </header>
 
@@ -88,6 +106,14 @@ const homeLabel = locale === "zh" ? `返回首页，${nameLabel}` : `Home, ${nam
         const target = new URL(link.href);
         target.search = window.location.search;
         target.hash = window.location.hash;
+        if (target.searchParams.get("view") === "tv") {
+          const currentPage = Number(document.querySelector("[data-page-current]")?.textContent);
+          if (Number.isFinite(currentPage) && currentPage > 0) {
+            target.searchParams.set("episode", String(currentPage));
+          }
+        } else {
+          target.searchParams.delete("episode");
+        }
         link.href = target.toString();
       }
     });
