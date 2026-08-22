@@ -1,6 +1,4 @@
 ---
-import floorIfcViewerScript from "../scripts/floor-ifc-viewer.ts?url";
-
 interface Props {
   locale: "en" | "zh";
 }
@@ -45,5 +43,3 @@ const copy =
   </p>
   <p class="floor-ifc-help">{copy.ready}</p>
 </div>
-
-<script is:inline type="module" src={floorIfcViewerScript}></script>

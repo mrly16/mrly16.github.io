@@ -1,7 +1,3 @@
-import * as THREE from "three";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-
 const initializeViewer = async (root: HTMLElement) => {
   if (root.dataset.initialized === "true") return;
   root.dataset.initialized = "true";
@@ -10,6 +6,12 @@ const initializeViewer = async (root: HTMLElement) => {
   const status = root.querySelector<HTMLElement>("[data-ifc-status]");
   const modelUrl = root.dataset.modelUrl;
   if (!(canvas instanceof HTMLCanvasElement) || !modelUrl) return;
+
+  const [THREE, { OrbitControls }, { GLTFLoader }] = await Promise.all([
+    import("three"),
+    import("three/addons/controls/OrbitControls.js"),
+    import("three/addons/loaders/GLTFLoader.js"),
+  ]);
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x080909);

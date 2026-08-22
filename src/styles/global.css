@@ -6481,6 +6481,7 @@ html[lang="zh-CN"] .story-deck-multimodal-asset-search.story-visual-mm-metadata 
 }
 
 .mm-operations-card:nth-child(3) figcaption {
+  bottom: -2px;
   max-width: none;
   padding: clamp(4.55rem, calc(5.65 * var(--deck-vw)), 5.1rem) clamp(0.86rem, calc(1.28 * var(--deck-vw)), 1.1rem) clamp(0.4rem, calc(0.58 * var(--deck-vw)), 0.54rem);
   background: linear-gradient(
