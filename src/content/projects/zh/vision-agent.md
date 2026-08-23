@@ -1,7 +1,7 @@
 ---
 locale: zh
 slug: vision-agent
-order: 1
+order: 2
 title: 视觉智能体
 eyebrow: 视觉 AI · 智能体系统
 summary: >-

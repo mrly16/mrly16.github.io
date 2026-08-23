@@ -51,13 +51,13 @@ const copy =
         title: "项目展映",
         previous: "上一个项目",
         next: "下一个项目",
-        watch: "观看项目细节",
+        watch: "查看案例",
       }
     : {
         title: "Project sessions",
         previous: "Previous project",
         next: "Next project",
-        watch: "Watch the story",
+        watch: "View case study",
       };
 
 const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
@@ -494,7 +494,10 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
     try {
       const gradient = new NeatGradient({
         ref: gradientCanvas,
-        colors: toNeatColors(neatPalettes[decodeURIComponent(window.location.hash.slice(1))] ?? neatPalettes["vision-agent"]),
+        colors: toNeatColors(
+          neatPalettes[decodeURIComponent(window.location.hash.slice(1))] ??
+            neatPalettes["robotic-video-intelligence"],
+        ),
         speed: 0.85,
         horizontalPressure: 4,
         verticalPressure: 4,

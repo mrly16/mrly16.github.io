@@ -1,7 +1,7 @@
 ---
 locale: en
 slug: robotic-video-intelligence
-order: 2
+order: 1
 title: A video-intelligence platform for robots and drones
 eyebrow: Real-time AI · Systems Engineering
 summary: >-

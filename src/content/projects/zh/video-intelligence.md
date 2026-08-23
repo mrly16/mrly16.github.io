@@ -1,7 +1,7 @@
 ---
 locale: zh
 slug: robotic-video-intelligence
-order: 2
+order: 1
 title: 面向机器人与无人机的视频智能平台
 eyebrow: 实时 AI · 系统工程
 summary: >-

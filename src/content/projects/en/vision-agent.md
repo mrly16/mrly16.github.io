@@ -1,7 +1,7 @@
 ---
 locale: en
 slug: vision-agent
-order: 1
+order: 2
 title: A vision agent harness for inspection robots
 eyebrow: Vision AI · Agent Systems
 summary: >-
