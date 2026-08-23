@@ -109,7 +109,6 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
                 data-heavy-src={project.data.sessionVideo}
                 data-poster={project.data.sessionPoster ?? project.data.sessionVisual}
                 aria-label={project.data.diagramAlt}
-                autoplay
                 muted
                 loop
                 playsinline
@@ -172,9 +171,16 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
     const details = [...sessionsView.querySelectorAll("[data-session-detail]")];
     const backgrounds = [...sessionsView.querySelectorAll("[data-session-background]")];
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    const conservativeNetwork =
+      lowTrafficMode ||
+      connection?.saveData === true ||
+      /(^|-)2g$/i.test(connection?.effectiveType || "");
     let activeIndex = 0;
     let wheelLocked = false;
     let adjacentPosterIdle = 0;
+    let progressiveMediaIdle = 0;
+    let preloadGeneration = 0;
     let videoLoadTimer = 0;
 
     const prepareVideoPoster = (video) => {
@@ -182,13 +188,108 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
       video.poster = video.dataset.poster;
     };
 
-    const playVideo = (video) => {
+    const attachVideoSource = (video, preload = "auto") => {
       prepareVideoPoster(video);
+      video.preload = preload;
       if (!video.getAttribute("src") && video.dataset.heavySrc) {
         video.src = video.dataset.heavySrc;
         video.load();
       }
+    };
+
+    const playVideo = (video) => {
+      attachVideoSource(video, "auto");
       video.play().catch(() => {});
+    };
+
+    const waitForVideoReady = (video) => {
+      if (!(video instanceof HTMLVideoElement) || video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+        return Promise.resolve();
+      }
+      return new Promise((resolve) => {
+        let timeout = 0;
+        const finish = () => {
+          window.clearTimeout(timeout);
+          video.removeEventListener("loadeddata", finish);
+          video.removeEventListener("error", finish);
+          resolve();
+        };
+        video.addEventListener("loadeddata", finish, { once: true });
+        video.addEventListener("error", finish, { once: true });
+        timeout = window.setTimeout(finish, 8000);
+      });
+    };
+
+    const preloadCarouselVideo = async (video) => {
+      if (!(video instanceof HTMLVideoElement)) return;
+      attachVideoSource(video, "auto");
+      await waitForVideoReady(video);
+    };
+
+    const firstDeckEpisode = (slug) => {
+      const project = document.querySelector(`[data-viewer-project][data-slug="${CSS.escape(slug)}"]`);
+      return project?.querySelector("[data-viewer-episode]");
+    };
+
+    const preloadDeckFirstPage = (slug, priority = "low", includeVideoMetadata = false) => {
+      const episode = firstDeckEpisode(slug);
+      if (!(episode instanceof HTMLElement)) return;
+      episode.querySelectorAll("img[data-heavy-src]").forEach((image) => {
+        if (!(image instanceof HTMLImageElement)) return;
+        image.fetchPriority = priority;
+        if (!image.getAttribute("src") && image.dataset.heavySrc) image.src = image.dataset.heavySrc;
+      });
+      episode.querySelectorAll("video[data-poster]").forEach(prepareVideoPoster);
+      if (!includeVideoMetadata) return;
+      episode.querySelectorAll("video[data-heavy-src]").forEach((video) => {
+        if (!(video instanceof HTMLVideoElement)) return;
+        attachVideoSource(video, priority === "high" ? "auto" : "metadata");
+      });
+    };
+
+    const cancelProgressivePreload = () => {
+      preloadGeneration += 1;
+      if (!progressiveMediaIdle) return;
+      if ("cancelIdleCallback" in window) window.cancelIdleCallback(progressiveMediaIdle);
+      else window.clearTimeout(progressiveMediaIdle);
+      progressiveMediaIdle = 0;
+    };
+
+    const scheduleProgressivePreload = (activeVideo, activeSlug) => {
+      cancelProgressivePreload();
+      if (!(activeVideo instanceof HTMLVideoElement) || conservativeNetwork || reducedMotion) return;
+      const generation = preloadGeneration;
+      const begin = () => {
+        if (generation !== preloadGeneration) return;
+        const preload = async () => {
+          if (generation !== preloadGeneration) return;
+          const previous = (activeIndex - 1 + visuals.length) % visuals.length;
+          const next = (activeIndex + 1) % visuals.length;
+          const adjacentVideos = [visuals[previous], visuals[next]]
+            .map((visual) => visual?.querySelector("video"))
+            .filter((video) => video instanceof HTMLVideoElement);
+          await Promise.all(adjacentVideos.map(preloadCarouselVideo));
+          if (generation !== preloadGeneration) return;
+          preloadDeckFirstPage(activeSlug, "low", true);
+          const adjacentSet = new Set(adjacentVideos);
+          const remainingVideos = visuals
+            .map((visual) => visual.querySelector("video"))
+            .filter((video) =>
+              video instanceof HTMLVideoElement &&
+              video !== activeVideo &&
+              !adjacentSet.has(video),
+            );
+          for (const video of remainingVideos) {
+            if (generation !== preloadGeneration) return;
+            await preloadCarouselVideo(video);
+          }
+        };
+        progressiveMediaIdle = "requestIdleCallback" in window
+          ? window.requestIdleCallback(() => void preload(), { timeout: 1800 })
+          : window.setTimeout(() => void preload(), 650);
+      };
+      if (activeVideo.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) begin();
+      else activeVideo.addEventListener("canplay", begin, { once: true });
     };
 
     const syncVideos = () => {
@@ -268,6 +369,9 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
         ? window.requestIdleCallback(prepareAdjacentPosters, { timeout: 1200 })
         : window.setTimeout(prepareAdjacentPosters, 450);
 
+      const activeVideo = visuals[activeIndex]?.querySelector("video");
+      scheduleProgressivePreload(activeVideo, activeSlug);
+
       if (window.matchMedia("(max-width: 760px)").matches) {
         indexItems[activeIndex]?.scrollIntoView({
           behavior: reducedMotion ? "auto" : "smooth",
@@ -297,7 +401,17 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
       button.addEventListener("click", () => showProject(activeIndex + 1));
     });
     sessionsView.querySelectorAll("[data-session-watch]").forEach((button) => {
+      const warmDeck = (priority = "low") => {
+        preloadDeckFirstPage(projectSlugs[activeIndex], priority, !conservativeNetwork);
+      };
+      button.addEventListener("pointerenter", () => {
+        if (!conservativeNetwork) warmDeck("low");
+      });
+      button.addEventListener("focus", () => {
+        if (!conservativeNetwork) warmDeck("low");
+      });
       button.addEventListener("click", () => {
+        warmDeck("high");
         window.dispatchEvent(
           new CustomEvent("portfolio:open-deck", {
             detail: { slug: projectSlugs[activeIndex] },

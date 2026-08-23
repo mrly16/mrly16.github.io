@@ -36,7 +36,7 @@ sessionHeadline: One million images, searchable
 sessionDescription: To better organize and use vision data, the cloud-based system combines Google Cloud Storage, CLIP, BigQuery, and Vertex AI to provide a unified interface for vision-model development.
 sessionVisual: /diagrams/multimodal-search.svg
 sessionVideo: /case-studies/multimodal-search/mmsearch-hero-v2.mp4
-sessionPoster: /case-studies/multimodal-search/mmsearch-hero-gradient-poster.jpg
+sessionPoster: /case-studies/multimodal-search/mmsearch-hero-poster-v2.webp
 sessionMetric:
   value: 1M
   label: images indexed

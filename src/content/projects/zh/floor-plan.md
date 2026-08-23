@@ -35,7 +35,7 @@ sessionHeadline: 从视觉到结构
 sessionDescription: 通过构建全流程的算法工作流，将户型设计图从难以管理的图像数据转换为可编辑、结构化的建筑数据。
 sessionVisual: /case-studies/floor-plan/source-to-segmentation.webp
 sessionVideo: /case-studies/floor-plan/fp-hero-v3.mp4
-sessionPoster: /case-studies/floor-plan/floorplan-hero-gradient-textured-poster.jpg
+sessionPoster: /case-studies/floor-plan/floorplan-hero-poster-v2.webp
 sessionMetric:
   value: 7万
   label: 张户型图完成重建

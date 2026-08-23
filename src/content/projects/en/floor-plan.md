@@ -35,7 +35,7 @@ sessionHeadline: Vision into structure
 sessionDescription: An end-to-end pipeline that turns raster floor-plan images into editable, structured architectural data through semantic segmentation and graph optimization.
 sessionVisual: /case-studies/floor-plan/source-to-segmentation.webp
 sessionVideo: /case-studies/floor-plan/fp-hero-v3.mp4
-sessionPoster: /case-studies/floor-plan/floorplan-hero-gradient-textured-poster.jpg
+sessionPoster: /case-studies/floor-plan/floorplan-hero-poster-v2.webp
 sessionMetric:
   value: 70K
   label: floor plans reconstructed

@@ -2063,9 +2063,10 @@ const copy =
         counter.textContent = ` EP ${String(activeEpisode + 1).padStart(2, "0")} / ${String(episodes.length).padStart(2, "0")}`;
       });
       if (pageCurrent) pageCurrent.textContent = String(activeEpisode + 1).padStart(2, "0");
-      prepareEpisodeMedia(episodes[activeEpisode]);
+      const viewIsActive = document.documentElement.dataset.portfolioView === "tv";
+      if (viewIsActive) prepareEpisodeMedia(episodes[activeEpisode]);
       syncVideos();
-      scheduleAdjacentEpisodeMedia();
+      if (viewIsActive) scheduleAdjacentEpisodeMedia();
     };
 
     const showProject = (nextIndex, announce = true) => {

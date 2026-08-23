@@ -36,7 +36,7 @@ sessionHeadline: 让百万图片可被发现
 sessionDescription: 基于 Google Cloud Storage、CLIP、BigQuery 与 Vertex AI，为百万级机器人视觉图像建立可搜索的数据资产平台。
 sessionVisual: /diagrams/multimodal-search.svg
 sessionVideo: /case-studies/multimodal-search/mmsearch-hero-v2.mp4
-sessionPoster: /case-studies/multimodal-search/mmsearch-hero-gradient-poster.jpg
+sessionPoster: /case-studies/multimodal-search/mmsearch-hero-poster-v2.webp
 sessionMetric:
   value: 100万
   label: 张图片完成索引
