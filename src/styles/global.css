@@ -38,17 +38,20 @@
   --type-body-tracking: -0.006em;
   --type-label-tracking: 0.065em;
 
-  /* Global viewport growth factor: 1× at the 1440×686 canonical, ≈1.86× @1920,
-     ≈2.4× @2560. Shared by the header, carousel, and About typography so every
-     role scales coherently on large screens instead of drifting independently. */
-  --screen-scale: clamp(1, calc(1 + (100vw - 90rem) / 560px), 2.4);
+  /* Typography grows only slightly beyond the 1440px canonical viewport.
+     Wider desktop screens should primarily gain surrounding space, rather
+     than making carousel/About type jump to a new visual scale. */
+  --screen-scale: clamp(1, calc(1 + (100vw - 90rem) / 4000px), 1.18);
+  /* Explicit 1440→1920 desktop interpolation. At 1920px this reaches 1;
+     ultra-wide screens may continue only another 35% of the same step. */
+  --desktop-growth: clamp(0, calc((100vw - 90rem) / 480px), 1.35);
 
   /* Shared responsive header system (used by carousel, TV, and About). */
-  --hdr-logo-h: clamp(1.35rem, calc(1.395rem + max(0px, 100vw - 90rem) * 0.036), 3.5rem);
-  --hdr-nav-fs: calc(0.9rem * var(--screen-scale));
-  --hdr-nav-gap: clamp(1rem, calc(1.1rem + max(0px, 100vw - 90rem) * 0.024), 2.4rem);
-  --hdr-pill-pad-b: clamp(0.4rem, calc(0.4rem + max(0px, 100vw - 90rem) * 0.012), 0.85rem);
-  --hdr-pill-pad-i: clamp(0.75rem, calc(0.75rem + max(0px, 100vw - 90rem) * 0.016), 1.4rem);
+  --hdr-logo-h: clamp(1.35rem, calc(1.395rem + 0.35rem * var(--desktop-growth)), 1.9rem);
+  --hdr-nav-fs: clamp(0.9rem, calc(0.9rem + 7.6px * var(--desktop-growth)), 1.54rem);
+  --hdr-nav-gap: clamp(1rem, calc(1.1rem + 0.28rem * var(--desktop-growth)), 1.5rem);
+  --hdr-pill-pad-b: clamp(0.4rem, calc(0.4rem + 0.06rem * var(--desktop-growth)), 0.5rem);
+  --hdr-pill-pad-i: clamp(0.75rem, calc(0.75rem + 0.12rem * var(--desktop-growth)), 0.92rem);
 }
 
 html[lang="zh-CN"] {

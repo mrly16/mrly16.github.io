@@ -1858,38 +1858,27 @@ const copy =
   if (viewer instanceof HTMLElement) {
     viewer.classList.add("is-hydrating");
     const updateDeckScale = () => {
-      const artboardWidth = 1180.8;
       const artboardHeight = 471;
-      const controlWidth = 720;
-      const controlHeight = 88;
+      const canonicalViewportWidth = 1440;
+      const canonicalViewportHeight = 686;
+      const canonicalDeckTop = 76.5;
+      const canonicalPillGap = 25.25;
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
 
-      const header = document.querySelector(".site-header");
-      const headerHeight = header ? Math.ceil(header.getBoundingClientRect().height) : 72;
-
-      // Deck scale: fills ~92% of viewport width (≈4% side margins), pinned to
-      // exactly 1.0 at the canonical 1440×686 via the height term (471 deck +
-      // 88 control + 20 gap + 35 bottom ≈ 599px reserve below the header).
-      const widthScale = (viewportWidth * 0.92) / artboardWidth;
-      const heightScale = (viewportHeight - headerHeight - 143) / artboardHeight;
+      // Scale the complete canonical composition, rather than independently
+      // making the deck fill a larger percentage of wider viewports. Equal
+      // viewport aspect ratios now preserve equal deck-to-viewport ratios,
+      // while short or narrow desktop windows still fit continuously.
+      const widthScale = viewportWidth / canonicalViewportWidth;
+      const heightScale = viewportHeight / canonicalViewportHeight;
       const deckScale = Math.max(0.5, Math.min(widthScale, heightScale));
-
-      // Control pill scales with the deck (720/1180.8 ≈ 0.61 of deck width).
       const pillScale = deckScale;
-      const deckHeight = artboardHeight * deckScale;
-      const pillHeight = controlHeight * pillScale;
-
-      // Vertical distribution: deck just below the header, pill centered in the
-      // free region between the deck bottom and the viewport bottom, with
-      // 20–72px gaps so it stays visually tied to the deck.
-      const available = viewportHeight - headerHeight;
-      const extra = Math.max(0, available - deckHeight - pillHeight - 40);
-      const topGap = Math.min(56, Math.max(4, extra * 0.3));
-      const deckTop = headerHeight + topGap;
-      const freeBelow = viewportHeight - deckTop - deckHeight;
-      const pillGap = Math.max(20, (freeBelow - pillHeight) / 2);
-      const bottomGap = freeBelow - pillGap - pillHeight;
+      const scaledViewportHeight = canonicalViewportHeight * deckScale;
+      const verticalOffset = Math.max(0, (viewportHeight - scaledViewportHeight) / 2);
+      const deckTop = verticalOffset + canonicalDeckTop * deckScale;
+      const pillGap = canonicalPillGap * deckScale;
+      const bottomGap = Math.max(0, viewportHeight - deckTop - artboardHeight * deckScale - pillGap - 88 * pillScale);
 
       viewer.style.setProperty("--deck-scale", deckScale.toFixed(5));
       viewer.style.setProperty("--pill-scale", pillScale.toFixed(5));
