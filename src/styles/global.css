@@ -12534,8 +12534,22 @@ html[lang="zh-CN"] .floor-deck.story-heading-standard .floor-deck-copy > p {
     height: var(--deck-artboard-height);
     max-height: none;
     aspect-ratio: auto;
-    transform: scale(var(--deck-scale));
+    /* `zoom` participates in layout-time rendering, so an enlarged desktop
+       deck is rasterized at its final size. A transform here would enlarge a
+       canonical-resolution composite layer and soften images, text and fine
+       borders on 1080p/DPR 1 displays. */
+    zoom: var(--deck-scale);
+    transform: none;
     transform-origin: top left;
+  }
+
+  /* Preserve the previous proportional behavior in browsers without CSS
+     zoom support. Current evergreen desktop browsers use the sharper path. */
+  @supports not (zoom: 1) {
+    .viewer-stage {
+      zoom: 1;
+      transform: scale(var(--deck-scale));
+    }
   }
 
   .work-viewer .flow-pill-shell {

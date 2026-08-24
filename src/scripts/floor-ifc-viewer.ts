@@ -47,12 +47,15 @@ const initializeViewer = async (root: HTMLElement) => {
   const resize = () => {
     const width = Math.max(root.clientWidth, 1);
     const height = Math.max(root.clientHeight, 1);
+    const renderedWidth = Math.max(root.getBoundingClientRect().width, 1);
+    const layoutZoom = renderedWidth / width;
     const aspect = width / height;
     camera.left = (-orthoHeight * aspect) / 2;
     camera.right = (orthoHeight * aspect) / 2;
     camera.top = orthoHeight / 2;
     camera.bottom = -orthoHeight / 2;
     camera.updateProjectionMatrix();
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio * layoutZoom, 2));
     renderer.setSize(width, height, false);
   };
 
