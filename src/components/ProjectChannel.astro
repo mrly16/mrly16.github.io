@@ -1878,7 +1878,6 @@ const copy =
       const canonicalViewportWidth = 1440;
       const canonicalViewportHeight = 686;
       const canonicalDeckTop = 76.5;
-      const canonicalPillGap = 25.25;
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
 
@@ -1893,8 +1892,13 @@ const copy =
       const scaledViewportHeight = canonicalViewportHeight * deckScale;
       const verticalOffset = Math.max(0, (viewportHeight - scaledViewportHeight) / 2);
       const deckTop = verticalOffset + canonicalDeckTop * deckScale;
-      const pillGap = canonicalPillGap * deckScale;
-      const bottomGap = Math.max(0, viewportHeight - deckTop - artboardHeight * deckScale - pillGap - 88 * pillScale);
+      const deckBottom = deckTop + artboardHeight * deckScale;
+      const pillHeight = 88 * pillScale;
+      const spaceBelowDeck = Math.max(pillHeight, viewportHeight - deckBottom);
+      // Keep the control centered in the free area below the deck: the gap
+      // above the pill and the space below it must always be identical.
+      const pillGap = Math.max(0, (spaceBelowDeck - pillHeight) / 2);
+      const bottomGap = pillGap;
 
       viewer.style.setProperty("--deck-scale", deckScale.toFixed(5));
       viewer.style.setProperty("--pill-scale", pillScale.toFixed(5));

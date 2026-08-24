@@ -63,14 +63,13 @@
   /* Explicit 1440→1920 desktop interpolation. At 1920px this reaches 1;
      ultra-wide screens may continue only another 35% of the same step. */
   --desktop-growth: clamp(0, calc((100vw - 90rem) / 480px), 1.35);
-  /* A separate wide-screen step keeps the confirmed 1440px and 1920px
-     typography unchanged, then restores visual scale between 1920–2560px. */
   --wide-growth: clamp(0, calc((100vw - 120rem) / 640px), 1);
-
   /* Shared responsive header system (used by carousel, TV, and About). */
-  --hdr-logo-h: clamp(1.35rem, calc(1.395rem + 0.35rem * var(--desktop-growth) + 0.15rem * var(--wide-growth)), 2.05rem);
-  --hdr-nav-fs: clamp(0.9rem, calc(0.9rem + 7.6px * var(--desktop-growth) + 2.36px * var(--wide-growth)), 1.6875rem);
-  --hdr-nav-gap: clamp(1rem, calc(1.1rem + 0.28rem * var(--desktop-growth)), 1.5rem);
+  --hdr-logo-h: clamp(1.35rem, 1.55vw, 2.75rem);
+  /* Keep the approved 14.4px / 22px checkpoints at 1440 / 1920, then
+     continue the same visual growth instead of flattening on larger screens. */
+  --hdr-nav-fs: clamp(0.9rem, calc(1vw + 2.8px * var(--desktop-growth)), 2rem);
+  --hdr-nav-gap: clamp(1rem, 1.222vw, 2rem);
   --hdr-pill-pad-b: clamp(0.4rem, calc(0.4rem + 0.06rem * var(--desktop-growth)), 0.5rem);
   --hdr-pill-pad-i: clamp(0.75rem, calc(0.75rem + 0.12rem * var(--desktop-growth)), 0.92rem);
 }
@@ -131,6 +130,8 @@ body.identity-page {
   --about-cta-gradient-start: #d95656;
   --about-cta-gradient-end: #f9c571;
   min-height: 100%;
+  display: grid;
+  place-items: center;
   overflow: hidden;
   color: #f5f1e8;
   background:
@@ -279,9 +280,9 @@ figcaption {
 }
 
 .identity-page .site-header {
-  min-height: max(72px, calc(var(--hdr-logo-h) + 2.5rem));
-  padding-right: clamp(1.25rem, 3vw, 2.6rem);
-  padding-left: clamp(1.25rem, 3vw, 2.6rem);
+  min-height: max(5cqw, calc(var(--hdr-logo-h) + 2.5rem));
+  padding-right: 3cqw;
+  padding-left: 3cqw;
   border: 0;
   color: #ede9de;
 }
@@ -388,7 +389,7 @@ figcaption {
   display: inline-flex;
   align-items: baseline;
   gap: 0.34rem;
-  margin-left: clamp(0.3rem, 0.7vw, 0.65rem);
+  margin-left: clamp(0.3rem, 0.7vw, 1.25rem);
   color: inherit;
   font-family: var(--label);
   font-size: var(--hdr-nav-fs);
@@ -515,14 +516,20 @@ figcaption {
 }
 
 .identity-page .footer-links a {
+  width: clamp(2.15rem, 2.389cqw, 4.25rem);
+  height: clamp(2.15rem, 2.389cqw, 4.25rem);
   border-color: rgba(245, 241, 232, 0.13);
   background: rgba(245, 241, 232, 0.035);
   color: rgba(245, 241, 232, 0.58);
 }
 
 .identity-page .footer-links svg {
-  width: 1.62rem;
-  height: 1.62rem;
+  width: clamp(1.62rem, 1.8cqw, 3.2rem);
+  height: clamp(1.62rem, 1.8cqw, 3.2rem);
+}
+
+.identity-page .footer-links {
+  gap: clamp(0.58rem, 0.644cqw, 1.15rem);
 }
 
 .identity-page .footer-links a:hover {
@@ -1144,35 +1151,41 @@ html[lang="zh-CN"] .case-hero h1 {
 }
 
 .identity-page .page-shell {
+  --hdr-logo-h: clamp(1.35rem, 1.55cqw, 2.75rem);
+  --hdr-nav-fs: clamp(0.9rem, calc(1cqw + 2.8px * var(--desktop-growth)), 2rem);
+  --hdr-nav-gap: clamp(1rem, 1.222cqw, 2rem);
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
-  width: 100%;
+  width: min(100vw, 209.9125svh);
+  height: 100svh;
   max-width: none;
   min-height: 100svh;
+  container-type: inline-size;
 }
 
 .identity-page main {
   align-self: stretch;
-  width: min(calc(100% - clamp(2rem, 6vw, 7rem)), calc(1180px + max(0px, 100vw - 90rem) * 0.8), 1850px);
+  width: 81.944cqw;
   margin: 0 auto;
-  padding: clamp(0.2rem, 0.55vw, 0.48rem) 0 0;
+  padding: 0.533cqw 0 0;
+  container-type: inline-size;
 }
 
 .identity-page .site-footer {
   width: auto;
-  margin-right: clamp(1.25rem, 3vw, 2.6rem);
-  margin-left: clamp(1.25rem, 3vw, 2.6rem);
-  margin-top: clamp(1.05rem, 2.5vh, 2rem);
-  padding: 0 0 clamp(1.25rem, 2.6vh, 2.2rem);
+  margin-right: 2.889cqw;
+  margin-left: 2.889cqw;
+  margin-top: 0.714cqw;
+  padding: 0 0 0.868cqw;
 }
 
 .identity-hero-page {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(280px, calc(340px + max(0px, 100vw - 90rem) * 0.35));
-  gap: clamp(2.2rem, 4.8vw, 5.4rem);
+  grid-template-columns: minmax(0, 65.33fr) minmax(280px, 28.81fr);
+  gap: 7cqw;
   align-items: stretch;
   min-height: 100%;
-  padding: clamp(3.4rem, 7.8vh, 5rem) 0 clamp(0.35rem, 0.9vh, 0.7rem);
+  padding: 2.907cqw 0 0.475cqw;
   margin-bottom: 0;
 }
 
@@ -1208,10 +1221,10 @@ html[lang="zh-CN"] .case-hero h1 {
 
 .identity-page .identity-intro h1 {
   max-width: 100%;
-  margin: clamp(1.85rem, 4.8vh, 2.9rem) 0 0;
+  margin: 1.627cqw 0 0;
   color: #f8f4eb;
   font-family: var(--text);
-  font-size: clamp(1.3rem, calc(1.72rem * (1 + 0.54 * (var(--screen-scale) - 1)) + 5px * var(--wide-growth)), 2.25rem);
+  font-size: 2.3322cqw;
   font-weight: 350;
   letter-spacing: normal;
   line-height: 1.18;
@@ -1228,7 +1241,7 @@ html[lang="zh-CN"] .identity-page .identity-intro h1 {
   display: inline-flex;
   align-self: flex-start;
   width: fit-content;
-  margin-top: clamp(2.5rem, 6vh, 3.5rem);
+  margin-top: 2.675cqw;
   color: transparent;
   background-image:
     linear-gradient(
@@ -1246,7 +1259,7 @@ html[lang="zh-CN"] .identity-page .identity-intro h1 {
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  font: 700 clamp(1.08rem, calc(1.08rem * (1 + 0.86 * (var(--screen-scale) - 1)) + 2.05px * var(--wide-growth)), 1.375rem) / 1.3 var(--text);
+  font: 700 1.4644cqw / 1.3 var(--text);
   letter-spacing: 0.01em;
   text-decoration: underline;
   text-decoration-thickness: 1px;
@@ -1327,7 +1340,7 @@ html[lang="zh-CN"] .identity-page .identity-intro h1 {
   position: relative;
   color: rgba(245, 241, 232, 0.58);
   font-family: var(--label);
-  font-size: clamp(0.78rem, calc(0.828rem * var(--screen-scale) + 1.87px * var(--wide-growth)), 1.1rem);
+  font-size: 1.1227cqw;
   letter-spacing: 0.04em;
 }
 
@@ -1344,7 +1357,7 @@ html[lang="zh-CN"] .identity-page .identity-intro h1 {
 .identity-career-node {
   display: grid;
   grid-template-rows: auto auto auto;
-  gap: 0.34rem;
+  gap: 0.461cqw;
   justify-items: center;
   min-width: 0;
   text-align: center;
@@ -1378,22 +1391,22 @@ html[lang="zh-CN"] .identity-page .identity-intro h1 {
 .identity-career-node span {
   display: block;
   width: max-content;
-  margin-top: 0.32rem;
+  margin-top: 0.434cqw;
   color: var(--identity-accent);
   font-family: var(--label);
-  font-size: clamp(0.96rem, calc(1.01rem * (1 + 0.79 * (var(--screen-scale) - 1)) + 1.55px * var(--wide-growth)), 1.25rem);
+  font-size: 1.3695cqw;
   font-weight: 300;
   line-height: 1;
 }
 
 .identity-career-node b {
   display: block;
-  width: 0.72rem;
-  height: 0.72rem;
+  width: 0.976cqw;
+  height: 0.976cqw;
   border: 0;
   border-radius: 1px;
   background: #f8f4eb;
-  box-shadow: 0 0 0 4px rgba(5, 5, 5, 0.92);
+  box-shadow: 0 0 0 0.339cqw rgba(5, 5, 5, 0.92);
   transform: rotate(45deg);
 }
 
@@ -1418,7 +1431,7 @@ html[lang="zh-CN"] .identity-page .identity-intro h1 {
 
 .identity-panel .eyebrow {
   color: var(--identity-accent);
-  font-size: clamp(0.972rem, calc(0.972rem * var(--screen-scale) + 2.65px * var(--wide-growth)), 1.3125rem);
+  font-size: calc(1.318cqw + 2px * var(--desktop-growth) + 1.5px * var(--wide-growth));
   font-weight: 500;
 }
 
@@ -1475,7 +1488,7 @@ html[lang="zh-CN"] .identity-career-node span {
 }
 
 .identity-hero-page > .identity-panel .timeline-group + .timeline-group {
-  margin-top: clamp(1.15rem, 2.4vh, 1.9rem);
+  margin-top: 0.949cqw;
 }
 
 .timeline-group {
@@ -1487,7 +1500,7 @@ html[lang="zh-CN"] .identity-career-node span {
 }
 
 .timeline div {
-  padding: clamp(0.48rem, 0.9vh, 0.72rem) 0;
+  padding: 0.38cqw 0;
   border-top: 1px solid rgba(28, 37, 33, 0.16);
 }
 
@@ -1502,13 +1515,13 @@ html[lang="zh-CN"] .identity-career-node span {
 
 .identity-panel .timeline dt {
   color: rgba(245, 241, 232, 0.94);
-  font-size: calc(1rem * var(--screen-scale));
+  font-size: calc(1.3559cqw + 2.2px * var(--desktop-growth) + 1.7px * var(--wide-growth));
 }
 
 .timeline dd {
   margin: 0.22rem 0 0;
   color: var(--muted);
-  font-size: calc(0.78rem * var(--screen-scale));
+  font-size: calc(1.0576cqw + 1.7px * var(--desktop-growth) + 1.3px * var(--wide-growth));
   line-height: 1.38;
 }
 
@@ -1778,8 +1791,7 @@ html[lang="zh-CN"] .contact-copy h2 {
   background: #111411;
 }
 
-.channel-home .page-shell,
-.identity-page .page-shell {
+.channel-home .page-shell {
   width: 100%;
   max-width: none;
 }
@@ -2244,7 +2256,9 @@ html[lang="zh-CN"] .channel-episode h1 {
   .channel-home .page-shell,
   .identity-page .page-shell {
     width: 100%;
+    height: auto;
     max-width: none;
+    min-height: 100svh;
   }
 
   .site-header {
@@ -4069,9 +4083,9 @@ html[lang="zh-CN"] .channel-identity > span:last-child {
 
 .channel-home .site-header {
   top: 0;
-  right: clamp(1.5rem, 3.2vw, 3.8rem);
-  left: clamp(1.5rem, 3.2vw, 3.8rem);
-  min-height: max(72px, calc(var(--hdr-logo-h) + 2.5rem));
+  right: 3.2vw;
+  left: 3.2vw;
+  min-height: max(5vw, calc(var(--hdr-logo-h) + 2.5rem));
   border: 0;
   color: #ede9de;
 }
@@ -12656,18 +12670,20 @@ html[lang="zh-CN"] .floor-deck.story-heading-standard .floor-deck-copy > p {
    viewport height and width from stretching unrelated gaps and type sizes. */
 @media (min-width: 801px) {
   .identity-hero-page {
-    grid-template-columns: minmax(0, 1fr) minmax(280px, calc(340px + max(0px, 100vw - 90rem) * 0.35));
-    gap: clamp(2.2rem, 4.8vw, 4.32rem);
+    grid-template-columns: minmax(0, 65.33fr) minmax(280px, 28.81fr);
+    gap: 7cqw;
+    min-height: 0;
+    height: 46.576cqw;
   }
 
   .identity-page .identity-intro h1 {
-    font-size: clamp(1.3rem, calc(1.72rem * (1 + 0.54 * (var(--screen-scale) - 1)) + 5px * var(--wide-growth)), 2.25rem);
+    font-size: 2.3322cqw;
   }
 }
 
 /* About page short-viewport compaction: the page is scroll-locked by design,
    so vertical rhythm is tightened in two tiers instead of clipping content. */
-@media (max-height: 780px) {
+@media (max-width: 800px) and (max-height: 780px) {
   .identity-hero-page {
     padding-top: clamp(2.6rem, 6.4vh, 3.4rem);
   }
@@ -12698,7 +12714,7 @@ html[lang="zh-CN"] .floor-deck.story-heading-standard .floor-deck-copy > p {
   }
 }
 
-@media (max-height: 700px) {
+@media (max-width: 800px) and (max-height: 700px) {
   .identity-hero-page {
     padding-top: clamp(1.9rem, 5vh, 2.6rem);
   }
