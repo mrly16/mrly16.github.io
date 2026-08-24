@@ -55,7 +55,10 @@ const personSchema = {
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="preload" href="https://use.typekit.net/pmn6ngx.css" as="style" crossorigin />
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=optional" as="style" />
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=optional" as="style" />
+{locale === "zh" && (
+  <link rel="preload" href="/fonts/noto-sans-sc-portfolio.woff2" as="font" type="font/woff2" crossorigin />
+)}
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="canonical" href={canonical} />
 <link rel="alternate" hreflang={locale === "en" ? "zh-CN" : "en"} href={alternate} />

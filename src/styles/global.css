@@ -1,5 +1,23 @@
 @import url("https://use.typekit.net/pmn6ngx.css");
-@import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=optional");
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=optional");
+
+@font-face {
+  font-family: "Noto Sans SC Portfolio";
+  src: url("/fonts/noto-sans-sc-portfolio.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+/* Same variable font with broad GB2312 coverage. It is not preloaded and is
+   only requested if future Chinese copy uses a glyph outside the lean corpus. */
+@font-face {
+  font-family: "Noto Sans SC Common";
+  src: url("/fonts/noto-sans-sc-common.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
 
 :root {
   --paper: #f4f0e8;
@@ -17,8 +35,8 @@
   /* Typography system, adapted from Oryzo's display/text split. */
   --font-display: "halyard-display-variable", "Manrope", system-ui, sans-serif;
   --font-text: "halyard-text-variable", "Manrope", system-ui, sans-serif;
-  --font-zh-display: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
-  --font-zh-text: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+  --font-zh-display: "Noto Sans SC Portfolio", "Noto Sans SC Common", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+  --font-zh-text: "Noto Sans SC Portfolio", "Noto Sans SC Common", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
   --mono: "DM Mono", monospace;
 
   --display: var(--font-display);
@@ -68,6 +86,7 @@ html[lang="zh-CN"] {
   --type-heading-tracking: 0;
   --type-body-tracking: 0.01em;
   --type-label-tracking: 0.045em;
+  font-synthesis: none;
 }
 
 * {
