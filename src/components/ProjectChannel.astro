@@ -1200,6 +1200,8 @@ const copy =
                             <img loading="lazy"
                               class="mm-infra-image"
                               data-heavy-src="/case-studies/multimodal-search/mmsearch-infra.webp"
+                              data-heavy-srcset="/case-studies/multimodal-search/mmsearch-infra-800.webp 800w, /case-studies/multimodal-search/mmsearch-infra.webp 1600w"
+                              data-heavy-sizes="(max-width: 760px) 92vw, 760px"
                               alt=""
                               decoding="async"
                             />
@@ -1254,7 +1256,14 @@ const copy =
                         {slide.visual === "video-system-architecture" ? (
                           <>
                             <figure class="video-system-architecture-visual" aria-label={locale === "zh" ? "视频分析引擎系统架构图" : "System architecture diagram for the video analysis engine"}>
-                              <img loading="lazy" data-heavy-src="/case-studies/video-intelligence/video-analysis-engine-v2.webp" alt="" decoding="async" />
+                              <img
+                                loading="lazy"
+                                data-heavy-src="/case-studies/video-intelligence/video-analysis-engine-v2.webp"
+                                data-heavy-srcset="/case-studies/video-intelligence/video-analysis-engine-v2-800.webp 800w, /case-studies/video-intelligence/video-analysis-engine-v2.webp 1600w"
+                                data-heavy-sizes="(max-width: 760px) 92vw, 760px"
+                                alt=""
+                                decoding="async"
+                              />
                               <div class="video-system-decisions">
                                 {[
                                   {
@@ -1495,7 +1504,14 @@ const copy =
                         ) : null}
                         {slide.visual === "vision-common-sense" ? (
                           <figure class="vision-decision-architecture" aria-label={locale === "zh" ? "视觉智能体从检测结果到决策与工具调用的系统设计" : "Vision agent system design from detections to decisions and tool calls"}>
-                            <img loading="lazy" data-heavy-src="/case-studies/vision-agent/va-page3-v3.webp" alt="" decoding="async" />
+                            <img
+                              loading="lazy"
+                              data-heavy-src="/case-studies/vision-agent/va-page3-v3.webp"
+                              data-heavy-srcset="/case-studies/vision-agent/va-page3-v3-800.webp 800w, /case-studies/vision-agent/va-page3-v3.webp 1600w"
+                              data-heavy-sizes="(max-width: 760px) 92vw, 760px"
+                              alt=""
+                              decoding="async"
+                            />
                             <div class="vision-decision-points">
                               {[
                                 {
@@ -1905,11 +1921,30 @@ const copy =
     let activeIndex = 0;
     let activeEpisode = 0;
     let adjacentMediaIdle = 0;
+    let adjacentProjectIdle = 0;
     let videoLoadTimer = 0;
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    const conservativeNetwork =
+      lowTrafficMode ||
+      connection?.saveData === true ||
+      /(^|-)2g$/i.test(connection?.effectiveType || "");
+    const imageDecodePromises = new WeakMap();
 
-    const loadImage = (image) => {
-      if (!(image instanceof HTMLImageElement) || image.getAttribute("src") || !image.dataset.heavySrc) return;
-      image.src = image.dataset.heavySrc;
+    const loadImage = (image, priority = "auto", decode = false) => {
+      if (!(image instanceof HTMLImageElement) || !image.dataset.heavySrc) return Promise.resolve();
+      image.fetchPriority = priority;
+      if (decode) image.loading = "eager";
+      if (!image.getAttribute("src")) {
+        if (image.dataset.heavySizes) image.sizes = image.dataset.heavySizes;
+        if (image.dataset.heavySrcset) image.srcset = image.dataset.heavySrcset;
+        image.src = image.dataset.heavySrc;
+      }
+      if (!decode) return Promise.resolve();
+      const existing = imageDecodePromises.get(image);
+      if (existing) return existing;
+      const decoded = image.decode().catch(() => {});
+      imageDecodePromises.set(image, decoded);
+      return decoded;
     };
 
     const prepareVideoPoster = (video) => {
@@ -1917,10 +1952,12 @@ const copy =
       video.poster = video.dataset.poster;
     };
 
-    const prepareEpisodeMedia = (episode) => {
+    const prepareEpisodeMedia = (episode, priority = "auto", decodeImages = false) => {
       if (!(episode instanceof HTMLElement)) return;
-      episode.querySelectorAll("img[data-heavy-src]").forEach(loadImage);
+      const imageDecodes = [...episode.querySelectorAll("img[data-heavy-src]")]
+        .map((image) => loadImage(image, priority, decodeImages));
       episode.querySelectorAll("video[data-poster]").forEach(prepareVideoPoster);
+      return Promise.all(imageDecodes);
     };
 
     const playVideo = (video) => {
@@ -2012,6 +2049,30 @@ const copy =
       ...(projectNodes[activeIndex]?.querySelectorAll("[data-viewer-episode]") ?? []),
     ];
 
+    const preloadProjectFirstPage = (projectIndex, priority = "low") => {
+      if (conservativeNetwork) return Promise.resolve();
+      const normalizedIndex = (projectIndex + projectNodes.length) % projectNodes.length;
+      const episode = projectNodes[normalizedIndex]?.querySelector("[data-viewer-episode]");
+      return prepareEpisodeMedia(episode, priority, true) ?? Promise.resolve();
+    };
+
+    const scheduleAdjacentProjectFirstPages = () => {
+      if (adjacentProjectIdle) {
+        if ("cancelIdleCallback" in window) window.cancelIdleCallback(adjacentProjectIdle);
+        else window.clearTimeout(adjacentProjectIdle);
+      }
+      if (conservativeNetwork || document.documentElement.dataset.portfolioView !== "tv") return;
+      const preload = () => {
+        void Promise.all([
+          preloadProjectFirstPage(activeIndex - 1, "low"),
+          preloadProjectFirstPage(activeIndex + 1, "low"),
+        ]);
+      };
+      adjacentProjectIdle = "requestIdleCallback" in window
+        ? window.requestIdleCallback(preload, { timeout: 900 })
+        : window.setTimeout(preload, 350);
+    };
+
     const scheduleAdjacentEpisodeMedia = () => {
       if (adjacentMediaIdle) {
         if ("cancelIdleCallback" in window) window.cancelIdleCallback(adjacentMediaIdle);
@@ -2022,7 +2083,9 @@ const copy =
         if (episodes.length < 2) return;
         const previous = (activeEpisode - 1 + episodes.length) % episodes.length;
         const next = (activeEpisode + 1) % episodes.length;
-        [episodes[previous], episodes[next]].forEach(prepareEpisodeMedia);
+        [episodes[previous], episodes[next]].forEach((episode) => {
+          void prepareEpisodeMedia(episode, "low", true);
+        });
       };
       adjacentMediaIdle = "requestIdleCallback" in window
         ? window.requestIdleCallback(preload, { timeout: 1200 })
@@ -2053,7 +2116,7 @@ const copy =
       });
       if (pageCurrent) pageCurrent.textContent = String(activeEpisode + 1).padStart(2, "0");
       const viewIsActive = document.documentElement.dataset.portfolioView === "tv";
-      if (viewIsActive) prepareEpisodeMedia(episodes[activeEpisode]);
+      if (viewIsActive) void prepareEpisodeMedia(episodes[activeEpisode], "high", true);
       syncVideos();
       if (viewIsActive) scheduleAdjacentEpisodeMedia();
     };
@@ -2109,6 +2172,7 @@ const copy =
         );
       }
       showEpisode(0);
+      if (document.documentElement.dataset.portfolioView === "tv") scheduleAdjacentProjectFirstPages();
       if (pageTotal) pageTotal.textContent = String(activeEpisodeNodes().length).padStart(2, "0");
     };
 
@@ -2166,10 +2230,19 @@ const copy =
         showEpisode(Number(dot.getAttribute("data-episode-select")));
       });
     });
-    viewer.querySelector("[data-project-previous]")?.addEventListener("click", () => {
+    const previousProjectButton = viewer.querySelector("[data-project-previous]");
+    const nextProjectButton = viewer.querySelector("[data-project-next]");
+    const warmProject = (offset) => {
+      if (!conservativeNetwork) void preloadProjectFirstPage(activeIndex + offset, "high");
+    };
+    previousProjectButton?.addEventListener("pointerenter", () => warmProject(-1));
+    previousProjectButton?.addEventListener("focus", () => warmProject(-1));
+    nextProjectButton?.addEventListener("pointerenter", () => warmProject(1));
+    nextProjectButton?.addEventListener("focus", () => warmProject(1));
+    previousProjectButton?.addEventListener("click", () => {
       showProject(activeIndex - 1);
     });
-    viewer.querySelector("[data-project-next]")?.addEventListener("click", () => {
+    nextProjectButton?.addEventListener("click", () => {
       showProject(activeIndex + 1);
     });
     viewer.querySelector("[data-viewer-info]")?.addEventListener("click", () => {
@@ -2218,6 +2291,11 @@ const copy =
       const index = projectData.findIndex((project) => project.slug === event.detail?.slug);
       if (index >= 0) showProject(index, false);
     });
-    window.addEventListener("portfolio:view-change", syncVideos);
+    window.addEventListener("portfolio:view-change", (event) => {
+      syncVideos();
+      if (event.detail?.view !== "tv" || conservativeNetwork) return;
+      void preloadProjectFirstPage(activeIndex, "high");
+      scheduleAdjacentProjectFirstPages();
+    });
   }
 </script>
