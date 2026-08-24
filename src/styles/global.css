@@ -1216,7 +1216,7 @@ html[lang="zh-CN"] .case-hero h1 {
 
 html[lang="zh-CN"] .identity-page .identity-intro h1 {
   max-width: 100%;
-  font-family: "PingFang SC", "Noto Sans SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+  font-family: var(--text);
   font-weight: 350;
   line-height: 1.26;
 }
@@ -1417,6 +1417,17 @@ html[lang="zh-CN"] .identity-page .identity-intro h1 {
   color: var(--identity-accent);
   font-size: calc(0.972rem * var(--screen-scale));
   font-weight: 500;
+}
+
+html[lang="zh-CN"] .identity-panel .eyebrow {
+  font-family: var(--label);
+  font-weight: 520;
+  letter-spacing: 0.04em;
+}
+
+html[lang="zh-CN"] .identity-career-node span {
+  font-family: inherit;
+  font-weight: 520;
 }
 
 .about-story {
