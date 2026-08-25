@@ -885,7 +885,7 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
     display: block;
     max-width: 9ch;
     font-family: var(--session-index-face);
-    font-size: calc(5.286cqw + 12.5px * var(--wide-growth));
+    font-size: calc(5.286cqw + 8px * var(--wide-growth));
     font-weight: 600;
     line-height: 0.88;
     letter-spacing: -0.065em;
@@ -1182,6 +1182,7 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
   }
 
   :global(html[lang="zh-CN"]) .sessions-index button strong {
+    font-size: calc(4.7574cqw + 7.2px * var(--wide-growth));
     font-weight: 560;
     line-height: 1.18;
     letter-spacing: normal;
@@ -1326,7 +1327,7 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
     }
 
     :global(html[lang="zh-CN"]) .sessions-index button strong {
-      font-size: clamp(1.42rem, 6vw, 1.88rem);
+      font-size: clamp(1.28rem, 5.4vw, 1.69rem);
       line-height: 1.15;
       letter-spacing: normal;
     }
