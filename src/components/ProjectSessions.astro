@@ -885,7 +885,7 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
     display: block;
     max-width: 9ch;
     font-family: var(--session-index-face);
-    font-size: 5.286cqw;
+    font-size: calc(5.286cqw + 12.5px * var(--wide-growth));
     font-weight: 600;
     line-height: 0.88;
     letter-spacing: -0.065em;
@@ -1078,7 +1078,7 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
     max-width: 100%;
     margin: 3.02cqw 0 0;
     color: rgba(255, 255, 255, 0.78);
-    font: 200 1.34cqw/1.52 var(--sans);
+    font: 200 calc(1.34cqw + 3.7px * var(--wide-growth))/1.52 var(--sans);
   }
 
   @media (min-width: 761px) {
@@ -1112,7 +1112,7 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    font: 700 1.245cqw/1.35 var(--text);
+    font: 700 calc(1.245cqw + 4px * var(--wide-growth))/1.35 var(--text);
     line-height: 1.3;
     letter-spacing: 0.01em;
     text-decoration: underline;
@@ -1158,8 +1158,8 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
   .sessions-copy-stack > .sessions-navigation button {
     display: grid;
     place-items: center;
-    width: 3.321cqw;
-    height: 3.321cqw;
+    width: calc(3.321cqw + 8.5px * var(--wide-growth));
+    height: calc(3.321cqw + 8.5px * var(--wide-growth));
     border: 0;
     border-radius: 50%;
     color: #151817;
@@ -1172,8 +1172,8 @@ const sessionTitleLabel = (project: CollectionEntry<"projects">) => {
   }
 
   .sessions-copy-stack > .sessions-navigation button :global(.viewer-icon) {
-    width: 1.824cqw;
-    height: 1.824cqw;
+    width: calc(1.824cqw + 4px * var(--wide-growth));
+    height: calc(1.824cqw + 4px * var(--wide-growth));
   }
 
   .sessions-copy-stack > .sessions-navigation button:hover {

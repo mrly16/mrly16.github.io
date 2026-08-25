@@ -65,7 +65,7 @@
   --desktop-growth: clamp(0, calc((100vw - 90rem) / 480px), 1.35);
   --wide-growth: clamp(0, calc((100vw - 120rem) / 640px), 1);
   /* Shared responsive header system (used by carousel, TV, and About). */
-  --hdr-logo-h: clamp(1.35rem, 1.55vw, 2.75rem);
+  --hdr-logo-h: clamp(1.35rem, calc(1.55vw + 4.7px * var(--wide-growth)), 3rem);
   /* Keep the approved 14.4px / 22px checkpoints at 1440 / 1920, then
      continue the same visual growth instead of flattening on larger screens. */
   --hdr-nav-fs: clamp(0.9rem, calc(1vw + 2.8px * var(--desktop-growth)), 2rem);
@@ -280,9 +280,14 @@ figcaption {
 }
 
 .identity-page .site-header {
-  min-height: max(5cqw, calc(var(--hdr-logo-h) + 2.5rem));
-  padding-right: 3cqw;
-  padding-left: 3cqw;
+  position: fixed;
+  z-index: 30;
+  top: 0;
+  right: 3.2vw;
+  left: 3.2vw;
+  width: auto;
+  min-height: max(5vw, calc(var(--hdr-logo-h) + 2.5rem));
+  padding: 0;
   border: 0;
   color: #ede9de;
 }
@@ -1151,11 +1156,8 @@ html[lang="zh-CN"] .case-hero h1 {
 }
 
 .identity-page .page-shell {
-  --hdr-logo-h: clamp(1.35rem, 1.55cqw, 2.75rem);
-  --hdr-nav-fs: clamp(0.9rem, calc(1cqw + 2.8px * var(--desktop-growth)), 2rem);
-  --hdr-nav-gap: clamp(1rem, 1.222cqw, 2rem);
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-rows: max(5vw, calc(var(--hdr-logo-h) + 2.5rem)) minmax(0, 1fr) auto;
   width: min(100vw, 209.9125svh);
   height: 100svh;
   max-width: none;
@@ -1164,6 +1166,7 @@ html[lang="zh-CN"] .case-hero h1 {
 }
 
 .identity-page main {
+  grid-row: 2;
   align-self: stretch;
   width: 81.944cqw;
   margin: 0 auto;
@@ -1172,6 +1175,7 @@ html[lang="zh-CN"] .case-hero h1 {
 }
 
 .identity-page .site-footer {
+  grid-row: 3;
   width: auto;
   margin-right: 2.889cqw;
   margin-left: 2.889cqw;
@@ -6564,9 +6568,9 @@ html[lang="zh-CN"] .story-deck-multimodal-asset-search.story-visual-mm-metadata 
 }
 
 .mm-operations-card:nth-child(3) figcaption {
-  bottom: -8px;
+  bottom: 0;
   max-width: none;
-  padding: clamp(4.55rem, calc(5.65 * var(--deck-vw)), 5.1rem) clamp(0.86rem, calc(1.28 * var(--deck-vw)), 1.1rem) clamp(0.4rem, calc(0.58 * var(--deck-vw)), 0.54rem);
+  padding: clamp(4.55rem, calc(5.65 * var(--deck-vw)), 5.1rem) clamp(0.86rem, calc(1.28 * var(--deck-vw)), 1.1rem) clamp(0.58rem, calc(0.76 * var(--deck-vw)), 0.7rem);
   background: linear-gradient(
     180deg,
     rgba(0, 0, 0, 0) 0%,
@@ -6579,15 +6583,13 @@ html[lang="zh-CN"] .story-deck-multimodal-asset-search.story-visual-mm-metadata 
 .mm-operations-card:nth-child(3) .mm-operations-media {
   width: 100%;
   height: auto;
-  aspect-ratio: 502 / 215;
-  border-bottom-color: rgba(0, 0, 0, 0.86);
+  aspect-ratio: 94 / 45;
+  border-bottom-color: rgba(246, 242, 232, 0.18);
 }
 
 .mm-operations-card:nth-child(3) :is(img, video) {
-  height: 111.111%;
-  object-position: center top;
-  transform: translateY(0);
-  transform-origin: center top;
+  height: 100%;
+  object-position: center;
 }
 
 .mm-operations-card strong {
@@ -10409,7 +10411,7 @@ html[lang="zh-CN"] .story-deck-floor-plan-reconstruction .floor-segment-panel fi
 .video-fusion-visual .vision-demo-video-control {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 62 / 45;
   overflow: hidden;
   background: #050505;
   cursor: none;
